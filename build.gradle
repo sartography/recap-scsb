@@ -30,6 +30,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-ws')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('mysql:mysql-connector-java:6.0.3')
+	compile fileTree(dir: 'lib', include: '*.jar')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
