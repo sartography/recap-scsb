@@ -1,4 +1,4 @@
-package org.recap.service.ils;
+package org.recap.ils;
 
 import com.ceridwen.circulation.SIP.exceptions.InvalidFieldLength;
 import com.ceridwen.circulation.SIP.exceptions.MandatoryFieldOmitted;
@@ -14,15 +14,14 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by saravanakumarp on 28/9/16.
  */
-public class ESIPConnectorUT extends BaseTestCase {
+public class PrincetonESIPConnectorUT extends BaseTestCase {
 
     @Autowired
-    private ESIPConnector esipConnector;
+    private PrincetonESIPConnector princetonESIPConnector;
 
     @Test
-    public void startESIP() throws MessageNotUnderstood, InvalidFieldLength, MandatoryFieldOmitted {
-        //ESIPConnector esipConnector = new ESIPConnector();
-        ItemInformationResponse response = (ItemInformationResponse)esipConnector.checkOut("PUL","32101077423406",new java.util.Date());
+    public void checkOut() throws MessageNotUnderstood, InvalidFieldLength, MandatoryFieldOmitted {
+        ItemInformationResponse response = (ItemInformationResponse) princetonESIPConnector.checkOut("PUL","32101077423406",new java.util.Date());
         assertEquals("32101077423406",response.getItemIdentifier());
         assertEquals("Bolshevism, by an eye-witness from Wisconsin, by Lieutenant A. W. Kliefoth ...",response.getTitleIdentifier());
     }
