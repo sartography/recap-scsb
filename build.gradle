@@ -32,6 +32,8 @@ dependencies {
 	compile('mysql:mysql-connector-java:6.0.3')
 	compile fileTree(dir: 'lib', include: '*.jar')
 	compile('commons-beanutils:commons-beanutils:1.9.2')
+	compile('io.springfox:springfox-swagger-ui:2.5.0')
+	compile('io.springfox:springfox-swagger2:2.5.0')
 	compile('org.apache.commons:commons-lang3:3.4')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
