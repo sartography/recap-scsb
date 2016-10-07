@@ -8,6 +8,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 /**
  * Created by chenchulakshmig on 6/10/16.
  */
@@ -21,6 +23,9 @@ public class SharedCollectionRestController {
 
     @Value("${scsb.persistence.url}")
     String scsbPersistenceUrl;
+
+    @Value("${scsb.solr.client.url}")
+    String scsbSolrClientUrl;
 
 
     @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.GET)
@@ -44,6 +49,23 @@ public class SharedCollectionRestController {
             ResponseEntity responseEntity = new ResponseEntity(itemStatus, HttpStatus.OK);
             return responseEntity;
         }
+    }
+
+    @RequestMapping(value = "/deAccession", method = RequestMethod.GET)
+    @ApiOperation(value = "deAccession",
+            notes = "De Accession", nickname = "deaccession", position = 0)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestParam String itemBarcodes) {
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "deAccession/deAccessionItemsInDBAndSaveReports?barcodes=" + itemBarcodes, List.class);
+        } catch (Exception exception) {
+            ResponseEntity responseEntity = new ResponseEntity("Scsb Persistence Service is Unavailable.", HttpStatus.SERVICE_UNAVAILABLE);
+            return responseEntity;
+        }
+        ResponseEntity responseEntity = new ResponseEntity("De Accession process completed.", HttpStatus.OK);
+        return responseEntity;
     }
 
 }
