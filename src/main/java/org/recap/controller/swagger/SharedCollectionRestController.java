@@ -1,14 +1,21 @@
 package org.recap.controller.swagger;
 
 import io.swagger.annotations.*;
+import org.recap.ReCAPConstants;
+import org.recap.model.DeAccessionDBResponseEntity;
+import org.recap.util.DeAccessionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chenchulakshmig on 6/10/16.
@@ -27,6 +34,8 @@ public class SharedCollectionRestController {
     @Value("${scsb.solr.client.url}")
     String scsbSolrClientUrl;
 
+    @Autowired
+    DeAccessionUtil deAccessionUtil;
 
     @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.GET)
     @ApiOperation(value = "itemAvailabilityStatus",
@@ -57,15 +66,20 @@ public class SharedCollectionRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestParam String itemBarcodes) {
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "deAccession/deAccessionItemsInDBAndSaveReports?barcodes=" + itemBarcodes, List.class);
-        } catch (Exception exception) {
-            ResponseEntity responseEntity = new ResponseEntity("Scsb Persistence Service is Unavailable.", HttpStatus.SERVICE_UNAVAILABLE);
+        List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities = deAccessionUtil.deAccessionItemsInDB(itemBarcodes);
+        if (!CollectionUtils.isEmpty(deAccessionDBResponseEntities)) {
+            Map<String, String> resultMap = new HashMap<>();
+            for (DeAccessionDBResponseEntity deAccessionDBResponseEntity : deAccessionDBResponseEntities) {
+                if (deAccessionDBResponseEntity.getStatus().equalsIgnoreCase(ReCAPConstants.FAILURE)) {
+                    resultMap.put(deAccessionDBResponseEntity.getBarcode(), deAccessionDBResponseEntity.getStatus() + " - " + deAccessionDBResponseEntity.getReasonForFailure());
+                } else {
+                    resultMap.put(deAccessionDBResponseEntity.getBarcode(), deAccessionDBResponseEntity.getStatus());
+                }
+            }
+            ResponseEntity responseEntity = new ResponseEntity(resultMap, HttpStatus.OK);
             return responseEntity;
         }
-        ResponseEntity responseEntity = new ResponseEntity("De Accession process completed.", HttpStatus.OK);
-        return responseEntity;
+        return null;
     }
 
 }
