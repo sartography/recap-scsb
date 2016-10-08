@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +31,6 @@ public class SharedCollectionRestController {
 
     @Value("${scsb.persistence.url}")
     String scsbPersistenceUrl;
-
-    @Value("${scsb.solr.client.url}")
-    String scsbSolrClientUrl;
 
     @Autowired
     DeAccessionUtil deAccessionUtil;
@@ -69,13 +67,20 @@ public class SharedCollectionRestController {
         List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities = deAccessionUtil.deAccessionItemsInDB(itemBarcodes);
         if (!CollectionUtils.isEmpty(deAccessionDBResponseEntities)) {
             Map<String, String> resultMap = new HashMap<>();
+            List<Integer> bibIds = new ArrayList<>();
+            List<Integer> holdingsIds = new ArrayList<>();
+            List<Integer> itemIds = new ArrayList<>();
             for (DeAccessionDBResponseEntity deAccessionDBResponseEntity : deAccessionDBResponseEntities) {
                 if (deAccessionDBResponseEntity.getStatus().equalsIgnoreCase(ReCAPConstants.FAILURE)) {
                     resultMap.put(deAccessionDBResponseEntity.getBarcode(), deAccessionDBResponseEntity.getStatus() + " - " + deAccessionDBResponseEntity.getReasonForFailure());
-                } else {
+                } else if (deAccessionDBResponseEntity.getStatus().equalsIgnoreCase(ReCAPConstants.SUCCESS)) {
                     resultMap.put(deAccessionDBResponseEntity.getBarcode(), deAccessionDBResponseEntity.getStatus());
+                    bibIds.addAll(deAccessionDBResponseEntity.getBibliographicIds());
+                    holdingsIds.addAll(deAccessionDBResponseEntity.getHoldingIds());
+                    itemIds.add(deAccessionDBResponseEntity.getItemId());
                 }
             }
+            deAccessionUtil.deAccessionItemsInSolr(bibIds, holdingsIds, itemIds);
             ResponseEntity responseEntity = new ResponseEntity(resultMap, HttpStatus.OK);
             return responseEntity;
         }

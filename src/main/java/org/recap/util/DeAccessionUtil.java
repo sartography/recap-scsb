@@ -25,6 +25,9 @@ public class DeAccessionUtil {
     @Value("${scsb.persistence.url}")
     String scsbPersistenceUrl;
 
+    @Value("${scsb.solr.client.url}")
+    String scsbSolrClientUrl;
+
     public List<DeAccessionDBResponseEntity> deAccessionItemsInDB(String itemBarcodes) {
         RestTemplate restTemplate = new RestTemplate();
         List<String> itemBarcodeList = Arrays.asList(itemBarcodes.split(","));
@@ -155,5 +158,18 @@ public class DeAccessionUtil {
             new RestTemplate().getForObject(serverProtocol + scsbPersistenceUrl + "holdings/search/markHoldingsAsDeleted?holdingIds=" + StringUtils.join(holdingIds, ","), int.class);
         }
         return holdingIds;
+    }
+
+    public void deAccessionItemsInSolr(List<Integer> bibIds, List<Integer> holdingsIds, List<Integer> itemIds) {
+        RestTemplate restTemplate = new RestTemplate();
+        if (CollectionUtils.isNotEmpty(bibIds)) {
+            restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "bibSolr/search/deleteByBibIdIn?bibIds=" + StringUtils.join(bibIds, ","), int.class);
+        }
+        if (CollectionUtils.isNotEmpty(holdingsIds)) {
+            restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "holdingsSolr/search/deleteByHoldingsIdIn?holdingsIds=" + StringUtils.join(holdingsIds, ","), int.class);
+        }
+        if (CollectionUtils.isNotEmpty(itemIds)) {
+            restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "itemSolr/search/deleteByItemIdIn?itemIds=" + StringUtils.join(itemIds, ","), int.class);
+        }
     }
 }
