@@ -73,6 +73,7 @@ public class SharedCollectionRestController {
             List<Integer> bibIds = new ArrayList<>();
             List<Integer> holdingsIds = new ArrayList<>();
             List<Integer> itemIds = new ArrayList<>();
+            Map<String, Integer> ownInstAndItemIdMap = new HashMap<>();
             for (DeAccessionDBResponseEntity deAccessionDBResponseEntity : deAccessionDBResponseEntities) {
                 if (deAccessionDBResponseEntity.getStatus().equalsIgnoreCase(ReCAPConstants.FAILURE)) {
                     resultMap.put(deAccessionDBResponseEntity.getBarcode(), deAccessionDBResponseEntity.getStatus() + " - " + deAccessionDBResponseEntity.getReasonForFailure());
@@ -81,8 +82,10 @@ public class SharedCollectionRestController {
                     bibIds.addAll(deAccessionDBResponseEntity.getBibliographicIds());
                     holdingsIds.addAll(deAccessionDBResponseEntity.getHoldingIds());
                     itemIds.add(deAccessionDBResponseEntity.getItemId());
+                    ownInstAndItemIdMap.put(deAccessionDBResponseEntity.getInstitutionCode(), deAccessionDBResponseEntity.getItemId());
                 }
             }
+            deAccessionUtil.checkAndCancelHoldsIfExists(ownInstAndItemIdMap);
             deAccessionUtil.deAccessionItemsInSolr(bibIds, holdingsIds, itemIds);
             ResponseEntity responseEntity = new ResponseEntity(resultMap, HttpStatus.OK);
             return responseEntity;

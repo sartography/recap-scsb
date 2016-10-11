@@ -58,7 +58,7 @@ public class DeAccessionUtil {
 
                         List<Integer> bibliographicIds = processBibs(bibliographicEntities);
 
-                        new RestTemplate().getForObject(serverProtocol + scsbPersistenceUrl + "item/search/markItemAsDeleted?itemId=" + itemId, int.class);
+                        restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "item/search/markItemAsDeleted?itemId=" + itemId, int.class);
 
                         deAccessionDBResponseEntity = prepareSuccessResponse(barcode, itemEntity, holdingIds, bibliographicIds);
                         deAccessionDBResponseEntities.add(deAccessionDBResponseEntity);
@@ -83,30 +83,30 @@ public class DeAccessionUtil {
     }
 
     public List<ReportEntity> processAndSave(List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities) {
+        RestTemplate restTemplate = new RestTemplate();
         List<ReportEntity> reportEntities = new ArrayList<>();
         ReportEntity reportEntity = null;
         if (CollectionUtils.isNotEmpty(deAccessionDBResponseEntities)) {
             for (DeAccessionDBResponseEntity deAccessionDBResponseEntity : deAccessionDBResponseEntities) {
-                Map<String, String> owningInstitutionBibIdWithTitle = deAccessionDBResponseEntity.getOwningInstitutionBibIdWithTitle();
-                if (!org.springframework.util.CollectionUtils.isEmpty(owningInstitutionBibIdWithTitle)) {
-                    for (String itemOwningInstitutionBibId : owningInstitutionBibIdWithTitle.keySet()) {
-                        String title = owningInstitutionBibIdWithTitle.get(itemOwningInstitutionBibId);
-                        reportEntity = generateReportEntity(deAccessionDBResponseEntity, itemOwningInstitutionBibId, title);
+                List<String> owningInstitutionBibIds = deAccessionDBResponseEntity.getOwningInstitutionBibIds();
+                if (CollectionUtils.isNotEmpty(owningInstitutionBibIds)) {
+                    for (String owningInstitutionBibId : owningInstitutionBibIds) {
+                        reportEntity = generateReportEntity(deAccessionDBResponseEntity, owningInstitutionBibId);
                         reportEntities.add(reportEntity);
                     }
                 } else {
-                    reportEntity = generateReportEntity(deAccessionDBResponseEntity, null, null);
+                    reportEntity = generateReportEntity(deAccessionDBResponseEntity, null);
                     reportEntities.add(reportEntity);
                 }
             }
             if (!CollectionUtils.isEmpty(reportEntities)) {
-                new RestTemplate().postForLocation(serverProtocol + scsbPersistenceUrl + "report/create", reportEntities);
+                restTemplate.postForLocation(serverProtocol + scsbPersistenceUrl + "report/create", reportEntities);
             }
         }
         return reportEntities;
     }
 
-    private ReportEntity generateReportEntity(DeAccessionDBResponseEntity deAccessionDBResponseEntity, String owningInstitutionBibId, String title) {
+    private ReportEntity generateReportEntity(DeAccessionDBResponseEntity deAccessionDBResponseEntity, String owningInstitutionBibId) {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
         ReportEntity reportEntity = new ReportEntity();
@@ -142,13 +142,6 @@ public class DeAccessionUtil {
             owningInstitutionBibIdReportDataEntity.setHeaderName(ReCAPConstants.OWNING_INSTITUTION_BIB_ID);
             owningInstitutionBibIdReportDataEntity.setHeaderValue(owningInstitutionBibId);
             reportDataEntities.add(owningInstitutionBibIdReportDataEntity);
-        }
-
-        if (!org.springframework.util.StringUtils.isEmpty(title)) {
-            ReportDataEntity titleReportDataEntity = new ReportDataEntity();
-            titleReportDataEntity.setHeaderName(ReCAPConstants.TITLE);
-            titleReportDataEntity.setHeaderValue(title);
-            reportDataEntities.add(titleReportDataEntity);
         }
 
         if (!org.springframework.util.StringUtils.isEmpty(deAccessionDBResponseEntity.getCollectionGroupCode())) {
@@ -210,46 +203,47 @@ public class DeAccessionUtil {
         }
         deAccessionDBResponseEntity.setItemId(itemEntity.getInt("itemId"));
         JSONArray bibliographicEntities = itemEntity.getJSONArray("bibliographicEntities");
-        Map<String, String> owningInstitutionBibIdWithTitles = new HashMap<>();
+        List<String> owningInstitutionBibIds = new ArrayList<>();
         for (int i = 0; i < bibliographicEntities.length(); i++) {
             JSONObject bibliographicEntity = bibliographicEntities.getJSONObject(i);
             String owningInstitutionBibId = bibliographicEntity.getString("owningInstitutionBibId");
-            String title = "title";//TODO
-            owningInstitutionBibIdWithTitles.put(owningInstitutionBibId, title);
+            owningInstitutionBibIds.add(owningInstitutionBibId);
         }
-        deAccessionDBResponseEntity.setOwningInstitutionBibIdWithTitle(owningInstitutionBibIdWithTitles);
+        deAccessionDBResponseEntity.setOwningInstitutionBibIds(owningInstitutionBibIds);
     }
 
     private List<Integer> processBibs(JSONArray bibliographicEntities) throws JSONException {
+        RestTemplate restTemplate = new RestTemplate();
         List<Integer> bibliographicIds = new ArrayList<>();
         for (int i = 0; i < bibliographicEntities.length(); i++) {
             JSONObject bibliographicEntity = bibliographicEntities.getJSONObject(i);
             Integer owningInstitutionId = bibliographicEntity.getInt("owningInstitutionId");
             String owningInstitutionBibId = bibliographicEntity.getString("owningInstitutionBibId");
-            Long nonDeletedItemCount = new RestTemplate().getForObject(serverProtocol + scsbPersistenceUrl + "bibliographic/search/getNonDeletedItemsCount?owningInstitutionId={owningInstitutionId}&owningInstitutionBibId={owningInstitutionBibId}", Long.class, owningInstitutionId, owningInstitutionBibId);
+            Long nonDeletedItemCount = restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "bibliographic/search/getNonDeletedItemsCount?owningInstitutionId={owningInstitutionId}&owningInstitutionBibId={owningInstitutionBibId}", Long.class, owningInstitutionId, owningInstitutionBibId);
             if (nonDeletedItemCount == 1) {
                 bibliographicIds.add(bibliographicEntity.getInt("bibliographicId"));
             }
         }
         if (CollectionUtils.isNotEmpty(bibliographicIds)) {
-            new RestTemplate().getForObject(serverProtocol + scsbPersistenceUrl + "bibliographic/search/markBibsAsDeleted?bibliographicIds=" + StringUtils.join(bibliographicIds, ","), int.class);
+            restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "bibliographic/search/markBibsAsDeleted?bibliographicIds=" + StringUtils.join(bibliographicIds, ","), int.class);
         }
         return bibliographicIds;
     }
 
     private List<Integer> processHoldings(JSONArray holdingsEntities) throws JSONException {
+        RestTemplate restTemplate = new RestTemplate();
         List<Integer> holdingIds = new ArrayList<>();
         for (int i = 0; i < holdingsEntities.length(); i++) {
             JSONObject holdingsEntity = holdingsEntities.getJSONObject(i);
             Integer owningInstitutionId = holdingsEntity.getInt("owningInstitutionId");
             String owningInstitutionHoldingsId = holdingsEntity.getString("owningInstitutionHoldingsId");
-            Long nonDeletedItemsCount = new RestTemplate().getForObject(serverProtocol + scsbPersistenceUrl + "holdings/search/getNonDeletedItemsCount?owningInstitutionId={owningInstitutionId}&owningInstitutionHoldingsId={owningInstitutionHoldingsId}", Long.class, owningInstitutionId, owningInstitutionHoldingsId);
+            Long nonDeletedItemsCount = restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "holdings/search/getNonDeletedItemsCount?owningInstitutionId={owningInstitutionId}&owningInstitutionHoldingsId={owningInstitutionHoldingsId}", Long.class, owningInstitutionId, owningInstitutionHoldingsId);
             if (nonDeletedItemsCount == 1) {
                 holdingIds.add(holdingsEntity.getInt("holdingsId"));
             }
         }
         if (CollectionUtils.isNotEmpty(holdingIds)) {
-            new RestTemplate().getForObject(serverProtocol + scsbPersistenceUrl + "holdings/search/markHoldingsAsDeleted?holdingIds=" + StringUtils.join(holdingIds, ","), int.class);
+            restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "holdings/search/markHoldingsAsDeleted?holdingIds=" + StringUtils.join(holdingIds, ","), int.class);
         }
         return holdingIds;
     }
@@ -264,6 +258,24 @@ public class DeAccessionUtil {
         }
         if (CollectionUtils.isNotEmpty(itemIds)) {
             restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "itemSolr/search/deleteByItemIdIn?itemIds=" + StringUtils.join(itemIds, ","), int.class);
+        }
+    }
+
+    public void checkAndCancelHoldsIfExists(Map<String, Integer> ownInstAndItemIdMap) {
+        RestTemplate restTemplate = new RestTemplate();
+        if (ownInstAndItemIdMap != null && ownInstAndItemIdMap.size() > 0) {
+            try {
+                Collection<Integer> itemIds = ownInstAndItemIdMap.values();
+                String responseObject = restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "requestItem/search/findByItemIdIn?itemIds=" + StringUtils.join(itemIds, ","), String.class);
+                JSONObject jsonResponse = new JSONObject(responseObject).getJSONObject("_embedded");
+                JSONArray requestItemEntities = jsonResponse.getJSONArray("requestItem");
+                if (requestItemEntities.length() > 0) {
+                    restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "requestItem/search/deleteByItemIdIn?itemIds=" + StringUtils.join(itemIds, ","), int.class);
+                    //TODO
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
