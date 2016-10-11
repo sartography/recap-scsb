@@ -7,10 +7,13 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.recap.ReCAPConstants;
 import org.recap.model.DeAccessionDBResponseEntity;
+import org.recap.model.ReportDataEntity;
+import org.recap.model.ReportEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -28,14 +31,13 @@ public class DeAccessionUtil {
     @Value("${scsb.solr.client.url}")
     String scsbSolrClientUrl;
 
-    public List<DeAccessionDBResponseEntity> deAccessionItemsInDB(String itemBarcodes) {
+    public List<DeAccessionDBResponseEntity> deAccessionItemsInDB(List<String> itemBarcodeList) {
         RestTemplate restTemplate = new RestTemplate();
-        List<String> itemBarcodeList = Arrays.asList(itemBarcodes.split(","));
         List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities = new ArrayList<>();
         DeAccessionDBResponseEntity deAccessionDBResponseEntity;
         List<String> responseItemBarcodeList = new ArrayList<>();
 
-        String responseObject = restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "item/search/findByBarcodeIn?barcodes=" + itemBarcodes, String.class);
+        String responseObject = restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "item/search/findByBarcodeIn?barcodes=" + StringUtils.join(itemBarcodeList, ","), String.class);
         try {
             JSONObject jsonResponse = new JSONObject(responseObject).getJSONObject("_embedded");
             JSONArray itemEntities = jsonResponse.getJSONArray("item");
@@ -78,6 +80,98 @@ public class DeAccessionUtil {
             exception.printStackTrace();
         }
         return deAccessionDBResponseEntities;
+    }
+
+    public List<ReportEntity> processAndSave(List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities) {
+        List<ReportEntity> reportEntities = new ArrayList<>();
+        ReportEntity reportEntity = null;
+        if (CollectionUtils.isNotEmpty(deAccessionDBResponseEntities)) {
+            for (DeAccessionDBResponseEntity deAccessionDBResponseEntity : deAccessionDBResponseEntities) {
+                Map<String, String> owningInstitutionBibIdWithTitle = deAccessionDBResponseEntity.getOwningInstitutionBibIdWithTitle();
+                if (!org.springframework.util.CollectionUtils.isEmpty(owningInstitutionBibIdWithTitle)) {
+                    for (String itemOwningInstitutionBibId : owningInstitutionBibIdWithTitle.keySet()) {
+                        String title = owningInstitutionBibIdWithTitle.get(itemOwningInstitutionBibId);
+                        reportEntity = generateReportEntity(deAccessionDBResponseEntity, itemOwningInstitutionBibId, title);
+                        reportEntities.add(reportEntity);
+                    }
+                } else {
+                    reportEntity = generateReportEntity(deAccessionDBResponseEntity, null, null);
+                    reportEntities.add(reportEntity);
+                }
+            }
+            if (!CollectionUtils.isEmpty(reportEntities)) {
+                new RestTemplate().postForLocation(serverProtocol + scsbPersistenceUrl + "report/create", reportEntities);
+            }
+        }
+        return reportEntities;
+    }
+
+    private ReportEntity generateReportEntity(DeAccessionDBResponseEntity deAccessionDBResponseEntity, String owningInstitutionBibId, String title) {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
+        ReportEntity reportEntity = new ReportEntity();
+        reportEntity.setFileName("DeAccession_Report");
+        reportEntity.setType("DeAccession_Summary_Report");
+        reportEntity.setCreatedDate(new Date());
+
+        List<ReportDataEntity> reportDataEntities = new ArrayList<>();
+
+        ReportDataEntity dateReportDataEntity = new ReportDataEntity();
+        dateReportDataEntity.setHeaderName(ReCAPConstants.DATE_OF_DEACCESSION);
+        dateReportDataEntity.setHeaderValue(formatter.format(new Date()));
+        reportDataEntities.add(dateReportDataEntity);
+
+        if (!org.springframework.util.StringUtils.isEmpty(deAccessionDBResponseEntity.getInstitutionCode())) {
+            reportEntity.setInstitutionName(deAccessionDBResponseEntity.getInstitutionCode());
+
+            ReportDataEntity owningInstitutionReportDataEntity = new ReportDataEntity();
+            owningInstitutionReportDataEntity.setHeaderName(ReCAPConstants.OWNING_INSTITUTION);
+            owningInstitutionReportDataEntity.setHeaderValue(deAccessionDBResponseEntity.getInstitutionCode());
+            reportDataEntities.add(owningInstitutionReportDataEntity);
+        } else {
+            reportEntity.setInstitutionName("NA");
+        }
+
+        ReportDataEntity barcodeReportDataEntity = new ReportDataEntity();
+        barcodeReportDataEntity.setHeaderName(ReCAPConstants.BARCODE);
+        barcodeReportDataEntity.setHeaderValue(deAccessionDBResponseEntity.getBarcode());
+        reportDataEntities.add(barcodeReportDataEntity);
+
+        if (!org.springframework.util.StringUtils.isEmpty(owningInstitutionBibId)) {
+            ReportDataEntity owningInstitutionBibIdReportDataEntity = new ReportDataEntity();
+            owningInstitutionBibIdReportDataEntity.setHeaderName(ReCAPConstants.OWNING_INSTITUTION_BIB_ID);
+            owningInstitutionBibIdReportDataEntity.setHeaderValue(owningInstitutionBibId);
+            reportDataEntities.add(owningInstitutionBibIdReportDataEntity);
+        }
+
+        if (!org.springframework.util.StringUtils.isEmpty(title)) {
+            ReportDataEntity titleReportDataEntity = new ReportDataEntity();
+            titleReportDataEntity.setHeaderName(ReCAPConstants.TITLE);
+            titleReportDataEntity.setHeaderValue(title);
+            reportDataEntities.add(titleReportDataEntity);
+        }
+
+        if (!org.springframework.util.StringUtils.isEmpty(deAccessionDBResponseEntity.getCollectionGroupCode())) {
+            ReportDataEntity collectionGroupCodeReportDataEntity = new ReportDataEntity();
+            collectionGroupCodeReportDataEntity.setHeaderName(ReCAPConstants.COLLECTION_GROUP_CODE);
+            collectionGroupCodeReportDataEntity.setHeaderValue(deAccessionDBResponseEntity.getCollectionGroupCode());
+            reportDataEntities.add(collectionGroupCodeReportDataEntity);
+        }
+
+        ReportDataEntity statusReportDataEntity = new ReportDataEntity();
+        statusReportDataEntity.setHeaderName(ReCAPConstants.STATUS);
+        statusReportDataEntity.setHeaderValue(deAccessionDBResponseEntity.getStatus());
+        reportDataEntities.add(statusReportDataEntity);
+
+        if (!org.springframework.util.StringUtils.isEmpty(deAccessionDBResponseEntity.getReasonForFailure())) {
+            ReportDataEntity reasonForFailureReportDataEntity = new ReportDataEntity();
+            reasonForFailureReportDataEntity.setHeaderName(ReCAPConstants.REASON_FOR_FAILURE);
+            reasonForFailureReportDataEntity.setHeaderValue(deAccessionDBResponseEntity.getReasonForFailure());
+            reportDataEntities.add(reasonForFailureReportDataEntity);
+        }
+
+        reportEntity.setReportDataEntities(reportDataEntities);
+        return reportEntity;
     }
 
     private DeAccessionDBResponseEntity prepareSuccessResponse(String itemBarcode, JSONObject itemEntity, List<Integer> holdingIds, List<Integer> bibliographicIds) throws JSONException {

@@ -3,10 +3,12 @@ package org.recap.controller.swagger;
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
 import org.recap.model.DeAccessionDBResponseEntity;
+import org.recap.model.DeAccessionRequest;
 import org.recap.util.DeAccessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -58,13 +60,14 @@ public class SharedCollectionRestController {
         }
     }
 
-    @RequestMapping(value = "/deAccession", method = RequestMethod.GET)
+    @RequestMapping(value = "/deAccession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "deAccession",
             notes = "De Accession", nickname = "deaccession", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestParam String itemBarcodes) {
-        List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities = deAccessionUtil.deAccessionItemsInDB(itemBarcodes);
+    public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
+        List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities = deAccessionUtil.deAccessionItemsInDB(deAccessionRequest.getItemBarcodes());
+        deAccessionUtil.processAndSave(deAccessionDBResponseEntities);
         if (!CollectionUtils.isEmpty(deAccessionDBResponseEntities)) {
             Map<String, String> resultMap = new HashMap<>();
             List<Integer> bibIds = new ArrayList<>();
