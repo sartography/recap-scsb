@@ -18,7 +18,7 @@ public class DeAccessionDBResponseEntity {
 
     private String collectionGroupCode;
 
-    private Map<String, String> owningInstitutionBibIdWithTitle;
+    private List<String> owningInstitutionBibIds;
 
     private Integer itemId;
 
@@ -66,12 +66,12 @@ public class DeAccessionDBResponseEntity {
         this.collectionGroupCode = collectionGroupCode;
     }
 
-    public Map<String, String> getOwningInstitutionBibIdWithTitle() {
-        return owningInstitutionBibIdWithTitle;
+    public List<String> getOwningInstitutionBibIds() {
+        return owningInstitutionBibIds;
     }
 
-    public void setOwningInstitutionBibIdWithTitle(Map<String, String> owningInstitutionBibIdWithTitle) {
-        this.owningInstitutionBibIdWithTitle = owningInstitutionBibIdWithTitle;
+    public void setOwningInstitutionBibIds(List<String> owningInstitutionBibIds) {
+        this.owningInstitutionBibIds = owningInstitutionBibIds;
     }
 
     public Integer getItemId() {
