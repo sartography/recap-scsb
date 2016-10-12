@@ -1,7 +1,6 @@
 package org.recap.model;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by chenchulakshmig on 3/10/16.
