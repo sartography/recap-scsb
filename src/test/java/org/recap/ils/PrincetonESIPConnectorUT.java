@@ -5,7 +5,6 @@ import com.ceridwen.circulation.SIP.exceptions.MandatoryFieldOmitted;
 import com.ceridwen.circulation.SIP.exceptions.MessageNotUnderstood;
 import com.ceridwen.circulation.SIP.messages.ItemInformationResponse;
 import org.junit.Test;
-import org.recap.ils.*;
 import org.recap.BaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
