@@ -1,10 +1,7 @@
 package org.recap.ils;
 
 import com.ceridwen.circulation.SIP.exceptions.*;
-import com.ceridwen.circulation.SIP.messages.ACSStatus;
-import com.ceridwen.circulation.SIP.messages.ItemInformation;
-import com.ceridwen.circulation.SIP.messages.Message;
-import com.ceridwen.circulation.SIP.messages.SCStatus;
+import com.ceridwen.circulation.SIP.messages.*;
 import com.ceridwen.circulation.SIP.transport.SocketConnection;
 import com.ceridwen.circulation.SIP.types.enumerations.ProtocolVersion;
 import com.ceridwen.circulation.SIP.types.flagfields.SupportedMessages;
@@ -56,6 +53,34 @@ public abstract class ESIPConnector {
 
         response = getResponse(itemInformation, connection);
         response.xmlEncode(System.out);
+        connection.disconnect();
+        return response;
+    }
+
+    public Message lookupUser(String patronIdentifier) {
+        Message request, response;
+        SocketConnection connection = getSocketConnection();
+        if (connection == null) return null;
+
+        request = new SCStatus();
+        ((SCStatus) request).setProtocolVersion(ProtocolVersion.VERSION_2_00);
+
+        response = getResponse(request, connection);
+        if (!(response instanceof ACSStatus)) {
+            System.err.println("Error - Status Request did not return valid response from server.");
+            return null;
+        }
+
+       if (!((ACSStatus) response).getSupportedMessages().isSet(SupportedMessages.PATRON_INFORMATION)) {
+            System.out.println("Patron Information service not supported");
+            return null;
+        }
+
+        PatronInformation patronInformation = new PatronInformation();
+        patronInformation.setPatronIdentifier(patronIdentifier);
+
+        response = getResponse(patronInformation, connection);
+        //response.xmlEncode(System.out);
         connection.disconnect();
         return response;
     }

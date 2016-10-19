@@ -4,11 +4,12 @@ import com.ceridwen.circulation.SIP.exceptions.InvalidFieldLength;
 import com.ceridwen.circulation.SIP.exceptions.MandatoryFieldOmitted;
 import com.ceridwen.circulation.SIP.exceptions.MessageNotUnderstood;
 import com.ceridwen.circulation.SIP.messages.ItemInformationResponse;
+import com.ceridwen.circulation.SIP.messages.PatronInformationResponse;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by saravanakumarp on 28/9/16.
@@ -23,5 +24,13 @@ public class PrincetonESIPConnectorUT extends BaseTestCase {
         ItemInformationResponse response = (ItemInformationResponse) princetonESIPConnector.checkOut("PUL","32101077423406",new java.util.Date());
         assertEquals("32101077423406",response.getItemIdentifier());
         assertEquals("Bolshevism, by an eye-witness from Wisconsin, by Lieutenant A. W. Kliefoth ...",response.getTitleIdentifier());
+    }
+
+    @Test
+    public void lookupUser() throws Exception {
+        String patronIdentifier = "45678915";
+        PatronInformationResponse response = (PatronInformationResponse) princetonESIPConnector.lookupUser(patronIdentifier);
+        assertNotNull(response);
+        assertFalse(response.getScreenMessage().equalsIgnoreCase("Patron barcode not found"));
     }
 }
