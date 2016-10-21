@@ -110,8 +110,8 @@ public class DeAccessionUtil {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
         ReportEntity reportEntity = new ReportEntity();
-        reportEntity.setFileName("DeAccession_Report");
-        reportEntity.setType("DeAccession_Summary_Report");
+        reportEntity.setFileName(ReCAPConstants.DEACCESSION_REPORT);
+        reportEntity.setType(ReCAPConstants.DEACCESSION_SUMMARY_REPORT);
         reportEntity.setCreatedDate(new Date());
 
         List<ReportDataEntity> reportDataEntities = new ArrayList<>();
