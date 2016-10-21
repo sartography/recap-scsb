@@ -5,15 +5,13 @@ import com.ceridwen.circulation.SIP.messages.*;
 import com.ceridwen.circulation.SIP.transport.SocketConnection;
 import com.ceridwen.circulation.SIP.types.enumerations.ProtocolVersion;
 import com.ceridwen.circulation.SIP.types.flagfields.SupportedMessages;
-import com.sun.tools.javac.comp.Check;
 
 /**
  * Created by saravanakumarp on 22/9/16.
  */
 public abstract class ESIPConnector {
 
-    public Message checkoutItem(String itemIdentifier, String patronIdentifier) {
-        Message request, response;
+    public CheckOutResponse checkoutItem(String itemIdentifier, String patronIdentifier) {
         SocketConnection connection = getSocketConnection();
         if (connection == null) return null;
 
@@ -21,24 +19,24 @@ public abstract class ESIPConnector {
          * It is necessary to send a SC Status with protocol version 2.0 else
          * server will assume 1.0)
          */
-        request = new SCStatus();
-        ((SCStatus) request).setProtocolVersion(ProtocolVersion.VERSION_2_00);
-
-        response = getResponse(request, connection);
-        if (!(response instanceof ACSStatus)) {
+        ACSStatus acsStatus = getAcsStatus(connection);
+        if (acsStatus == null) {
             System.err.println("Error - Status Request did not return valid response from server.");
             return null;
         }
 
-        /**
-         * For debugging XML handling code (but could be useful in Cocoon)
-         */
-        //response.xmlEncode(System.out);
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.LOGIN)) {
+            System.out.println("Login service not supported");
+            return null;
+        }
 
-        /**
-         * Check if the server can support checkout
-         */
-        if (!((ACSStatus) response).getSupportedMessages().isSet(SupportedMessages.CHECK_OUT)) {
+        LoginResponse loginResponse = getLoginResponse(connection);
+        if (!(loginResponse != null && loginResponse.isOk())) {
+            System.out.println("Unable to login");
+            return null;
+        }
+
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.CHECK_OUT)) {
             System.out.println("Check out not supported");
             return null;
         }
@@ -46,78 +44,58 @@ public abstract class ESIPConnector {
         CheckOut checkOut = new CheckOut();
         checkOut.setItemIdentifier(itemIdentifier);
         checkOut.setPatronIdentifier(patronIdentifier);
-        checkOut.setItemIdentifier("PUL");
-        checkOut.setTerminalPassword("MdlW@419r&");
 
-        response = getResponse(checkOut, connection);
-        response.xmlEncode(System.out);
+        CheckOutResponse checkOutResponse = (CheckOutResponse) getResponse(checkOut, connection);
         connection.disconnect();
-        return response;
-
-
+        return checkOutResponse;
     }
 
-    public Message lookupItem(String institutionId, String itemIdentifier, java.util.Date transactionDate) {
-        Message request, response;
+    public ItemInformationResponse lookupItem(String itemIdentifier) {
         SocketConnection connection = getSocketConnection();
         if (connection == null) return null;
 
-        /**
-         * It is necessary to send a SC Status with protocol version 2.0 else
-         * server will assume 1.0)
-         */
-        request = new SCStatus();
-        ((SCStatus) request).setProtocolVersion(ProtocolVersion.VERSION_2_00);
-
-        response = getResponse(request, connection);
-        if (!(response instanceof ACSStatus)) {
+        ACSStatus acsStatus = getAcsStatus(connection);
+        if (acsStatus == null) {
             System.err.println("Error - Status Request did not return valid response from server.");
             return null;
         }
 
-        /**
-         * For debugging XML handling code (but could be useful in Cocoon)
-         */
-        //response.xmlEncode(System.out);
-
-        /**
-         * Check if the server can support checkout
-         */
-        if (!((ACSStatus) response).getSupportedMessages().isSet(SupportedMessages.CHECK_OUT)) {
-            System.out.println("Check out not supported");
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.ITEM_INFORMATION)) {
+            System.out.println("Item Information service not supported");
             return null;
         }
 
         ItemInformation itemInformation = new ItemInformation();
-
-        /**
-         * The code below would be the normal way of creating the request
-         */
-        itemInformation.setInstitutionId(institutionId);
         itemInformation.setItemIdentifier(itemIdentifier);
-        itemInformation.setTransactionDate(transactionDate);
 
-        response = getResponse(itemInformation, connection);
-        response.xmlEncode(System.out);
+        ItemInformationResponse itemInformationResponse = (ItemInformationResponse) getResponse(itemInformation, connection);
         connection.disconnect();
-        return response;
+        return itemInformationResponse;
     }
 
-    public Message lookupUser(String patronIdentifier) {
-        Message request, response;
+
+    public PatronInformationResponse lookupUser(String patronIdentifier) {
         SocketConnection connection = getSocketConnection();
         if (connection == null) return null;
 
-        request = new SCStatus();
-        ((SCStatus) request).setProtocolVersion(ProtocolVersion.VERSION_2_00);
-
-        response = getResponse(request, connection);
-        if (!(response instanceof ACSStatus)) {
+        ACSStatus acsStatus = getAcsStatus(connection);
+        if (acsStatus == null) {
             System.err.println("Error - Status Request did not return valid response from server.");
             return null;
         }
 
-       if (!((ACSStatus) response).getSupportedMessages().isSet(SupportedMessages.PATRON_INFORMATION)) {
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.LOGIN)) {
+            System.out.println("Login service not supported");
+            return null;
+        }
+
+        LoginResponse loginResponse = getLoginResponse(connection);
+        if (!(loginResponse != null && loginResponse.isOk())) {
+            System.out.println("Unable to login");
+            return null;
+        }
+
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.PATRON_INFORMATION)) {
             System.out.println("Patron Information service not supported");
             return null;
         }
@@ -125,10 +103,25 @@ public abstract class ESIPConnector {
         PatronInformation patronInformation = new PatronInformation();
         patronInformation.setPatronIdentifier(patronIdentifier);
 
-        response = getResponse(patronInformation, connection);
-        //response.xmlEncode(System.out);
+        PatronInformationResponse patronInformationResponse = (PatronInformationResponse) getResponse(patronInformation, connection);
         connection.disconnect();
-        return response;
+        return patronInformationResponse;
+    }
+
+    private ACSStatus getAcsStatus(SocketConnection connection) {
+        SCStatus scStatus = new SCStatus();
+        scStatus.setProtocolVersion(ProtocolVersion.VERSION_2_00);
+
+        return (ACSStatus) getResponse(scStatus, connection);
+    }
+
+    private LoginResponse getLoginResponse(SocketConnection connection) {
+        Login login = new Login();
+        login.setLoginUserId(getOperatorUserId());
+        login.setLoginPassword(getOperatorPassword());
+        login.setLocationCode(getOperatorLocation());
+
+        return (LoginResponse) getResponse(login, connection);
     }
 
     private Message getResponse(Message request, SocketConnection connection) {
@@ -161,7 +154,7 @@ public abstract class ESIPConnector {
     }
 
     private SocketConnection getSocketConnection() {
-        SocketConnection connection =new SocketConnection();
+        SocketConnection connection = new SocketConnection();
 
         connection.setHost(getHost());
         connection.setPort(7031);
@@ -180,6 +173,12 @@ public abstract class ESIPConnector {
     }
 
     public abstract String getHost();
+
+    public abstract String getOperatorUserId();
+
+    public abstract String getOperatorPassword();
+
+    public abstract String getOperatorLocation();
 
 }
 

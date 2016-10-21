@@ -14,6 +14,15 @@ public class PrincetonESIPConnector extends ESIPConnector {
     @Value("${ils.princeton}")
     private String princetonILS;
 
+    @Value("${ils.princeton.operator.user.id}")
+    private String operatorUserId;
+
+    @Value("${ils.princeton.operator.password}")
+    private String operatorPassword;
+
+    @Value("${ils.princeton.operator.location}")
+    private String operatorLocation;
+
     static SocketDaemon thread;
 
     public PrincetonESIPConnector() {
@@ -25,5 +34,20 @@ public class PrincetonESIPConnector extends ESIPConnector {
     @Override
     public String getHost() {
         return princetonILS;
+    }
+
+    @Override
+    public String getOperatorUserId() {
+        return operatorUserId;
+    }
+
+    @Override
+    public String getOperatorPassword() {
+        return operatorPassword;
+    }
+
+    @Override
+    public String getOperatorLocation() {
+        return operatorLocation;
     }
 }
