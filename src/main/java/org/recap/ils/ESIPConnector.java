@@ -5,13 +5,59 @@ import com.ceridwen.circulation.SIP.messages.*;
 import com.ceridwen.circulation.SIP.transport.SocketConnection;
 import com.ceridwen.circulation.SIP.types.enumerations.ProtocolVersion;
 import com.ceridwen.circulation.SIP.types.flagfields.SupportedMessages;
+import com.sun.tools.javac.comp.Check;
 
 /**
  * Created by saravanakumarp on 22/9/16.
  */
 public abstract class ESIPConnector {
 
-    public Message checkOut(String institionId, String itemIdentifier, java.util.Date transactionDate) {
+    public Message checkoutItem(String itemIdentifier, String patronIdentifier) {
+        Message request, response;
+        SocketConnection connection = getSocketConnection();
+        if (connection == null) return null;
+
+        /**
+         * It is necessary to send a SC Status with protocol version 2.0 else
+         * server will assume 1.0)
+         */
+        request = new SCStatus();
+        ((SCStatus) request).setProtocolVersion(ProtocolVersion.VERSION_2_00);
+
+        response = getResponse(request, connection);
+        if (!(response instanceof ACSStatus)) {
+            System.err.println("Error - Status Request did not return valid response from server.");
+            return null;
+        }
+
+        /**
+         * For debugging XML handling code (but could be useful in Cocoon)
+         */
+        //response.xmlEncode(System.out);
+
+        /**
+         * Check if the server can support checkout
+         */
+        if (!((ACSStatus) response).getSupportedMessages().isSet(SupportedMessages.CHECK_OUT)) {
+            System.out.println("Check out not supported");
+            return null;
+        }
+
+        CheckOut checkOut = new CheckOut();
+        checkOut.setItemIdentifier(itemIdentifier);
+        checkOut.setPatronIdentifier(patronIdentifier);
+        checkOut.setItemIdentifier("PUL");
+        checkOut.setTerminalPassword("MdlW@419r&");
+
+        response = getResponse(checkOut, connection);
+        response.xmlEncode(System.out);
+        connection.disconnect();
+        return response;
+
+
+    }
+
+    public Message lookupItem(String institutionId, String itemIdentifier, java.util.Date transactionDate) {
         Message request, response;
         SocketConnection connection = getSocketConnection();
         if (connection == null) return null;
@@ -47,7 +93,7 @@ public abstract class ESIPConnector {
         /**
          * The code below would be the normal way of creating the request
          */
-        itemInformation.setInstitutionId(institionId);
+        itemInformation.setInstitutionId(institutionId);
         itemInformation.setItemIdentifier(itemIdentifier);
         itemInformation.setTransactionDate(transactionDate);
 
