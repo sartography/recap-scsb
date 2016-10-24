@@ -1,0 +1,125 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>SCSB</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{../css/datepicker.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script th:src="@{../js/bootstrap-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{../js/scsb.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1 align="center">SCSB</h1>
+    </div>
+
+    <ul class="nav nav-tabs nav-justified">
+        <li><a data-toggle="tab" href="#reports">Reports</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="reports" class="tab-pane fade in active">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div id="reportsDiv">
+                            <br/><br/>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div th:fragment="reports-form" xmlns:th="http://www.thymeleaf.org"
+                                             th:remove="tag">
+                                            <form id="reports-form" name="reports-form" class="form-horizontal"
+                                                  action="#"
+                                                  th:action="@{/reports}"
+                                                  th:object="${scsbRequest}" method="post"
+                                                  enctype="multipart/form-data">
+
+                                                <fieldset>
+                                                    <div class="form-group">
+                                                        <label for="reportType" class="col-sm-4">Report Type</label>
+
+                                                        <div class="col-sm-4">
+                                                            <select id="reportType"
+                                                                    class="form-control"
+                                                                    style="width: 180px;"
+                                                                    th:field="*{reportType}">
+                                                                <option value="DeAccession_Summary_Report">DeAccession Summary Report
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="transmissionType" class="col-sm-4">Transmission
+                                                            Type</label>
+
+                                                        <div class="col-sm-4">
+                                                            <select id="transmissionType"
+                                                                    class="form-control"
+                                                                    style="width: 160px;"
+                                                                    th:field="*{transmissionType}">
+                                                                <option value="FileSystem">File System</option>
+                                                                <option value="FTP">FTP</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="dateFrom" class="col-sm-4">Date From</label>
+
+                                                        <div class="col-sm-4">
+                                                            <input type="text" th:field="*{dateFrom}"
+                                                                   class="form-control bfh-number"
+                                                                   id="dateFrom"
+                                                                   placeholder="Date From"/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="dateTo" class="col-sm-4">Date To</label>
+
+                                                        <div class="col-sm-4">
+                                                            <input type="text" th:field="*{dateTo}"
+                                                                   class="form-control bfh-number"
+                                                                   id="dateTo"
+                                                                   placeholder="Date To"/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4"></label>
+                                                        <div class="col-sm-4">
+                                                            <button id="report" type="submit" name="report"
+                                                                    class="btn btn-info active">Generate Report
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <br/><br/><br/>
+                                                    <div class="form-group col-sm-12">
+                                                        <textarea class="form-control" id="reportStatus" rows="5"
+                                                                  placeholder="Report Status" readonly="true"></textarea>
+                                                    </div>
+
+                                                </fieldset>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>

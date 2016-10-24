@@ -26,4 +26,19 @@ public class NewYorkESIPConnector extends ESIPConnector{
     public String getHost() {
         return newYorkILS;
     }
+
+    @Override
+    public String getOperatorUserId() {
+        return null;
+    }
+
+    @Override
+    public String getOperatorPassword() {
+        return null;
+    }
+
+    @Override
+    public String getOperatorLocation() {
+        return null;
+    }
 }

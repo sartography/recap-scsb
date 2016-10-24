@@ -26,4 +26,20 @@ public class ColumbiaESIPConnector extends ESIPConnector {
     public String getHost() {
         return columbiaILS;
     }
+
+    @Override
+    public String getOperatorUserId() {
+        return null;
+    }
+
+    @Override
+    public String getOperatorPassword() {
+        return null;
+    }
+
+    @Override
+    public String getOperatorLocation() {
+        return null;
+    }
+
 }

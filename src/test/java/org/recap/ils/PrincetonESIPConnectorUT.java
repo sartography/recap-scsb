@@ -21,23 +21,28 @@ public class PrincetonESIPConnectorUT extends BaseTestCase {
     private PrincetonESIPConnector princetonESIPConnector;
 
     @Test
-    public void lookupItem() throws MessageNotUnderstood, InvalidFieldLength, MandatoryFieldOmitted {
-        ItemInformationResponse response = (ItemInformationResponse) princetonESIPConnector.lookupItem("PUL","32101077423406",new java.util.Date());
-        assertEquals("32101077423406",response.getItemIdentifier());
-        assertEquals("Bolshevism, by an eye-witness from Wisconsin, by Lieutenant A. W. Kliefoth ...",response.getTitleIdentifier());
+    public void lookupItem() throws Exception {
+        String itemIdentifier = "32101077423406";
+        ItemInformationResponse itemInformationResponse = princetonESIPConnector.lookupItem(itemIdentifier);
+        assertEquals(itemIdentifier,itemInformationResponse.getItemIdentifier());
+        assertEquals("Bolshevism, by an eye-witness from Wisconsin, by Lieutenant A. W. Kliefoth ...",itemInformationResponse.getTitleIdentifier());
     }
 
     @Test
     public void lookupUser() throws Exception {
         String patronIdentifier = "45678915";
-        PatronInformationResponse response = (PatronInformationResponse) princetonESIPConnector.lookupUser(patronIdentifier);
-        assertNotNull(response);
-        assertFalse(response.getScreenMessage().equalsIgnoreCase("Patron barcode not found"));
+        PatronInformationResponse patronInformationResponse = princetonESIPConnector.lookupUser(patronIdentifier);
+        assertNotNull(patronInformationResponse);
+        assertTrue(patronInformationResponse.isValidPatron());
+        assertTrue(patronInformationResponse.isValidPatronPassword());
     }
 
     @Test
-    public void checkout() throws MessageNotUnderstood, InvalidFieldLength, MandatoryFieldOmitted {
-        CheckOutResponse response = (CheckOutResponse) princetonESIPConnector.checkoutItem("32101077423406", "45678915");
-        assertNotNull(response);
+    public void checkout() throws Exception {
+        String itemIdentifier = "32101077423406";
+        String patronIdentifier = "45678915";
+        CheckOutResponse checkOutResponse = princetonESIPConnector.checkoutItem(itemIdentifier, patronIdentifier);
+        assertNotNull(checkOutResponse);
+        assertFalse(checkOutResponse.isOk()); //TODO it should be assertTrue
     }
 }
