@@ -3,11 +3,13 @@ package org.recap.csv;
 import org.apache.camel.dataformat.bindy.annotation.CsvRecord;
 import org.apache.camel.dataformat.bindy.annotation.DataField;
 
+import java.io.Serializable;
+
 /**
  * Created by chenchulakshmig on 30/9/16.
  */
 @CsvRecord(generateHeaderColumns = true, separator = ",", quoting = true, crlf = "UNIX")
-public class DeAccessionSummaryRecord {
+public class DeAccessionSummaryRecord implements Serializable {
 
     @DataField(pos = 1, columnName = "Date of DeAccession")
     private String dateOfDeAccession;

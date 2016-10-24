@@ -55,7 +55,11 @@ public class ScsbController {
 
     public Date getFromDate(Date createdDate) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(createdDate);
+        if(createdDate != null) {
+            cal.setTime(createdDate);
+        } else {
+            cal.setTime(new Date());
+        }
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
@@ -64,7 +68,11 @@ public class ScsbController {
 
     public Date getToDate(Date createdDate) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(createdDate);
+        if(createdDate != null) {
+            cal.setTime(createdDate);
+        } else {
+            cal.setTime(new Date());
+        }
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
