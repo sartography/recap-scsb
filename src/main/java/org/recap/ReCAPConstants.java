@@ -21,8 +21,8 @@ public class ReCAPConstants {
     public static final String CUSTOMER_CODE_DOESNOT_EXIST = "Customer Code doesn't exist in SCSB database.";
     public static final String REQUESTED_ITEM_DEACCESSIONED = "The requested item has already been DeAccessioned.";
 
-    public static final String FS_DE_ACCESSION_SUMMARY_REPORT_Q = "seda:fsDeAccessionSummaryReportQ";
-    public static final String FTP_DE_ACCESSION_SUMMARY_REPORT_Q = "seda:ftpDeAccessionSummaryReportQ";
+    public static final String FS_DE_ACCESSION_SUMMARY_REPORT_Q = "scsbactivemq:queue:fsDeAccessionSummaryReportQ";
+    public static final String FTP_DE_ACCESSION_SUMMARY_REPORT_Q = "scsbactivemq:queue:ftpDeAccessionSummaryReportQ";
 
     public static final String FS_DE_ACCESSION_SUMMARY_REPORT_ID = "fsDeAccessionSummaryReportQ";
     public static final String FTP_DE_ACCESSION_SUMMARY_REPORT_ID = "ftpDeAccessionSummaryReportQ";
