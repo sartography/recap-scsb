@@ -42,28 +42,8 @@ public class ScsbController {
                                  BindingResult result,
                                  Model model) {
         String generatedReportFileName = null;
-        Calendar cal = Calendar.getInstance();
-        Date dateFrom = scsbRequest.getDateFrom();
-        if (dateFrom != null) {
-            cal.setTime(dateFrom);
-        } else {
-            cal.setTime(new Date());
-        }
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        Date from = cal.getTime();
-        Date dateTo = scsbRequest.getDateTo();
-        if (dateTo != null) {
-            cal.setTime(dateTo);
-        } else {
-            cal.setTime(new Date());
-        }
-        cal.set(Calendar.HOUR_OF_DAY, 23);
-        cal.set(Calendar.MINUTE, 59);
-        cal.set(Calendar.SECOND, 59);
-        Date to = cal.getTime();
-        generatedReportFileName = reportGenerator.generateReport(scsbRequest.getReportType(), scsbRequest.getTransmissionType(), from, to);
+        generatedReportFileName = reportGenerator.generateReport(scsbRequest.getReportType(), scsbRequest.getTransmissionType(), getFromDate(scsbRequest.getDateFrom()),
+                getToDate(scsbRequest.getDateTo()));
         if (StringUtils.isBlank(generatedReportFileName)) {
             logger.error("Report wasn't generated! Please contact help desk!");
         } else {
@@ -71,5 +51,23 @@ public class ScsbController {
         }
         String status = "The Generated Report File Name : " + generatedReportFileName;
         return status;
+    }
+
+    public Date getFromDate(Date createdDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(createdDate);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        return  cal.getTime();
+    }
+
+    public Date getToDate(Date createdDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(createdDate);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        return cal.getTime();
     }
 }
