@@ -14,6 +14,15 @@ public class ColumbiaESIPConnector extends ESIPConnector {
     @Value("${ils.columbia}")
     private String columbiaILS;
 
+    @Value("${ils.columbia.operator.user.id}")
+    private String operatorUserId;
+
+    @Value("${ils.columbia.operator.password}")
+    private String operatorPassword;
+
+    @Value("${ils.columbia.operator.location}")
+    private String operatorLocation;
+
     static SocketDaemon thread;
 
     public ColumbiaESIPConnector() {
@@ -29,17 +38,17 @@ public class ColumbiaESIPConnector extends ESIPConnector {
 
     @Override
     public String getOperatorUserId() {
-        return null;
+        return operatorUserId;
     }
 
     @Override
     public String getOperatorPassword() {
-        return null;
+        return operatorPassword;
     }
 
     @Override
     public String getOperatorLocation() {
-        return null;
+        return operatorLocation;
     }
 
 }
