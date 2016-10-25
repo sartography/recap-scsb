@@ -3,6 +3,7 @@ package org.recap.ils;
 import com.ceridwen.circulation.SIP.exceptions.*;
 import com.ceridwen.circulation.SIP.messages.*;
 import com.ceridwen.circulation.SIP.transport.SocketConnection;
+import com.ceridwen.circulation.SIP.types.enumerations.HoldMode;
 import com.ceridwen.circulation.SIP.types.enumerations.ProtocolVersion;
 import com.ceridwen.circulation.SIP.types.flagfields.SupportedMessages;
 
@@ -36,6 +37,18 @@ public abstract class ESIPConnector {
             return null;
         }
 
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.PATRON_INFORMATION)) {
+            System.out.println("Patron Information service not supported");
+            return null;
+        }
+
+        PatronInformationResponse patronInformationResponse = getPatronInformationResponse(patronIdentifier, connection);
+
+        if (!(patronInformationResponse!=null && patronInformationResponse.isValidPatron() && patronInformationResponse.isValidPatronPassword())){
+            System.out.println("Patron is not valid");
+            return null;
+        }
+
         if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.CHECK_OUT)) {
             System.out.println("Check out not supported");
             return null;
@@ -48,6 +61,40 @@ public abstract class ESIPConnector {
         CheckOutResponse checkOutResponse = (CheckOutResponse) getResponse(checkOut, connection);
         connection.disconnect();
         return checkOutResponse;
+    }
+
+    public CheckInResponse checkInItem(String itemIdentifier) {
+        SocketConnection connection = getSocketConnection();
+        if (connection == null) return null;
+
+        ACSStatus acsStatus = getAcsStatus(connection);
+        if (acsStatus == null) {
+            System.err.println("Error - Status Request did not return valid response from server.");
+            return null;
+        }
+
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.LOGIN)) {
+            System.out.println("Login service not supported");
+            return null;
+        }
+
+        LoginResponse loginResponse = getLoginResponse(connection);
+        if (!(loginResponse != null && loginResponse.isOk())) {
+            System.out.println("Unable to login");
+            return null;
+        }
+
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.CHECK_IN)) {
+            System.out.println("Check In not supported");
+            return null;
+        }
+
+        CheckIn checkIn = new CheckIn();
+        checkIn.setItemIdentifier(itemIdentifier);
+
+        CheckInResponse checkInResponse = (CheckInResponse) getResponse(checkIn, connection);
+        connection.disconnect();
+        return checkInResponse;
     }
 
     public ItemInformationResponse lookupItem(String itemIdentifier) {
@@ -72,7 +119,6 @@ public abstract class ESIPConnector {
         connection.disconnect();
         return itemInformationResponse;
     }
-
 
     public PatronInformationResponse lookupUser(String patronIdentifier) {
         SocketConnection connection = getSocketConnection();
@@ -100,12 +146,72 @@ public abstract class ESIPConnector {
             return null;
         }
 
+        PatronInformationResponse patronInformationResponse = getPatronInformationResponse(patronIdentifier, connection);
+        connection.disconnect();
+        return patronInformationResponse;
+    }
+
+    public HoldResponse placeHold(String itemIdentifier, String patronIdentifier) {
+        return hold(HoldMode.ADD, itemIdentifier, patronIdentifier);
+    }
+
+    public HoldResponse cancelHold(String itemIdentifier, String patronIdentifier) {
+        return hold(HoldMode.DELETE, itemIdentifier, patronIdentifier);
+    }
+
+    private HoldResponse hold(HoldMode holdMode, String itemIdentifier, String patronIdentifier) {
+        SocketConnection connection = getSocketConnection();
+        if (connection == null) return null;
+
+        ACSStatus acsStatus = getAcsStatus(connection);
+        if (acsStatus == null) {
+            System.err.println("Error - Status Request did not return valid response from server.");
+            return null;
+        }
+
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.LOGIN)) {
+            System.out.println("Login service not supported");
+            return null;
+        }
+
+        LoginResponse loginResponse = getLoginResponse(connection);
+        if (!(loginResponse != null && loginResponse.isOk())) {
+            System.out.println("Unable to login");
+            return null;
+        }
+
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.PATRON_INFORMATION)) {
+            System.out.println("Patron Information service not supported");
+            return null;
+        }
+
+        PatronInformationResponse patronInformationResponse = getPatronInformationResponse(patronIdentifier, connection);
+
+        if (!(patronInformationResponse!=null && patronInformationResponse.isValidPatron() && patronInformationResponse.isValidPatronPassword())){
+            System.out.println("Patron is not valid");
+            return null;
+        }
+
+        if (!acsStatus.getSupportedMessages().isSet(SupportedMessages.HOLD)) {
+            System.out.println("Hold service not supported");
+            return null;
+        }
+
+        Hold hold = new Hold();
+        hold.setHoldMode(holdMode);
+        hold.setItemIdentifier(itemIdentifier);
+        hold.setPatronIdentifier(patronIdentifier);
+
+        HoldResponse holdResponse = (HoldResponse) getResponse(hold, connection);
+        connection.disconnect();
+        return holdResponse;
+    }
+
+    private PatronInformationResponse getPatronInformationResponse(String patronIdentifier, SocketConnection connection) {
         PatronInformation patronInformation = new PatronInformation();
         patronInformation.setPatronIdentifier(patronIdentifier);
 
-        PatronInformationResponse patronInformationResponse = (PatronInformationResponse) getResponse(patronInformation, connection);
-        connection.disconnect();
-        return patronInformationResponse;
+        return (PatronInformationResponse) getResponse(patronInformation, connection);
     }
 
     private ACSStatus getAcsStatus(SocketConnection connection) {

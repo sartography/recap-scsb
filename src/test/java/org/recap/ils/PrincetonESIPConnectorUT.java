@@ -1,11 +1,6 @@
 package org.recap.ils;
 
-import com.ceridwen.circulation.SIP.exceptions.InvalidFieldLength;
-import com.ceridwen.circulation.SIP.exceptions.MandatoryFieldOmitted;
-import com.ceridwen.circulation.SIP.exceptions.MessageNotUnderstood;
-import com.ceridwen.circulation.SIP.messages.CheckOutResponse;
-import com.ceridwen.circulation.SIP.messages.ItemInformationResponse;
-import com.ceridwen.circulation.SIP.messages.PatronInformationResponse;
+import com.ceridwen.circulation.SIP.messages.*;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +34,36 @@ public class PrincetonESIPConnectorUT extends BaseTestCase {
 
     @Test
     public void checkout() throws Exception {
-        String itemIdentifier = "32101077423406";
-        String patronIdentifier = "45678915";
+        String itemIdentifier = "32101095533293";
+        String patronIdentifier = "198572368";
         CheckOutResponse checkOutResponse = princetonESIPConnector.checkoutItem(itemIdentifier, patronIdentifier);
         assertNotNull(checkOutResponse);
-        assertFalse(checkOutResponse.isOk()); //TODO it should be assertTrue
+        assertTrue(checkOutResponse.isOk());
+    }
+
+    @Test
+    public void checkIn() throws Exception {
+        String itemIdentifier = "32101077423406";
+        CheckInResponse checkInResponse = princetonESIPConnector.checkInItem(itemIdentifier);
+        assertNotNull(checkInResponse);
+        assertTrue(checkInResponse.isOk());
+    }
+
+    @Test
+    public void placeHold() throws Exception {
+        String itemIdentifier = "32101095533293";
+        String patronIdentifier = "198572368";
+        HoldResponse holdResponse = princetonESIPConnector.placeHold(itemIdentifier, patronIdentifier);
+        assertNotNull(holdResponse);
+        assertTrue(holdResponse.isOk());
+    }
+
+    @Test
+    public void cancelHold() throws Exception {
+        String itemIdentifier = "32101095533293";
+        String patronIdentifier = "198572368";
+        HoldResponse holdResponse = princetonESIPConnector.cancelHold(itemIdentifier, patronIdentifier);
+        assertNotNull(holdResponse);
+        assertTrue(holdResponse.isOk());
     }
 }
