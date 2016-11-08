@@ -3,7 +3,6 @@ package org.recap.controller.swagger;
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
 import org.recap.model.ItemRequestInformation;
-import org.recap.request.ItemValidatorService;
 import org.recap.request.PatronValidatorService;
 import org.recap.request.RequestParamaterValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,6 @@ public class RequestItemRestController {
     @Autowired
     PatronValidatorService patronValidatorService;
 
-    @Autowired
-    ItemValidatorService itemValidatorService;
 
     @RequestMapping(value = "/validateItemRequestInformations" , method = RequestMethod.POST)
     @ApiOperation(value = "validateItemRequestInformations",
