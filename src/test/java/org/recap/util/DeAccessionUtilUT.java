@@ -132,4 +132,16 @@ public class DeAccessionUtilUT extends BaseTestCase {
         return new File(resource.toURI());
     }
 
+    @Test
+    public void testDeAccessionItemsInSolr(){
+        RestTemplate restTemplate = new RestTemplate();
+        Integer bibId = 584671;
+        Integer holdingId = 596099;
+        Integer itemId = 825171;
+        deAccessionUtil.deAccessionItemsInSolr(Arrays.asList(bibId),Arrays.asList(holdingId),Arrays.asList(itemId));
+        Bib bib = restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "bibSolr/search/findByBibId?bibId=" + bibId, Bib.class);
+        assertNotNull(bib);
+        assertEquals(bib.isDeletedBib(),true);
+    }
+
 }

@@ -10,6 +10,9 @@ import org.recap.model.DeAccessionDBResponseEntity;
 import org.recap.model.ReportDataEntity;
 import org.recap.model.ReportEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -251,14 +254,27 @@ public class DeAccessionUtil {
     public void deAccessionItemsInSolr(List<Integer> bibIds, List<Integer> holdingsIds, List<Integer> itemIds) {
         RestTemplate restTemplate = new RestTemplate();
         if (CollectionUtils.isNotEmpty(bibIds)) {
-            restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "bibSolr/search/deleteByBibIdIn?bibIds=" + StringUtils.join(bibIds, ","), int.class);
+            HttpEntity<String> httpEntity = getHttpEntity(bibIds);
+            restTemplate.postForEntity(serverProtocol + scsbSolrClientUrl + "solrDocument/updateIsDeletedBibByBibId", httpEntity, String.class);
         }
         if (CollectionUtils.isNotEmpty(holdingsIds)) {
-            restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "holdingsSolr/search/deleteByHoldingsIdIn?holdingsIds=" + StringUtils.join(holdingsIds, ","), int.class);
+            HttpEntity<String> httpEntity = getHttpEntity(holdingsIds);
+            restTemplate.postForEntity(serverProtocol + scsbSolrClientUrl + "solrDocument/updateIsDeletedHoldingsByHoldingsId" , httpEntity, String.class);
         }
         if (CollectionUtils.isNotEmpty(itemIds)) {
-            restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "itemSolr/search/deleteByItemIdIn?itemIds=" + StringUtils.join(itemIds, ","), int.class);
+            HttpEntity<String> httpEntity = getHttpEntity(itemIds);
+            restTemplate.postForEntity(serverProtocol + scsbSolrClientUrl + "solrDocument/updateIsDeletedItemByItemIds" ,httpEntity, String.class);
         }
+    }
+
+    private HttpEntity<String> getHttpEntity(List<Integer> ids) {
+        JSONArray jsonArray = new JSONArray();
+        for (Integer id : ids) {
+            jsonArray.put(id);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(jsonArray.toString(), headers);
     }
 
     public void checkAndCancelHoldsIfExists(Map<String, Integer> ownInstAndItemIdMap) {
