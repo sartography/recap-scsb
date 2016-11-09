@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by chenchulakshmig on 6/10/16.
  */
-@Service
+
 public class NewYorkESIPConnector extends ESIPConnector{
 
     @Value("${ils.newyork}")
