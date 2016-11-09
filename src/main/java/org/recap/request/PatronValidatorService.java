@@ -21,13 +21,10 @@ import java.util.Date;
 @Component
 public class PatronValidatorService {
 
-    @Autowired
     PrincetonESIPConnector princetonESIPConnector;
 
-    @Autowired
     ColumbiaESIPConnector columbiaESIPConnector;
 
-    @Autowired
     NewYorkESIPConnector newYorkESIPConnector;
 
     public ResponseEntity patronValidation(String requestingInstitution,String patronBarcode) {
