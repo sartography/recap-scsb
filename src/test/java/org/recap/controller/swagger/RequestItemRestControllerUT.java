@@ -1,5 +1,6 @@
 package org.recap.controller.swagger;
 
+import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
@@ -21,53 +22,53 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     RequestItemRestController requestItemRestController;
 
     @Test
-    public void testValidRequest(){
+    public void testValidRequest() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setRequestType("Borrow Direct");
         itemRequestInformation.setRequestingInstitution("PUL");
         itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
         itemRequestInformation.setPatronBarcode("45678915");
 
-        ResponseEntity responseEntity = requestItemRestController.validateItemRequestInformation(itemRequestInformation);
+        ResponseEntity responseEntity = requestItemRestController.validateItemRequest(itemRequestInformation);
         assertNotNull(responseEntity);
         assertEquals(responseEntity.getBody(), ReCAPConstants.VALID_REQUEST);
     }
 
     @Test
-    public void testRequestWithInvalidRequestingInst(){
+    public void testRequestWithInvalidRequestingInst() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setPatronBarcode("45678915");
         itemRequestInformation.setRequestType("Borrow Direct");
         itemRequestInformation.setRequestingInstitution("PULd");
         itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
 
-        ResponseEntity responseEntity = requestItemRestController.validateItemRequestInformation(itemRequestInformation);
+        ResponseEntity responseEntity = requestItemRestController.validateItemRequest(itemRequestInformation);
         assertNotNull(responseEntity);
         assertEquals(responseEntity.getBody(),ReCAPConstants.INVALID_REQUEST_INSTITUTION+"\n");
     }
 
     @Test
-    public void testRequestParameterWithInvalidPatronBarcode(){
+    public void testRequestParameterWithInvalidPatronBarcode() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setPatronBarcode("g75dfgsf");
         itemRequestInformation.setRequestType("Borrow Direct");
         itemRequestInformation.setRequestingInstitution("PUL");
         itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
 
-        ResponseEntity responseEntity = requestItemRestController.validateItemRequestInformation(itemRequestInformation);
+        ResponseEntity responseEntity = requestItemRestController.validateItemRequest(itemRequestInformation);
         assertNotNull(responseEntity);
         assertEquals(responseEntity.getBody(),"Patron barcode not found");
     }
 
     @Test
-    public void testRequestParameterWithEDDRequestType(){
+    public void testRequestParameterWithEDDRequestType() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setPatronBarcode("45678915");
         itemRequestInformation.setRequestType("EDD");
         itemRequestInformation.setRequestingInstitution("PUL");
         itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
 
-        ResponseEntity responseEntity = requestItemRestController.validateItemRequestInformation(itemRequestInformation);
+        ResponseEntity responseEntity = requestItemRestController.validateItemRequest(itemRequestInformation);
         assertNotNull(responseEntity);
         assertEquals(responseEntity.getBody(),ReCAPConstants.START_PAGE_AND_END_PAGE_REQUIRED+"\n");
     }
