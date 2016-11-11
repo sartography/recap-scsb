@@ -28,8 +28,8 @@ public class ReportGenerator {
     @Value("${server.protocol}")
     String serverProtocol;
 
-    @Value("${scsb.persistence.url}")
-    String scsbPersistenceUrl;
+    @Value("${scsb.solr.client.url}")
+    String scsbSolrClientUrl;
 
     @Autowired
     FSDeAccessionReportGenerator fsDeAccessionReportGenerator;
@@ -63,7 +63,7 @@ public class ReportGenerator {
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
             RestTemplate restTemplate = new RestTemplate();
-            String responseObject = restTemplate.getForObject(serverProtocol + scsbPersistenceUrl + "report/search/findByTypeAndDateRange?type={type}&from={from}&to={to}",
+            String responseObject = restTemplate.getForObject(serverProtocol + scsbSolrClientUrl + "report/search/findByTypeAndDateRange?type={type}&from={from}&to={to}",
                     String.class, reportType, simpleDateFormat.format(from), simpleDateFormat.format(to));
             JSONObject jsonResponse = new JSONObject(responseObject).getJSONObject("_embedded");
             return jsonResponse.getJSONArray("report");
