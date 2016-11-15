@@ -3,14 +3,11 @@ package org.recap.controller.swagger;
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
 import org.recap.model.ItemRequestInformation;
-import org.recap.request.PatronValidatorService;
-import org.recap.request.RequestParamaterValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.client.RestTemplate;
 import java.util.Date;
 
 /**
@@ -21,29 +18,28 @@ import java.util.Date;
 @Api(value = "requestItem", description = "Request Item", position = 1)
 public class RequestItemRestController {
 
-    @Autowired
-    RequestParamaterValidatorService requestParamaterValidatorService;
+    @Value("${server.protocol}")
+    String serverProtocol;
 
-    @Autowired
-    PatronValidatorService patronValidatorService;
-
+    @Value("${scsb.circ.url}")
+    String scsbCircUrl;
 
     @RequestMapping(value = "/validateItemRequestInformations" , method = RequestMethod.POST)
     @ApiOperation(value = "validateItemRequestInformations",
             notes = "Validate Item Request Informations", nickname = "validateItemRequestInformation", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity validateItemRequestInformation(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
-
+    public ResponseEntity validateItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
         ResponseEntity responseEntity = null;
-        responseEntity = requestParamaterValidatorService.validateItemRequestParameters(itemRequestInfo);
-        if(responseEntity == null){
-            responseEntity= patronValidatorService.patronValidation(itemRequestInfo.getRequestingInstitution(),itemRequestInfo.getPatronBarcode());
-            if(responseEntity.getBody().equals(ReCAPConstants.VALID_PATRON)){
-                //TO DO Item Barcode Validation
-                return new ResponseEntity(ReCAPConstants.VALID_REQUEST,getHttpHeaders(), HttpStatus.OK);
-            }
+        String response = "";
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/validateItemRequestInformations", itemRequestInfo, String.class).getBody();
+        }catch(Exception ex){
+            responseEntity = new ResponseEntity("Scsb circ Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return responseEntity;
         }
+        responseEntity =  new ResponseEntity(response,getHttpHeaders(), HttpStatus.OK);
         return responseEntity;
     }
 
@@ -52,4 +48,5 @@ public class RequestItemRestController {
         responseHeaders.add(ReCAPConstants.RESPONSE_DATE, new Date().toString());
         return responseHeaders;
     }
+
 }
