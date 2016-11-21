@@ -15,7 +15,7 @@ public class ItemRequestInformation {
     private String emailAddress;
     private Integer startPage;
     private Integer endPage;
-
+    private String chapterTitle;
 
     public String getPatronBarcode() {
         return patronBarcode;
@@ -79,5 +79,13 @@ public class ItemRequestInformation {
 
     public void setEndPage(Integer endPage) {
         this.endPage = endPage;
+    }
+
+    public String getChapterTitle() {
+        return chapterTitle;
+    }
+
+    public void setChapterTitle(String chapterTitle) {
+        this.chapterTitle = chapterTitle;
     }
 }
