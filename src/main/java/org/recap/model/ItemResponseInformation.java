@@ -7,8 +7,8 @@ package org.recap.model;
 
 public class ItemResponseInformation {
 
-    private String patronBarcode;
     private String itemBarcode;
+    private String patronBarcode;
     private String requestType;
     private String deliveryLocation;
     private String requestingInstitution;
@@ -20,6 +20,8 @@ public class ItemResponseInformation {
     private String emailAddress;
     private Integer startPage;
     private Integer endPage;
+    private String titleIdentifier;
+    private String dueDate;
 
     public String getTitleIdentifier() {
         return titleIdentifier;
@@ -36,10 +38,6 @@ public class ItemResponseInformation {
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
-
-    private String titleIdentifier;
-    private String dueDate;
-
 
     public String getPatronBarcode() {
         return patronBarcode;
@@ -112,6 +110,7 @@ public class ItemResponseInformation {
     public void setBibliographicId(String bibliographicId) {
         this.bibliographicId = bibliographicId;
     }
+
     public String getExpirationDate() {
         return expirationDate;
     }

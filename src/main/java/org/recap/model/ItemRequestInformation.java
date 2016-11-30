@@ -7,12 +7,19 @@ import java.util.List;
  */
 public class ItemRequestInformation {
 
-    private String patronBarcode;
     private List<String> itemBarcodes;
-    private String requestType;
-    private String deliveryLocation;
-    private String requestingInstitution;
+    private String titleIdentifier;
+    private String itemOwningInstitution; // PUL, CUL, NYPL
+    private String patronBarcode;
     private String emailAddress;
+    private String requestingInstitution; // PUL, CUL, NYPL
+    private String requestType; // Retrieval,EDD, Hold, Recall, Borrow Direct
+    private String deliveryLocation;
+    private String requestNotes;
+
+    /**
+     * EDD Request
+     */
     private Integer startPage;
     private Integer endPage;
     private String chapterTitle;
@@ -87,5 +94,15 @@ public class ItemRequestInformation {
 
     public void setChapterTitle(String chapterTitle) {
         this.chapterTitle = chapterTitle;
+    }
+
+    public boolean isOwningInstitutionItem(){
+        boolean bSuccess=false;
+        if (itemOwningInstitution.equalsIgnoreCase(requestingInstitution)){
+            bSuccess=true;
+        }else {
+            bSuccess=false;
+        }
+        return bSuccess;
     }
 }

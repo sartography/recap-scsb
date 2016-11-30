@@ -69,4 +69,11 @@ public class ReCAPConstants {
     public static final String VALID_PATRON = "Patron validated successfully.";
     public static final String AVAILABLE = "Available";
 
+    // Retrieval,EDD, Hold, Recall, Borrow Direct
+    public static final String REQUEST_TYPE_RETRIEVAL="Retrieval";
+    public static final String REQUEST_TYPE_EDD="EDD";
+    public static final String REQUEST_TYPE_HOLD="Hold";
+    public static final String REQUEST_TYPE_RECALL="Recall";
+    public static final String REQUEST_TYPE_BORROW_DIRECT="Borrow Direct";
+
 }
