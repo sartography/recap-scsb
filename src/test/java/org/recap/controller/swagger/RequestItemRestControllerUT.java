@@ -1,15 +1,17 @@
 package org.recap.controller.swagger;
 
+import org.apache.camel.ConsumerTemplate;
+import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
 import org.recap.model.ItemRequestInformation;
+import org.recap.model.ItemResponseInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -18,8 +20,16 @@ import static org.junit.Assert.*;
  */
 public class RequestItemRestControllerUT extends BaseTestCase{
 
+    private Logger logger = Logger.getLogger(RequestItemRestControllerUT.class);
+
     @Autowired
     RequestItemRestController requestItemRestController;
+
+    @Autowired
+    private ProducerTemplate producer;
+
+    @Autowired
+    ConsumerTemplate consumer;
 
     @Test
     public void testValidRequest() throws JSONException {
@@ -73,8 +83,66 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         assertEquals(responseEntity.getBody(),ReCAPConstants.START_PAGE_AND_END_PAGE_REQUIRED+"\n");
     }
 
+    @Test
+    public void testRequestItem() {
+        ItemResponseInformation itemResponseInformation = null;
+        try {
+            ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
+            itemRequestInformation.setPatronBarcode("32101077423406");
+            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
+            itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
+            itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
 
+//            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertNotNull(itemResponseInformation);
+    }
 
+    @Test
+    public void testQueue() {
+        String testString ="Test";
+        String body="";
+        String endpointUri="scsbactivemq:queue:Request.Item";
+        try {
+            producer.sendBody(endpointUri, testString);
+            logger.info("Start");
+        }catch(Exception e){
+            logger.error(e);
+        }
+    }
+
+    @Test
+    public void testTopic() {
+        String testString ="Test";
+        String body="";
+        String endpointUri="scsbactivemq:topic:PUL.Request";
+        try {
+            producer.sendBody(endpointUri, testString);
+            logger.info("Start");
+            Exchange receive = consumer.receive(endpointUri);
+            logger.info(receive.getOut().getBody());
+        }catch(Exception e){
+            logger.error(e);
+        } finally {
+
+        }
+//        assertEquals(testString, body);
+    }
+
+    public void testJMS() {
+        String testString ="Test";
+        String body="";
+        try {
+
+        }catch(Exception e){
+            logger.error(e);
+        } finally {
+
+        }
+//        assertEquals(testString, body);
+    }
 
 }
