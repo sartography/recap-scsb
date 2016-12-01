@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * Created by sudhishk on 29/11/16.
  */
-@Component
+//@Component
 public class RequestItemQueueConsumer {
 
     private Logger logger = Logger.getLogger(RequestItemQueueConsumer.class);
