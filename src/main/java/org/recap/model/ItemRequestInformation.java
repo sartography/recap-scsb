@@ -1,5 +1,7 @@
 package org.recap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 /**
@@ -96,6 +98,31 @@ public class ItemRequestInformation {
         this.chapterTitle = chapterTitle;
     }
 
+    public String getTitleIdentifier() {
+        return titleIdentifier;
+    }
+
+    public void setTitleIdentifier(String titleIdentifier) {
+        this.titleIdentifier = titleIdentifier;
+    }
+
+    public String getItemOwningInstitution() {
+        return itemOwningInstitution;
+    }
+
+    public void setItemOwningInstitution(String itemOwningInstitution) {
+        this.itemOwningInstitution = itemOwningInstitution;
+    }
+
+    public String getRequestNotes() {
+        return requestNotes;
+    }
+
+    public void setRequestNotes(String requestNotes) {
+        this.requestNotes = requestNotes;
+    }
+
+    @JsonIgnore
     public boolean isOwningInstitutionItem(){
         boolean bSuccess=false;
         if (itemOwningInstitution.equalsIgnoreCase(requestingInstitution)){
