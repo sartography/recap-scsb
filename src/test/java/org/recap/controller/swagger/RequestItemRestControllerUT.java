@@ -1,8 +1,10 @@
 package org.recap.controller.swagger;
 
-import org.apache.camel.ConsumerTemplate;
-import org.apache.camel.Exchange;
-import org.apache.camel.ProducerTemplate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.camel.*;
+import org.apache.camel.builder.DefaultFluentProducerTemplate;
+import org.apache.camel.impl.DefaultExchange;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
@@ -12,6 +14,8 @@ import org.recap.model.ItemRequestInformation;
 import org.recap.model.ItemResponseInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -25,6 +29,8 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     @Autowired
     RequestItemRestController requestItemRestController;
 
+    @Autowired
+    CamelContext camelContext;
     @Autowired
     private ProducerTemplate producer;
 
@@ -93,7 +99,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
             itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
             itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
 
-//            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
+            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,6 +138,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
 //        assertEquals(testString, body);
     }
 
+    @Test
     public void testJMS() {
         String testString ="Test";
         String body="";
@@ -145,4 +152,29 @@ public class RequestItemRestControllerUT extends BaseTestCase{
 //        assertEquals(testString, body);
     }
 
+    @Test
+    public void testQueuewithObject() {
+        logger.info("Send Item Request ");
+        try {
+            ItemRequestInformation itemRequestInformation=new ItemRequestInformation();
+            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54321"));
+            itemRequestInformation.setPatronBarcode("45678913");
+            itemRequestInformation.setExpirationDate("20161231    190405");
+            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
+            itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
+            itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
+            itemRequestInformation.setDeliveryLocation("htcsc");
+            itemRequestInformation.setTitleIdentifier("New BooK");
+
+            String json = "";
+            ObjectMapper objectMapper= new ObjectMapper();
+            json = objectMapper.writeValueAsString(itemRequestInformation);
+
+            producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInformation.getRequestType());
+        } catch (JsonProcessingException e) {
+                logger.error(e.getMessage());
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }
+    }
 }

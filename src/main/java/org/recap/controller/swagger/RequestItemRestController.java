@@ -1,10 +1,12 @@
 package org.recap.controller.swagger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.java.accessibility.util.EventID;
 import io.swagger.annotations.*;
+import org.apache.camel.ProducerTemplate;
 import org.recap.ReCAPConstants;
-import org.recap.model.ItemRequestInformation;
-import org.recap.model.ItemResponseInformation;
+import org.recap.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,67 +24,35 @@ import java.util.Date;
 @RequestMapping("/requestItem")
 @Api(value = "requestItem", description = "Request Item", position = 1)
 public class RequestItemRestController {
+
     private Logger logger = LoggerFactory.getLogger(RequestItemRestController.class);
+
     @Value("${server.protocol}")
     String serverProtocol;
 
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
 
+    @Autowired
+    private ProducerTemplate producer;
+
     @RequestMapping(value = "/requestItem" , method = RequestMethod.POST)
-    @ApiOperation(value = "checkoutItem",
-            notes = "Checkout Item Request from Owning institution", nickname = "checkoutItem")
+    @ApiOperation(value = "Request Item", notes = "Item Request from Owning institution", nickname = "requestItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ItemResponseInformation itemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
-        ItemResponseInformation itemResponseInformation = null;
-        String patronResponse = "";
-        RestTemplate restTemplate = new RestTemplate();
+        ItemResponseInformation itemResponseInformation = new ItemResponseInformation();
+        ObjectMapper objectMapper= new ObjectMapper();
+        String json ="";
         try {
-            //  Lookup Patron
-            patronResponse = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/lookupPatron", itemRequestInfo, String.class).getBody();
-            ObjectMapper om = new ObjectMapper();
-            itemResponseInformation = om.readValue(patronResponse, ItemResponseInformation.class);
-            // Validate Patron
-            String ValidPatronresponse = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/validateItemRequestInformations", itemRequestInfo, String.class).getBody();
-            // Action based on Request Type
-            if(itemRequestInfo.getRequestType().equalsIgnoreCase(ReCAPConstants.REQUEST_TYPE_RETRIEVAL)) {
-            }else if(itemRequestInfo.getRequestType().equalsIgnoreCase(ReCAPConstants.REQUEST_TYPE_HOLD)){
-            }else if(itemRequestInfo.getRequestType().equalsIgnoreCase(ReCAPConstants.REQUEST_TYPE_RECALL)){
-            }else if(itemRequestInfo.getRequestType().equalsIgnoreCase(ReCAPConstants.REQUEST_TYPE_EDD)){
-            }else if(itemRequestInfo.getRequestType().equalsIgnoreCase(ReCAPConstants.REQUEST_TYPE_BORROW_DIRECT)){
-            }
-
-            if(itemRequestInfo.isOwningInstitutionItem()){
-                String holdResponse = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/holdItem", itemRequestInfo, String.class).getBody();
-                ItemResponseInformation holdItemResponse = om.readValue(holdResponse, ItemResponseInformation.class);
-                if(holdItemResponse.isSuccess()){ // If Hold command is successfully
-
-                    if(itemRequestInfo.isOwningInstitutionItem()){
-
-                    }else{ // Item does not belong to requesting Institute
-                        String checkoutResponse = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/checkoutItem", itemRequestInfo, String.class).getBody();
-                        ItemResponseInformation checkoutItemResponse = om.readValue(holdResponse, ItemResponseInformation.class);
-                        if(checkoutItemResponse.isSuccess()){
-
-                        }else{
-
-                        }
-                    }
-                }else{ // If Hold command Failure
-
-                }
-            }else{// Not the Owning Institute
-
-            }
-
-
-
-        }catch(RestClientException ex){
-            logger.error("RestClient : "+ ex.getMessage());
-        }catch(Exception ex){
-            logger.error("Exception : "+ex.getMessage());
+            json = objectMapper.writeValueAsString(itemRequestInfo);
+        } catch (JsonProcessingException e) {
+            logger.error(e.getMessage());
         }
+        producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
+        itemResponseInformation.setSuccess(true);
+        itemResponseInformation.setScreenMessage("Message recevied, your request will be processed");
+        logger.info("Message In Queue");
         return itemResponseInformation;
     }
 
@@ -111,11 +81,15 @@ public class RequestItemRestController {
             notes = "Checkout Item Request from Owning institution", nickname = "checkoutItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemResponseInformation checkoutItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
+    public ItemResponseInformation checkoutItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemCheckOutRequest itemCheckOutRequest){
         ItemResponseInformation itemResponseInformation= null;
+        ItemRequestInformation itemRequestInfo= new ItemRequestInformation();
         String response = "";
         RestTemplate restTemplate = new RestTemplate();
         try {
+            itemRequestInfo.setPatronBarcode(itemCheckOutRequest.getPatronIdentifier());
+            itemRequestInfo.setItemBarcodes(itemCheckOutRequest.getItemBarcodes());
+            itemRequestInfo.setItemOwningInstitution(itemCheckOutRequest.getItemOwningInstitution());
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/checkoutItem", itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemResponseInformation = om.readValue(response, ItemResponseInformation.class);
@@ -132,11 +106,15 @@ public class RequestItemRestController {
             notes = "Checkin Item Request from Owning institution", nickname = "checkinItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemResponseInformation checkinItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
+    public ItemResponseInformation checkinItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemCheckInRequest itemCheckInRequest){
         ItemResponseInformation itemResponseInformation= null;
+        ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
         RestTemplate restTemplate = new RestTemplate();
         try {
+            itemRequestInfo.setPatronBarcode(itemCheckInRequest.getPatronIdentifier());
+            itemRequestInfo.setItemBarcodes(itemCheckInRequest.getItemBarcodes());
+            itemRequestInfo.setItemOwningInstitution(itemCheckInRequest.getItemOwningInstitution());
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/checkinItem", itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemResponseInformation = om.readValue(response, ItemResponseInformation.class);
@@ -153,12 +131,20 @@ public class RequestItemRestController {
             notes = "hold Item Request from Owning institution", nickname = "holdItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemResponseInformation holdItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
+    public ItemResponseInformation holdItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemHoldRequest itemHoldRequest){
         ItemResponseInformation itemResponseInformation= null;
+        ItemRequestInformation itemRequestInfo=new ItemRequestInformation();
         String response = "";
         RestTemplate restTemplate = new RestTemplate();
         try {
-            response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/holdItem", itemRequestInfo, String.class).getBody();
+            itemRequestInfo.setItemBarcodes(itemHoldRequest.getItemBarcodes());
+            itemRequestInfo.setItemOwningInstitution(itemHoldRequest.getItemOwningInstitution());
+            itemRequestInfo.setPatronBarcode(itemHoldRequest.getPatronIdentifier());
+            itemRequestInfo.setExpirationDate(itemHoldRequest.getExpirationDate());
+            itemRequestInfo.setBibId(itemHoldRequest.getBibId());
+            itemRequestInfo.setDeliveryLocation(itemHoldRequest.getPickupLocation());
+
+            response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_HOLD, itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemResponseInformation = om.readValue(response, ItemResponseInformation.class);
         }catch(RestClientException ex){
@@ -174,11 +160,19 @@ public class RequestItemRestController {
             notes = "Cancel hold Item Request from Owning institution", nickname = "cancelHoldItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemResponseInformation cancelHoldItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
+    public ItemResponseInformation cancelHoldItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemHoldCancelRequest itemHoldCancelRequest){
         ItemResponseInformation itemResponseInformation= null;
+        ItemRequestInformation itemRequestInfo=new ItemRequestInformation();
         String response = "";
         RestTemplate restTemplate = new RestTemplate();
         try {
+            itemRequestInfo.setItemBarcodes(itemHoldCancelRequest.getItemBarcodes());
+            itemRequestInfo.setItemOwningInstitution(itemHoldCancelRequest.getItemOwningInstitution());
+            itemRequestInfo.setPatronBarcode(itemHoldCancelRequest.getPatronIdentifier());
+            itemRequestInfo.setExpirationDate(itemHoldCancelRequest.getExpirationDate());
+            itemRequestInfo.setBibId(itemHoldCancelRequest.getBibId());
+            itemRequestInfo.setDeliveryLocation(itemHoldCancelRequest.getPickupLocation());
+
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/cancelHoldItem", itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemResponseInformation = om.readValue(response, ItemResponseInformation.class);
@@ -192,15 +186,21 @@ public class RequestItemRestController {
 
     @RequestMapping(value = "/createBib" , method = RequestMethod.POST)
     @ApiOperation(value = "createBib",
-            notes = "Breate Bibliographic Request from Owning institution", nickname = "createBib")
+            notes = "Create Bibliographic Request from Owning institution", nickname = "createBib")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemResponseInformation createBibRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
+    public ItemResponseInformation createBibRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemCreateBibRequest itemCreateBibRequest){
         ItemResponseInformation itemResponseInformation= null;
+        ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
         RestTemplate restTemplate = new RestTemplate();
         try {
-            response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/createBib", itemRequestInfo, String.class).getBody();
+            itemCreateBibRequest.setItemBarcodes(itemCreateBibRequest.getItemBarcodes());
+            itemCreateBibRequest.setPatronIdentifier(itemCreateBibRequest.getPatronIdentifier());
+            itemCreateBibRequest.setItemOwningInstitution(itemCreateBibRequest.getItemOwningInstitution());
+            itemCreateBibRequest.setTitleIdentifier(itemCreateBibRequest.getTitleIdentifier());
+
+            response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_CREATEBIB, itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemResponseInformation = om.readValue(response, ItemResponseInformation.class);
         }catch(RestClientException ex){
@@ -211,6 +211,58 @@ public class RequestItemRestController {
         return itemResponseInformation;
     }
 
+    @RequestMapping(value = "/itemInformation"  , method = RequestMethod.POST)
+    @ApiOperation(value = "itemInformation"     , notes = "item Information and status of Circulation", nickname = "itemInformation")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ItemInformationResponse itemInformation(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")
+                                                        @RequestBody ItemInformationRequest itemRequestInfo){
+        HttpEntity<ItemInformationResponse> responseEntity = null;
+        ItemInformationResponse itemInformationResponse =null;
+        ItemInformationRequest itemInformationRequest = new ItemInformationRequest();
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            itemInformationRequest.setItemBarcodes(itemRequestInfo.getItemBarcodes());
+            itemInformationRequest.setItemOwningInstitution(itemRequestInfo.getItemOwningInstitution());
+            HttpEntity request = new HttpEntity(itemInformationRequest);
+            responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_ITEM_INFORMATION, HttpMethod.POST, request, ItemInformationResponse.class);
+            itemInformationResponse = responseEntity.getBody();
+        }catch(RestClientException ex){
+            logger.error("RestClient : ",ex);
+        }catch(Exception ex){
+            logger.error("Exception : ",ex);
+        }
+        return itemInformationResponse;
+    }
+
+    @RequestMapping(value = "/recall" , method = RequestMethod.POST)
+    @ApiOperation(value = "recall",
+            notes = "Recall Item Request from Owning institution", nickname = "RecallItem")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ItemResponseInformation recallItem(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRecalRequest itemRecalRequest){
+        ItemResponseInformation itemResponseInformation= null;
+        ItemRequestInformation itemRequestInfo=new ItemRequestInformation();
+        String response = "";
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            itemRequestInfo.setItemBarcodes(itemRecalRequest.getItemBarcodes());
+            itemRequestInfo.setItemOwningInstitution(itemRecalRequest.getItemOwningInstitution());
+            itemRequestInfo.setPatronBarcode(itemRecalRequest.getPatronIdentifier());
+            itemRequestInfo.setExpirationDate(itemRecalRequest.getExpirationDate());
+            itemRequestInfo.setBibId(itemRecalRequest.getBibId());
+            itemRequestInfo.setDeliveryLocation(itemRecalRequest.getPickupLocation());
+
+            response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_RECALL, itemRequestInfo, String.class).getBody();
+            ObjectMapper om = new ObjectMapper();
+            itemResponseInformation = om.readValue(response, ItemResponseInformation.class);
+        }catch(RestClientException ex){
+            logger.error("RestClient : "+ ex.getMessage());
+        }catch(Exception ex){
+            logger.error("Exception : "+ex.getMessage());
+        }
+        return itemResponseInformation;
+    }
 
     private HttpHeaders getHttpHeaders() {
         HttpHeaders responseHeaders = new HttpHeaders();
