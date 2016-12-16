@@ -1,69 +1,30 @@
 package org.recap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
 /**
  * Created by hemalathas on 1/11/16.
  */
-//@JsonIgnoreProperties({"itemBarcodes", "titleIdentifier", "patronBarcode","patronBarcode","emailAddress","requestingInstitution","requestingInstitution","requestType","deliveryLocation","requestNotes","startPage","endPage","chapterTitle"})
 public class ItemRequestInformation {
 
     private List<String> itemBarcodes;
     private String titleIdentifier;
-    private String itemOwningInstitution=""; // PUL, CUL, NYPL
-    private String patronBarcode="";
-    private String emailAddress="";
-    private String requestingInstitution=""; // PUL, CUL, NYPL
-    private String requestType=""; // Retrieval,EDD, Hold, Recall, Borrow Direct
-    private String deliveryLocation="";
-    private String requestNotes="";
+    private String itemOwningInstitution; // PUL, CUL, NYPL
+    private String patronBarcode;
+    private String emailAddress;
+    private String requestingInstitution; // PUL, CUL, NYPL
+    private String requestType; // Retrieval,EDD, Hold, Recall, Borrow Direct
+    private String deliveryLocation;
+    private String requestNotes;
 
     /**
      * EDD Request
      */
-    private Integer startPage=0;
-    private Integer endPage=0;
-    private String chapterTitle="";
-    private String expirationDate;
-    private String bibId;
-
-    public String getBibId() {
-        return bibId;
-    }
-
-    public void setBibId(String bibId) {
-        this.bibId = bibId;
-    }
-
-    public String getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(String expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public String getTitleIdentifier() {
-        return titleIdentifier;
-    }
-
-    public void setTitleIdentifier(String titleIdentifier) {
-        this.titleIdentifier = titleIdentifier;
-    }
-
-    public String getRequestNotes() {
-        return requestNotes;
-    }
-
-    public void setRequestNotes(String requestNotes) {
-        this.requestNotes = requestNotes;
-    }
+    private Integer startPage;
+    private Integer endPage;
+    private String chapterTitle;
 
     public String getPatronBarcode() {
         return patronBarcode;
@@ -137,13 +98,30 @@ public class ItemRequestInformation {
         this.chapterTitle = chapterTitle;
     }
 
+    public String getTitleIdentifier() {
+        return titleIdentifier;
+    }
+
+    public void setTitleIdentifier(String titleIdentifier) {
+        this.titleIdentifier = titleIdentifier;
+    }
+
+    public String getItemOwningInstitution() {
+        return itemOwningInstitution;
+    }
+
     public void setItemOwningInstitution(String itemOwningInstitution) {
         this.itemOwningInstitution = itemOwningInstitution;
     }
 
-    public String getItemOwningInstitution() {
-        return this.itemOwningInstitution;
+    public String getRequestNotes() {
+        return requestNotes;
     }
+
+    public void setRequestNotes(String requestNotes) {
+        this.requestNotes = requestNotes;
+    }
+
     @JsonIgnore
     public boolean isOwningInstitutionItem(){
         boolean bSuccess=false;
