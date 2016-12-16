@@ -76,4 +76,15 @@ public class ReCAPConstants {
     public static final String REQUEST_TYPE_RECALL="Recall";
     public static final String REQUEST_TYPE_BORROW_DIRECT="Borrow Direct";
 
+    // MQ URI
+    public static final String REQUEST_ITEM_QUEUE = "scsbactivemq:queue:RequestItemQ";
+    public static final String REQUEST_TYPE_QUEUE_HEADER = "RequestType";
+
+
+    public static final String URL_REQUEST_ITEM_INFORMATION="requestItem/itemInformation";
+    public static final String URL_REQUEST_ITEM_HOLD="requestItem/holdItem";
+    public static final String URL_REQUEST_ITEM_RECALL="requestItem/recallItem";
+    public static final String URL_REQUEST_ITEM_CREATEBIB="requestItem/createBib";
+
+
 }

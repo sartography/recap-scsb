@@ -7,8 +7,8 @@ package org.recap.model;
 
 public class ItemResponseInformation {
 
-    private String itemBarcode;
     private String patronBarcode;
+    private String itemBarcode;
     private String requestType;
     private String deliveryLocation;
     private String requestingInstitution;
@@ -21,22 +21,16 @@ public class ItemResponseInformation {
     private Integer startPage;
     private Integer endPage;
     private String titleIdentifier;
+    private String bibiid;
     private String dueDate;
 
-    public String getTitleIdentifier() {
-        return titleIdentifier;
+
+    public String getBibliographicId() {
+        return bibliographicId;
     }
 
-    public void setTitleIdentifier(String titleIdentifier) {
-        this.titleIdentifier = titleIdentifier;
-    }
-
-    public String getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
+    public void setBibliographicId(String bibliographicId) {
+        this.bibliographicId = bibliographicId;
     }
 
     public String getPatronBarcode() {
@@ -45,6 +39,14 @@ public class ItemResponseInformation {
 
     public void setPatronBarcode(String patronBarcode) {
         this.patronBarcode = patronBarcode;
+    }
+
+    public String getItemBarcode() {
+        return itemBarcode;
+    }
+
+    public void setItemBarcode(String itemBarcode) {
+        this.itemBarcode = itemBarcode;
     }
 
     public String getRequestType() {
@@ -69,46 +71,6 @@ public class ItemResponseInformation {
 
     public void setRequestingInstitution(String requestingInstitution) {
         this.requestingInstitution = requestingInstitution;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getItemBarcode() {
-        return itemBarcode;
-    }
-
-    public void setItemBarcode(String itemBarcode) {
-        this.itemBarcode = itemBarcode;
-    }
-
-    public Integer getStartPage() {
-        return startPage;
-    }
-
-    public void setStartPage(Integer startPage) {
-        this.startPage = startPage;
-    }
-
-    public Integer getEndPage() {
-        return endPage;
-    }
-
-    public void setEndPage(Integer endPage) {
-        this.endPage = endPage;
-    }
-
-    public String getBibliographicId() {
-        return bibliographicId;
-    }
-
-    public void setBibliographicId(String bibliographicId) {
-        this.bibliographicId = bibliographicId;
     }
 
     public String getExpirationDate() {
@@ -142,4 +104,56 @@ public class ItemResponseInformation {
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public Integer getStartPage() {
+        return startPage;
+    }
+
+    public void setStartPage(Integer startPage) {
+        this.startPage = startPage;
+    }
+
+    public Integer getEndPage() {
+        return endPage;
+    }
+
+    public void setEndPage(Integer endPage) {
+        this.endPage = endPage;
+    }
+
+    public String getTitleIdentifier() {
+        return titleIdentifier;
+    }
+
+    public void setTitleIdentifier(String titleIdentifier) {
+        this.titleIdentifier = titleIdentifier;
+    }
+
+    public String getBibiid() {
+        return bibiid;
+    }
+
+    public void setBibiid(String bibiid) {
+        this.bibiid = bibiid;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+
+
+
+
 }
