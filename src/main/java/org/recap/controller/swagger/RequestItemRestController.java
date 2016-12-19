@@ -2,7 +2,6 @@ package org.recap.controller.swagger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.java.accessibility.util.EventID;
 import io.swagger.annotations.*;
 import org.apache.camel.ProducerTemplate;
 import org.recap.ReCAPConstants;
@@ -15,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.Date;
 
 /**
