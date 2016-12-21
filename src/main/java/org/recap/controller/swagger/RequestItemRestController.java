@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,12 +47,12 @@ public class RequestItemRestController {
         String json ="";
         try {
             json = objectMapper.writeValueAsString(itemRequestInfo);
+            producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
+            itemResponseInformation.setSuccess(true);
+            itemResponseInformation.setScreenMessage("Message recevied, your request will be processed");
         } catch (JsonProcessingException e) {
             logger.error(e.getMessage());
         }
-        producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
-        itemResponseInformation.setSuccess(true);
-        itemResponseInformation.setScreenMessage("Message recevied, your request will be processed");
         logger.info("Message In Queue");
         return itemResponseInformation;
     }
@@ -67,6 +68,10 @@ public class RequestItemRestController {
         RestTemplate restTemplate = new RestTemplate();
         try {
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/validateItemRequestInformations", itemRequestInfo, String.class).getBody();
+        }catch (HttpClientErrorException httpEx){
+            HttpStatus statusCode = httpEx.getStatusCode();
+            String responseBodyAsString = httpEx.getResponseBodyAsString();
+            return new ResponseEntity(responseBodyAsString,getHttpHeaders(),statusCode);
         }catch(Exception ex){
             logger.debug("scsbCircUrl : "+scsbCircUrl);
             responseEntity = new ResponseEntity("Scsb circ Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -90,13 +95,16 @@ public class RequestItemRestController {
             itemRequestInfo.setPatronBarcode(itemCheckOutRequest.getPatronIdentifier());
             itemRequestInfo.setItemBarcodes(itemCheckOutRequest.getItemBarcodes());
             itemRequestInfo.setItemOwningInstitution(itemCheckOutRequest.getItemOwningInstitution());
+            itemRequestInfo.setRequestingInstitution(itemCheckOutRequest.getItemOwningInstitution());
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/checkoutItem", itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemCheckoutResponse = om.readValue(response, ItemCheckoutResponse.class);
         }catch(RestClientException ex){
             logger.error("RestClient : ", ex);
+            itemCheckoutResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
             logger.error("Exception : ",ex);
+            itemCheckoutResponse.setScreenMessage(ex.getMessage());
         }
         return itemCheckoutResponse;
     }
@@ -107,7 +115,7 @@ public class RequestItemRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public AbstractResponseItem checkinItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemCheckInRequest itemCheckInRequest){
-        ItemCheckoutResponse itemCheckoutResponse= null;
+        ItemCheckinResponse itemCheckinResponse= null;
         ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
         RestTemplate restTemplate = new RestTemplate();
@@ -115,15 +123,16 @@ public class RequestItemRestController {
             itemRequestInfo.setPatronBarcode(itemCheckInRequest.getPatronIdentifier());
             itemRequestInfo.setItemBarcodes(itemCheckInRequest.getItemBarcodes());
             itemRequestInfo.setItemOwningInstitution(itemCheckInRequest.getItemOwningInstitution());
+            itemRequestInfo.setRequestingInstitution(itemCheckInRequest.getItemOwningInstitution());
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/checkinItem", itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
-            itemCheckoutResponse = om.readValue(response, ItemCheckoutResponse.class);
+            itemCheckinResponse = om.readValue(response, ItemCheckinResponse.class);
         }catch(RestClientException ex){
-            logger.error("RestClient : "+ ex.getMessage());
+            logger.error("RestClient : ", ex);
         }catch(Exception ex){
-            logger.error("Exception : "+ex.getMessage());
+            logger.error("Exception : ", ex);
         }
-        return itemCheckoutResponse;
+        return itemCheckinResponse;
     }
 
     @RequestMapping(value = "/holdItem" , method = RequestMethod.POST)
@@ -139,6 +148,7 @@ public class RequestItemRestController {
         try {
             itemRequestInfo.setItemBarcodes(itemHoldRequest.getItemBarcodes());
             itemRequestInfo.setItemOwningInstitution(itemHoldRequest.getItemOwningInstitution());
+            itemRequestInfo.setRequestingInstitution(itemHoldRequest.getItemOwningInstitution());
             itemRequestInfo.setPatronBarcode(itemHoldRequest.getPatronIdentifier());
             itemRequestInfo.setExpirationDate(itemHoldRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemHoldRequest.getBibId());
@@ -149,8 +159,10 @@ public class RequestItemRestController {
             itemHoldResponse = om.readValue(response, ItemHoldResponse.class);
         }catch(RestClientException ex){
             logger.error("RestClient : "+ ex.getMessage());
+            itemHoldResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
             logger.error("Exception : "+ex.getMessage());
+            itemHoldResponse.setScreenMessage(ex.getMessage());
         }
         return itemHoldResponse;
     }
@@ -168,6 +180,7 @@ public class RequestItemRestController {
         try {
             itemRequestInfo.setItemBarcodes(itemHoldCancelRequest.getItemBarcodes());
             itemRequestInfo.setItemOwningInstitution(itemHoldCancelRequest.getItemOwningInstitution());
+            itemRequestInfo.setRequestingInstitution(itemHoldCancelRequest.getItemOwningInstitution());
             itemRequestInfo.setPatronBarcode(itemHoldCancelRequest.getPatronIdentifier());
             itemRequestInfo.setExpirationDate(itemHoldCancelRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemHoldCancelRequest.getBibId());
@@ -178,8 +191,10 @@ public class RequestItemRestController {
             itemHoldResponse = om.readValue(response, ItemHoldResponse.class);
         }catch(RestClientException ex){
             logger.error("RestClient : "+ ex.getMessage());
+            itemHoldResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
             logger.error("Exception : "+ex.getMessage());
+            itemHoldResponse.setScreenMessage(ex.getMessage());
         }
         return itemHoldResponse;
     }
@@ -195,18 +210,21 @@ public class RequestItemRestController {
         String response = "";
         RestTemplate restTemplate = new RestTemplate();
         try {
-            itemCreateBibRequest.setItemBarcodes(itemCreateBibRequest.getItemBarcodes());
-            itemCreateBibRequest.setPatronIdentifier(itemCreateBibRequest.getPatronIdentifier());
-            itemCreateBibRequest.setItemOwningInstitution(itemCreateBibRequest.getItemOwningInstitution());
-            itemCreateBibRequest.setTitleIdentifier(itemCreateBibRequest.getTitleIdentifier());
+            itemRequestInfo.setItemBarcodes(itemCreateBibRequest.getItemBarcodes());
+            itemRequestInfo.setPatronBarcode(itemCreateBibRequest.getPatronIdentifier());
+            itemRequestInfo.setItemOwningInstitution(itemCreateBibRequest.getItemOwningInstitution());
+            itemRequestInfo.setRequestingInstitution (itemCreateBibRequest.getItemOwningInstitution());
+            itemRequestInfo.setTitleIdentifier(itemCreateBibRequest.getTitleIdentifier());
 
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_CREATEBIB, itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemCreateBibResponse = om.readValue(response, ItemCreateBibResponse.class);
         }catch(RestClientException ex){
             logger.error("RestClient : "+ ex.getMessage());
+            itemCreateBibResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
             logger.error("Exception : "+ex.getMessage());
+            itemCreateBibResponse.setScreenMessage(ex.getMessage());
         }
         return itemCreateBibResponse;
     }
@@ -229,8 +247,10 @@ public class RequestItemRestController {
             itemInformationResponse = responseEntity.getBody();
         }catch(RestClientException ex){
             logger.error("RestClient : ",ex);
+            itemInformationResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
             logger.error("Exception : ",ex);
+            itemInformationResponse.setScreenMessage(ex.getMessage());
         }
         return itemInformationResponse;
     }
@@ -248,6 +268,7 @@ public class RequestItemRestController {
         try {
             itemRequestInfo.setItemBarcodes(itemRecalRequest.getItemBarcodes());
             itemRequestInfo.setItemOwningInstitution(itemRecalRequest.getItemOwningInstitution());
+            itemRequestInfo.setRequestingInstitution(itemRecalRequest.getItemOwningInstitution());
             itemRequestInfo.setPatronBarcode(itemRecalRequest.getPatronIdentifier());
             itemRequestInfo.setExpirationDate(itemRecalRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemRecalRequest.getBibId());
@@ -258,8 +279,10 @@ public class RequestItemRestController {
             itemRecallResponse = om.readValue(response, ItemRecallResponse.class);
         }catch(RestClientException ex){
             logger.error("RestClient : "+ ex.getMessage());
+            itemRecallResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
             logger.error("Exception : "+ex.getMessage());
+            itemRecallResponse.setScreenMessage(ex.getMessage());
         }
         return itemRecallResponse;
     }
