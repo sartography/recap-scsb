@@ -153,6 +153,10 @@ public class RequestItemRestController {
             itemRequestInfo.setExpirationDate(itemHoldRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemHoldRequest.getBibId());
             itemRequestInfo.setDeliveryLocation(itemHoldRequest.getPickupLocation());
+            itemRequestInfo.setTrackingId(itemHoldRequest.getTrackingId());
+            itemRequestInfo.setTitle(itemHoldRequest.getTitle());
+            itemRequestInfo.setAuthor(itemHoldRequest.getAuthor());
+            itemRequestInfo.setCallNumber(itemHoldRequest.getCallNumber());
 
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_HOLD, itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
@@ -185,6 +189,7 @@ public class RequestItemRestController {
             itemRequestInfo.setExpirationDate(itemHoldCancelRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemHoldCancelRequest.getBibId());
             itemRequestInfo.setDeliveryLocation(itemHoldCancelRequest.getPickupLocation());
+            itemRequestInfo.setTrackingId(itemHoldCancelRequest.getTrackingId());
 
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/cancelHoldItem", itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
@@ -242,6 +247,7 @@ public class RequestItemRestController {
         try {
             itemInformationRequest.setItemBarcodes(itemRequestInfo.getItemBarcodes());
             itemInformationRequest.setItemOwningInstitution(itemRequestInfo.getItemOwningInstitution());
+            itemInformationRequest.setSource(itemRequestInfo.getSource());
             HttpEntity request = new HttpEntity(itemInformationRequest);
             responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_ITEM_INFORMATION, HttpMethod.POST, request, ItemInformationResponse.class);
             itemInformationResponse = responseEntity.getBody();

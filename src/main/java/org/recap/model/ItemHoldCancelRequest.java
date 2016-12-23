@@ -9,6 +9,7 @@ public class ItemHoldCancelRequest extends AbstractRequestItem{
     private String expirationDate;
     private String bibId;
     private String pickupLocation;
+    private String trackingId; // NYPL - trackingId
 
     public String getPatronIdentifier() {
         return patronIdentifier;
@@ -42,4 +43,11 @@ public class ItemHoldCancelRequest extends AbstractRequestItem{
         this.pickupLocation = pickupLocation;
     }
 
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
+    }
 }
