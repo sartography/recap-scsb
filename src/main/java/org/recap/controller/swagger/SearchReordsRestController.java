@@ -3,7 +3,6 @@ package org.recap.controller.swagger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
-import org.recap.model.ItemInformationResponse;
 import org.recap.model.SearchRecordsRequest;
 import org.recap.model.SearchResultRow;
 import org.slf4j.Logger;
@@ -13,12 +12,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sudhish on 13/10/16.

@@ -238,8 +238,7 @@ public class RequestItemRestController {
     @ApiOperation(value = "itemInformation"     , notes = "item Information and status of Circulation", nickname = "itemInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem itemInformation(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")
-                                                        @RequestBody ItemInformationRequest itemRequestInfo){
+    public AbstractResponseItem itemInformation(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson") @RequestBody ItemInformationRequest itemRequestInfo){
         HttpEntity<ItemInformationResponse> responseEntity = null;
         ItemInformationResponse itemInformationResponse =null;
         ItemInformationRequest itemInformationRequest = new ItemInformationRequest();
@@ -291,6 +290,31 @@ public class RequestItemRestController {
             itemRecallResponse.setScreenMessage(ex.getMessage());
         }
         return itemRecallResponse;
+    }
+
+    @RequestMapping(value = "/patronInformation"  , method = RequestMethod.POST)
+    @ApiOperation(value = "patronInformation"     , notes = "Patron Information", nickname = "patronInformation")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public AbstractResponseItem patronInformation(@ApiParam(value = "Parameters for requesting an patron" , required = true , name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest){
+        HttpEntity<PatronInformationResponse> responseEntity = null;
+        PatronInformationResponse patronInformation =null;
+        ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            itemRequestInformation.setPatronBarcode (patronInformationRequest.getPatronIdentifier());
+            itemRequestInformation.setItemOwningInstitution(patronInformationRequest.getItemOwningInstitution());
+            HttpEntity request = new HttpEntity(itemRequestInformation);
+            responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_PATRON_INFORMATION, HttpMethod.POST, request, PatronInformationResponse.class);
+            patronInformation = responseEntity.getBody();
+        }catch(RestClientException ex){
+            logger.error("RestClient : ",ex);
+            patronInformation.setScreenMessage(ex.getMessage());
+        }catch(Exception ex){
+            logger.error("Exception : ",ex);
+            patronInformation.setScreenMessage(ex.getMessage());
+        }
+        return patronInformation;
     }
 
     private HttpHeaders getHttpHeaders() {
