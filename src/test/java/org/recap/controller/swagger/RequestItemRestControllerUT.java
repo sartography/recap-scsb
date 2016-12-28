@@ -2,9 +2,10 @@ package org.recap.controller.swagger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.camel.*;
-import org.apache.camel.builder.DefaultFluentProducerTemplate;
-import org.apache.camel.impl.DefaultExchange;
+import org.apache.camel.CamelContext;
+import org.apache.camel.ConsumerTemplate;
+import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
@@ -17,7 +18,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by hemalathas on 4/11/16.
