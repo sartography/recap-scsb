@@ -92,5 +92,9 @@ public class ReCAPConstants {
     public static final String URL_SEARChBYPARAM = "searchService/searchByParam";
     public static final String URL_SEARChBYJSON = "searchService/search";
 
+    public static final String INVALID_SCSB_XML_FORMAT_MESSAGE = "Please provide valid SCSB xml format";
+    public static final String INVALID_MARC_XML_FORMAT_MESSAGE = "Please provide valid Marc xml format";
+    public static final String SUBMIT_COLLECTION_INTERNAL_ERROR = "Internal error occured during submit collection";
+
 
 }

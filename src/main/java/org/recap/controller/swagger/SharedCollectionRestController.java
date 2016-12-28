@@ -10,9 +10,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 
 /**
@@ -28,6 +30,9 @@ public class SharedCollectionRestController {
 
     @Value("${scsb.solr.client.url}")
     String scsbSolrClientUrl;
+
+    @Value("${scsb.circ.url}")
+    String scsbCircUrl;
 
     @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.GET)
     @ApiOperation(value = "itemAvailabilityStatus",
@@ -83,6 +88,32 @@ public class SharedCollectionRestController {
             return responseEntity;
         } catch (Exception exception) {
             ResponseEntity responseEntity = new ResponseEntity("Scsb Solr Client Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return responseEntity;
+        }
+    }
+
+    @RequestMapping(value = "/submitCollection", method = RequestMethod.POST)
+    @ApiOperation(value = "submitCollection",
+            notes = "Submit Collection", nickname = "submitCollection", position = 0)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ResponseEntity submitCollection(@RequestBody String inputRecords) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters()
+                .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        ResponseEntity responseEntity;
+        try {
+            String response = restTemplate.postForObject(serverProtocol + scsbCircUrl + "sharedCollection/submitCollection", inputRecords, String.class);
+            if(response.equalsIgnoreCase(ReCAPConstants.INVALID_MARC_XML_FORMAT_MESSAGE) || response.equalsIgnoreCase(ReCAPConstants.INVALID_SCSB_XML_FORMAT_MESSAGE)
+                    || response.equalsIgnoreCase(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR)){
+                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            }else{
+                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+            }
+            return responseEntity;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            responseEntity = new ResponseEntity("Scsb Circ Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
         }
     }
