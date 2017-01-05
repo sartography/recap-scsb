@@ -1,21 +1,15 @@
 package org.recap.controller.swagger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
 import org.recap.model.SearchRecordsRequest;
+import org.recap.model.SearchRecordsResponse;
 import org.recap.model.SearchResultRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,9 +23,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/searchService")
 @Api(value="search", description="Search Records", position = 1)
-public class SearchReordsRestController {
+public class SearchRecordsRestController {
 
-    private Logger logger = LoggerFactory.getLogger(SearchReordsRestController.class);
+    private Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;
@@ -39,34 +33,22 @@ public class SearchReordsRestController {
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
-
-//    @RequestMapping(value="/search", method = RequestMethod.GET)
-//    @ApiOperation(value = "search",notes = "Search Books in ReCAP - Using Method Post, Request data is String", nickname = "search", position = 0, consumes="application/json")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
-    public List<SearchResultRow> searchRecordsServiceGetParam(@ApiParam(value = "Paramerters for Searching Records" , required = true, name="requestJson") @RequestParam String requestJson) {
-
-//        logger.info("Get " +requestJson);
-        HttpEntity<List> responseEntity = null;
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        SearchRecordsRequest searchRecordsRequest = null;
+    @RequestMapping(value="/search", method = RequestMethod.POST)
+    //@ApiOperation(value = "search",notes = "Search Books in ReCAP - Using Method Post, Request data is String", nickname = "search", position = 0, consumes="application/json")
+    //@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
+    public SearchRecordsResponse searchRecordsServiceGetParam(@RequestBody SearchRecordsRequest searchRecordsRequest) {
+        SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
         try {
-            searchRecordsRequest = mapper.readValue(requestJson, SearchRecordsRequest.class);
-        } catch (IOException e) {
-            logger.info("search : "+e.getMessage());
-        }
-        if (searchRecordsRequest ==null){
-            searchRecordsRequest = new SearchRecordsRequest();
-        }
-        List<SearchResultRow> searchResultRows = null;
-        try {
-            HttpEntity request = new HttpEntity(searchRecordsRequest);
-            responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_SEARChBYJSON , HttpMethod.GET, request, List.class);
-            searchResultRows = responseEntity.getBody();
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
+
+            ResponseEntity<SearchRecordsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_SEARChBYJSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
+            searchRecordsResponse = responseEntity.getBody();
         } catch (Exception e) {
-            searchResultRows = new ArrayList<>();
+            logger.error(e.getMessage());
+            searchRecordsResponse.setErrorMessage(e.getMessage());
         }
-        return searchResultRows;
+        return searchRecordsResponse;
     }
 
     @RequestMapping(value="/searchByParam", method = RequestMethod.GET)
@@ -110,7 +92,7 @@ public class SearchReordsRestController {
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("api_key", "recap");
+        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
         return headers;
     }
 }
