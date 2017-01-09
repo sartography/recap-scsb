@@ -16,7 +16,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by hemalathas on 1/11/16.
@@ -37,17 +40,31 @@ public class RequestItemRestController {
     @Autowired
     private ProducerTemplate producer;
 
-    @RequestMapping(value = "/requestItem" , method = RequestMethod.POST)
+    @RequestMapping(value = ReCAPConstants.REST_URL_REQUEST_ITEM, method = RequestMethod.POST)
     @ApiOperation(value = "Request Item", notes = "Item Request from Owning institution", nickname = "requestItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ItemResponseInformation itemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
         ItemResponseInformation itemResponseInformation = new ItemResponseInformation();
-        ObjectMapper objectMapper= new ObjectMapper();
-        String json ="";
+        List itemBarcodes =null;
         try {
-            json = objectMapper.writeValueAsString(itemRequestInfo);
-            producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
+            ObjectMapper objectMapper= new ObjectMapper();
+            String json ="";
+            if(itemRequestInfo.getItemBarcodes() !=null) {
+                itemBarcodes = itemRequestInfo.getItemBarcodes();
+                itemRequestInfo.setItemBarcodes(null);
+                if (itemBarcodes.size() > 1) {
+                    for (int i=0;i<itemBarcodes.size();i++){
+                        itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(i).toString()));
+                        json = objectMapper.writeValueAsString(itemRequestInfo);
+                        producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
+                    }
+                } else if (itemBarcodes.size() == 1) {
+                    itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(0).toString()));
+                    json = objectMapper.writeValueAsString(itemRequestInfo);
+                    producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
+                }
+            }
             itemResponseInformation.setSuccess(true);
             itemResponseInformation.setScreenMessage("Message recevied, your request will be processed");
         } catch (JsonProcessingException e) {
@@ -57,7 +74,7 @@ public class RequestItemRestController {
         return itemResponseInformation;
     }
 
-    @RequestMapping(value = "/validateItemRequestInformations" , method = RequestMethod.POST)
+    @RequestMapping(value =     ReCAPConstants.REST_URL_VALIDATE_REQUEST_ITEM , method = RequestMethod.POST)
     @ApiOperation(value = "validateItemRequestInformations",
             notes = "Validate Item Request Informations", nickname = "validateItemRequestInformation", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -315,6 +332,14 @@ public class RequestItemRestController {
             patronInformation.setScreenMessage(ex.getMessage());
         }
         return patronInformation;
+    }
+
+//    @RequestMapping(value = "/refile"  , method = RequestMethod.POST)
+//    @ApiOperation(value = "refile"     , notes = "Re-File", nickname = "patronInformation")
+//    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+//    @ResponseBody
+    public void refileItem(@ApiParam(value = "Parameters for requesting re-file" , required = true , name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest){
+
     }
 
     private HttpHeaders getHttpHeaders() {

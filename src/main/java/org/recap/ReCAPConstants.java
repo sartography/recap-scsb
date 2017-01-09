@@ -87,6 +87,9 @@ public class ReCAPConstants {
     public static final String URL_REQUEST_ITEM_CREATEBIB="requestItem/createBib";
     public static final String URL_REQUEST_PATRON_INFORMATION="requestItem/patronInformation";
 
+    public static final String REST_URL_REQUEST_ITEM ="/requestItem";
+    public static final String REST_URL_VALIDATE_REQUEST_ITEM ="/validateItemRequestInformations";
+
     public static final String DATADUMP_NO_RECORD = "There is no data to export.";
     public static final String DATADUMP_PROCESS_STARTED = "Export process has started and we will send an email notification upon completion";
 
