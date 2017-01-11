@@ -97,7 +97,7 @@ public class SharedCollectionRestController {
             notes = "Submit Collection", nickname = "submitCollection", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity submitCollection(@RequestBody String inputRecords) {
+    public ResponseEntity submitCollection(@ApiParam(value = "Provide marc xml or scsb xml format to update the records" , required = true, name = "inputRecords")@RequestBody String inputRecords) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters()
                 .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
