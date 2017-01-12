@@ -1,7 +1,5 @@
 package org.recap.model;
 
-import java.util.List;
-
 /**
  * Created by sudhishk on 26/12/16.
  */
