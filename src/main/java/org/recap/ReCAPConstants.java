@@ -48,6 +48,9 @@ public class ReCAPConstants {
     public static final String URL_SEARChBYPARAM = "searchService/searchByParam";
     public static final String URL_SEARChBYJSON = "searchService/search";
     public static final String URL_UPDATE_CGD = "updateCgdService/updateCgd";
+    public static final String URL_REPORTS_ACCESSION_DEACCESSION_COUNTS = "reportsService/accessionDeaccessionCounts";
+    public static final String URL_REPORTS_CGD_ITEM_COUNTS = "reportsService/cgdItemCounts";
+    public static final String URL_REPORTS_DEACCESSION_RESULTS = "reportsService/deaccessionResults";
 
     public static final String INVALID_SCSB_XML_FORMAT_MESSAGE = "Please provide valid SCSB xml format";
     public static final String INVALID_MARC_XML_FORMAT_MESSAGE = "Please provide valid Marc xml format";

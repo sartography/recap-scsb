@@ -1,0 +1,86 @@
+package org.recap.controller;
+
+import org.recap.ReCAPConstants;
+import org.recap.model.ReportsRequest;
+import org.recap.model.ReportsResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+/**
+ * Created by rajeshbabuk on 13/1/17.
+ */
+
+@RestController
+@RequestMapping("/reportsService")
+public class ReportsRestController {
+
+    private Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
+
+    @Value("${server.protocol}")
+    String serverProtocol;
+
+    @Value("${scsb.solr.client.url}")
+    String scsbSolrClient;
+
+    @RequestMapping(value="/accessionDeaccessionCounts", method = RequestMethod.POST)
+    public ReportsResponse accessionDeaccessionCounts(@RequestBody ReportsRequest reportsRequest) {
+        ReportsResponse reportsResponse = new ReportsResponse();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
+
+            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            reportsResponse = responseEntity.getBody();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            reportsResponse.setMessage(e.getMessage());
+        }
+        return reportsResponse;
+    }
+
+    @RequestMapping(value="/cgdItemCounts", method = RequestMethod.POST)
+    public ReportsResponse cgdItemCounts(@RequestBody ReportsRequest reportsRequest) {
+        ReportsResponse reportsResponse = new ReportsResponse();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
+
+            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            reportsResponse = responseEntity.getBody();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            reportsResponse.setMessage(e.getMessage());
+        }
+        return reportsResponse;
+    }
+
+    @RequestMapping(value="/deaccessionResults", method = RequestMethod.POST)
+    public ReportsResponse deaccessionResults(@RequestBody ReportsRequest reportsRequest) {
+        ReportsResponse reportsResponse = new ReportsResponse();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
+
+            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            reportsResponse = responseEntity.getBody();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            reportsResponse.setMessage(e.getMessage());
+        }
+        return reportsResponse;
+    }
+
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
+        return headers;
+    }
+}
