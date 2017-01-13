@@ -66,6 +66,15 @@ public class RequestItemRestController {
             }
             itemResponseInformation.setSuccess(true);
             itemResponseInformation.setScreenMessage("Message recevied, your request will be processed");
+            itemResponseInformation.setItemBarcodes(itemRequestInfo.getItemBarcodes());
+            itemResponseInformation.setTitleIdentifier(itemRequestInfo.getTitleIdentifier());
+            itemResponseInformation.setDeliveryLocation(itemRequestInfo.getDeliveryLocation());
+            itemResponseInformation.setEmailAddress(itemRequestInfo.getEmailAddress());
+            itemResponseInformation.setExpirationDate(itemRequestInfo.getExpirationDate());
+            itemResponseInformation.setPatronBarcode(itemRequestInfo.getPatronBarcode());
+            itemResponseInformation.setRequestType(itemRequestInfo.getRequestType());
+            itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
+
         } catch (JsonProcessingException e) {
             logger.error(e.getMessage());
         }
