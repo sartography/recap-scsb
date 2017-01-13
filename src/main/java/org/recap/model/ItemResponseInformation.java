@@ -1,6 +1,8 @@
 package org.recap.model;
 
 
+import java.util.List;
+
 /**
  * Created by hemalathas on 1/11/16.
  */
@@ -8,7 +10,7 @@ package org.recap.model;
 public class ItemResponseInformation {
 
     private String patronBarcode;
-    private String itemBarcode;
+    private List<String> itemBarcodes;
     private String requestType;
     private String deliveryLocation;
     private String requestingInstitution;
@@ -18,11 +20,7 @@ public class ItemResponseInformation {
     private String screenMessage;
     private boolean success;
     private String emailAddress;
-    private Integer startPage;
-    private Integer endPage;
     private String titleIdentifier;
-    private String bibiid;
-    private String dueDate;
 
 
     public String getBibliographicId() {
@@ -41,12 +39,12 @@ public class ItemResponseInformation {
         this.patronBarcode = patronBarcode;
     }
 
-    public String getItemBarcode() {
-        return itemBarcode;
+    public List<String> getItemBarcodes() {
+        return itemBarcodes;
     }
 
-    public void setItemBarcode(String itemBarcode) {
-        this.itemBarcode = itemBarcode;
+    public void setItemBarcodes(List<String> itemBarcodes) {
+        this.itemBarcodes = itemBarcodes;
     }
 
     public String getRequestType() {
@@ -113,22 +111,6 @@ public class ItemResponseInformation {
         this.emailAddress = emailAddress;
     }
 
-    public Integer getStartPage() {
-        return startPage;
-    }
-
-    public void setStartPage(Integer startPage) {
-        this.startPage = startPage;
-    }
-
-    public Integer getEndPage() {
-        return endPage;
-    }
-
-    public void setEndPage(Integer endPage) {
-        this.endPage = endPage;
-    }
-
     public String getTitleIdentifier() {
         return titleIdentifier;
     }
@@ -136,24 +118,6 @@ public class ItemResponseInformation {
     public void setTitleIdentifier(String titleIdentifier) {
         this.titleIdentifier = titleIdentifier;
     }
-
-    public String getBibiid() {
-        return bibiid;
-    }
-
-    public void setBibiid(String bibiid) {
-        this.bibiid = bibiid;
-    }
-
-    public String getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
-    }
-
-
 
 
 }
