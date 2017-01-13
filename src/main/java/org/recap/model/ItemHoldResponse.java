@@ -5,8 +5,6 @@ package org.recap.model;
  */
 public class ItemHoldResponse extends AbstractResponseItem {
 
-
-
     private boolean available;
     private String transactionDate;
     private String institutionID;
@@ -19,9 +17,9 @@ public class ItemHoldResponse extends AbstractResponseItem {
     private String ISBN;
     private String LCCN;
     private String trackingId;
+    private String jobId;
     private String updatedDate;
     private String createdDate;
-
 
     public boolean getAvailable() {
         return available;
@@ -117,6 +115,14 @@ public class ItemHoldResponse extends AbstractResponseItem {
 
     public void setTrackingId(String trackingId) {
         this.trackingId = trackingId;
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 
     public String getUpdatedDate() {
