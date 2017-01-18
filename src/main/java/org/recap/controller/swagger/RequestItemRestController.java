@@ -111,7 +111,7 @@ public class RequestItemRestController {
             notes = "Checkout Item Request from Owning institution", nickname = "checkoutItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem checkoutItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemCheckOutRequest itemCheckOutRequest){
+    public ItemCheckoutResponse checkoutItemRequest(@ApiParam(value = "Parameters for checking out an item" , required = true , name = "requestItemJson")@RequestBody ItemCheckOutRequest itemCheckOutRequest){
         ItemCheckoutResponse itemCheckoutResponse= null;
         ItemRequestInformation itemRequestInfo= new ItemRequestInformation();
         String response = "";
@@ -277,9 +277,15 @@ public class RequestItemRestController {
             itemInformationResponse = responseEntity.getBody();
         }catch(RestClientException ex){
             logger.error("RestClient : ",ex);
+            if(itemInformationResponse ==null){
+                itemInformationResponse = new ItemInformationResponse();
+            }
             itemInformationResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
             logger.error("Exception : ",ex);
+            if(itemInformationResponse ==null){
+                itemInformationResponse = new ItemInformationResponse();
+            }
             itemInformationResponse.setScreenMessage(ex.getMessage());
         }
         return itemInformationResponse;
@@ -321,7 +327,7 @@ public class RequestItemRestController {
     @ApiOperation(value = "patronInformation"     , notes = "Patron Information", nickname = "patronInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem patronInformation(@ApiParam(value = "Parameters for requesting an patron" , required = true , name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest){
+    public PatronInformationResponse patronInformation(@ApiParam(value = "Parameters for requesting an patron" , required = true , name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest){
         HttpEntity<PatronInformationResponse> responseEntity = null;
         PatronInformationResponse patronInformation =null;
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
@@ -342,12 +348,20 @@ public class RequestItemRestController {
         return patronInformation;
     }
 
-//    @RequestMapping(value = "/refile"  , method = RequestMethod.POST)
-//    @ApiOperation(value = "refile"     , notes = "Re-File", nickname = "patronInformation")
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
-//    @ResponseBody
-    public void refileItem(@ApiParam(value = "Parameters for requesting re-file" , required = true , name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest){
+    @RequestMapping(value = "/refile"  , method = RequestMethod.POST)
+    @ApiOperation(value = "refile"     , notes = "Re-File for testing item status change back to Available and execute Solr Index", nickname = "Re-File")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ItemRefileResponse refileItem(@ApiParam(value = "Parameters for requesting re-file" , required = true , name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest){
+        ItemRefileResponse itemRefileResponse =null;
+        HttpEntity<ItemRefileResponse> responseEntity = null;
+        HttpEntity request = new HttpEntity(itemRefileRequest);
+        RestTemplate restTemplate = new RestTemplate();
 
+        responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_RE_FILE, HttpMethod.POST, request, ItemRefileResponse.class);
+        itemRefileResponse =responseEntity.getBody();
+
+        return itemRefileResponse;
     }
 
     private HttpHeaders getHttpHeaders() {

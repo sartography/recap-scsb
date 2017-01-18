@@ -50,7 +50,10 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SwaggerInterceptor())
-                .addPathPatterns("/sharedCollection/*");
+                .addPathPatterns("/sharedCollection/*")
+                .addPathPatterns("/requestItem/*")
+                .addPathPatterns("/searchService/*")
+                .addPathPatterns("/dataDump/*");
      }
 
 }
