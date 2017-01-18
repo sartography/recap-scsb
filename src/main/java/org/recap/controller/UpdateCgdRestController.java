@@ -29,16 +29,16 @@ public class UpdateCgdRestController {
     String scsbSolrClient;
 
     @RequestMapping(value="/updateCgd", method = RequestMethod.GET)
-    public String updateCgdForItem(@RequestParam Integer itemId, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
+    public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
         String statusResponse = null;
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
-                    .queryParam("itemId", itemId)
-                    .queryParam("newCollectionGroupDesignation", newCollectionGroupDesignation)
-                    .queryParam("cgdChangeNotes", cgdChangeNotes);
+                    .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
+                    .queryParam(ReCAPConstants.NEW_CGD, newCollectionGroupDesignation)
+                    .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes);
 
             ResponseEntity<String> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             statusResponse = responseEntity.getBody();
