@@ -1,18 +1,20 @@
 package org.recap.model;
 
+import java.util.List;
+
 /**
  * Created by sudhishk on 15/12/16.
  */
-public class ItemRefileRequest extends AbstractRequestItem {
-    private String patronIdentifier;
+public class ItemRefileRequest  {
+    private List<String> itemBarcodes;
 
 
-    public String getPatronIdentifier() {
-        return patronIdentifier;
+    public List<String> getItemBarcodes() {
+        return itemBarcodes;
     }
 
-    public void setPatronIdentifier(String patronIdentifier) {
-        this.patronIdentifier = patronIdentifier;
+    public void setItemBarcodes(List<String> itemBarcodes) {
+        this.itemBarcodes = itemBarcodes;
     }
 
 }

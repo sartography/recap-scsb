@@ -38,6 +38,7 @@ public class ReCAPConstants {
     public static final String URL_REQUEST_ITEM_RECALL="requestItem/recallItem";
     public static final String URL_REQUEST_ITEM_CREATEBIB="requestItem/createBib";
     public static final String URL_REQUEST_PATRON_INFORMATION="requestItem/patronInformation";
+    public static final String URL_REQUEST_RE_FILE="requestItem/refile";
 
     public static final String REST_URL_REQUEST_ITEM ="/requestItem";
     public static final String REST_URL_VALIDATE_REQUEST_ITEM ="/validateItemRequestInformations";
