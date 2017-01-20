@@ -22,11 +22,10 @@ public class ReCAPConstants {
 
 
     // Retrieval,EDD, Hold, Recall, Borrow Direct
-    public static final String REQUEST_TYPE_RETRIEVAL="Retrieval";
+    public static final String REQUEST_TYPE_RETRIEVAL="RETRIEVAL";
     public static final String REQUEST_TYPE_EDD="EDD";
-    public static final String REQUEST_TYPE_HOLD="Hold";
-    public static final String REQUEST_TYPE_RECALL="Recall";
-    public static final String REQUEST_TYPE_BORROW_DIRECT="Borrow Direct";
+    public static final String REQUEST_TYPE_RECALL="RECALL";
+    public static final String REQUEST_TYPE_BORROW_DIRECT="BORROW DIRECT";
 
     // MQ URI
     public static final String REQUEST_ITEM_QUEUE = "scsbactivemq:queue:RequestItemQ";

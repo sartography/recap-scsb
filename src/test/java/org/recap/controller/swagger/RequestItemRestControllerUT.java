@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hemalathas on 4/11/16.
@@ -40,7 +41,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     ConsumerTemplate consumer;
 
     @Test
-    public void testValidRequest() throws JSONException {
+    public void testValidateItemRequestBorrowDirectRequest() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setRequestType("Borrow Direct");
         itemRequestInformation.setRequestingInstitution("PUL");
@@ -53,7 +54,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     }
 
     @Test
-    public void testRequestWithInvalidRequestingInst() throws JSONException {
+    public void testValidateRequestWithInvalidRequestingInst() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setPatronBarcode("45678915");
         itemRequestInformation.setRequestType("Borrow Direct");
@@ -66,7 +67,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     }
 
     @Test
-    public void testRequestParameterWithInvalidPatronBarcode() throws JSONException {
+    public void testValidateRequestWithInvalidPatronBarcode() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setPatronBarcode("g75dfgsf");
         itemRequestInformation.setRequestType("Borrow Direct");
@@ -79,7 +80,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     }
 
     @Test
-    public void testRequestParameterWithEDDRequestType() throws JSONException {
+    public void testValidateRequestWithEDDRequestType() throws JSONException {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setPatronBarcode("45678915");
         itemRequestInformation.setRequestType("EDD");
@@ -91,67 +92,143 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         assertEquals(responseEntity.getBody(),ReCAPConstants.START_PAGE_AND_END_PAGE_REQUIRED+"\n");
     }
 
+    /**
+     * Request Item Not Available for Retrival
+     */
     @Test
     public void testRequestItem() {
         ItemResponseInformation itemResponseInformation = null;
         try {
             ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
-            itemRequestInformation.setPatronBarcode("32101077423406");
+            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54322"));
+            itemRequestInformation.setPatronBarcode("45678912");
             itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
             itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
             itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
-
+            itemRequestInformation.setDeliveryLocation("PA");
+            itemRequestInformation.setTitleIdentifier("100 days :$bin the Land of the Thousand Hills");
             itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("UT Execption: ",e);
         }
         assertNotNull(itemResponseInformation);
+        assertTrue(itemResponseInformation.isSuccess());
+    }
+
+    @Test
+    public void testScenario01(){
+        ItemResponseInformation itemResponseInformation = null;
+        try {
+            ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
+            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54333"));
+            itemRequestInformation.setPatronBarcode("45678912");
+            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
+            itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
+            itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
+            itemRequestInformation.setDeliveryLocation("PA");
+            itemRequestInformation.setTitleIdentifier("100 days :$bin the Land of the Thousand Hills");
+            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
+
+        } catch (Exception e) {
+            logger.error("UT Execption: ",e);
+        }
+        assertNotNull(itemResponseInformation);
+        assertTrue(itemResponseInformation.isSuccess());
+    }
+
+    /**
+     *  Failure when Item not found in SCSB
+     */
+    @Test
+    public void testScenario02(){
+        ItemResponseInformation itemResponseInformation = null;
+        try {
+            ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
+            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54329"));
+            itemRequestInformation.setPatronBarcode("45678912");
+            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
+            itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
+            itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
+            itemRequestInformation.setDeliveryLocation("PA");
+            itemRequestInformation.setTitleIdentifier("100 days :$bin the Land of the Thousand Hills");
+            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
+
+        } catch (Exception e) {
+            logger.error("UT Execption: ",e);
+        }
+        assertNotNull(itemResponseInformation);
+        assertTrue(itemResponseInformation.isSuccess());
+    }
+
+    /**
+     * Recall is not Checked Out in ILS
+     */
+    @Test
+    public void testScenario03(){
+        ItemResponseInformation itemResponseInformation = null;
+        try {
+            ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
+            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54322"));
+            itemRequestInformation.setPatronBarcode("45678913");
+            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RECALL);
+            itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
+            itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
+            itemRequestInformation.setDeliveryLocation("PA");
+            itemRequestInformation.setTitleIdentifier("100 days :$bin the Land of the Thousand Hills");
+            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
+
+        } catch (Exception e) {
+            logger.error("UT Execption: ",e);
+        }
+        assertNotNull(itemResponseInformation);
+        assertTrue(itemResponseInformation.isSuccess());
+    }
+
+
+    @Test
+    public void testScenario04(){
+        ItemResponseInformation itemResponseInformation = null;
+        try {
+            ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
+            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54333"));
+            itemRequestInformation.setPatronBarcode("RECAPTST01");
+            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
+            itemRequestInformation.setRequestingInstitution(ReCAPConstants.COLUMBIA);
+            itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
+            itemRequestInformation.setDeliveryLocation("PA");
+            itemRequestInformation.setTitleIdentifier("100 days :$bin the Land of the Thousand Hills");
+            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInformation);
+
+        } catch (Exception e) {
+            logger.error("UT Execption: ",e);
+        }
+        assertNotNull(itemResponseInformation);
+        assertTrue(itemResponseInformation.isSuccess());
+    }
+
+
+    @Test
+    public void testScenario05(){
+
+    }
+
+
+    @Test
+    public void testScenario06(){
+
     }
 
     @Test
     public void testQueue() {
         String testString ="Test";
         String body="";
-        String endpointUri="scsbactivemq:queue:Request.Item";
         try {
-            producer.sendBody(endpointUri, testString);
+            producer.sendBody(ReCAPConstants.REQUEST_ITEM_QUEUE, testString);
             logger.info("Start");
         }catch(Exception e){
             logger.error(e);
         }
-    }
-
-    @Test
-    public void testTopic() {
-        String testString ="Test";
-        String body="";
-        String endpointUri="scsbactivemq:topic:PUL.Request";
-        try {
-            producer.sendBody(endpointUri, testString);
-            logger.info("Start");
-            Exchange receive = consumer.receive(endpointUri);
-            logger.info(receive.getOut().getBody());
-        }catch(Exception e){
-            logger.error(e);
-        } finally {
-
-        }
-//        assertEquals(testString, body);
-    }
-
-    @Test
-    public void testJMS() {
-        String testString ="Test";
-        String body="";
-        try {
-
-        }catch(Exception e){
-            logger.error(e);
-        } finally {
-
-        }
-//        assertEquals(testString, body);
     }
 
     @Test
@@ -159,13 +236,12 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         logger.info("Send Item Request ");
         try {
             ItemRequestInformation itemRequestInformation=new ItemRequestInformation();
-            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54321"));
-            itemRequestInformation.setPatronBarcode("45678913");
-            itemRequestInformation.setExpirationDate("20161231    190405");
+            itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54322"));
+            itemRequestInformation.setPatronBarcode("45678912");
             itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
             itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
             itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
-            itemRequestInformation.setDeliveryLocation("htcsc");
+            itemRequestInformation.setDeliveryLocation("PA");
             itemRequestInformation.setTitleIdentifier("New BooK");
 
             String json = "";
