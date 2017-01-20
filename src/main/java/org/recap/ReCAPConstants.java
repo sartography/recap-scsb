@@ -1,4 +1,3 @@
-
 package org.recap;
 
 /**
@@ -61,6 +60,8 @@ public class ReCAPConstants {
     public static final String RECAP = "recap";
 
     public static final String CGD_UPDATE_ITEM_BARCODE = "itemBarcode";
+    public static final String OWNING_INSTITUTION = "owningInstitution";
+    public static final String OLD_CGD = "oldCollectionGroupDesignation";
     public static final String NEW_CGD = "newCollectionGroupDesignation";
     public static final String CGD_CHANGE_NOTES = "cgdChangeNotes";
 
