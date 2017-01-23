@@ -29,7 +29,7 @@ public class UpdateCgdRestController {
     String scsbSolrClient;
 
     @RequestMapping(value="/updateCgd", method = RequestMethod.GET)
-    public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
+    public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
         String statusResponse = null;
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -37,6 +37,8 @@ public class UpdateCgdRestController {
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
                     .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
+                    .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
+                    .queryParam(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)
                     .queryParam(ReCAPConstants.NEW_CGD, newCollectionGroupDesignation)
                     .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes);
 
