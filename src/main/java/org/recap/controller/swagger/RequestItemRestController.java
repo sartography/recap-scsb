@@ -271,7 +271,6 @@ public class RequestItemRestController {
         try {
             itemInformationRequest.setItemBarcodes(itemRequestInfo.getItemBarcodes());
             itemInformationRequest.setItemOwningInstitution(itemRequestInfo.getItemOwningInstitution());
-            itemInformationRequest.setSource(itemRequestInfo.getSource());
             HttpEntity request = new HttpEntity(itemInformationRequest);
             responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_ITEM_INFORMATION, HttpMethod.POST, request, ItemInformationResponse.class);
             itemInformationResponse = responseEntity.getBody();
