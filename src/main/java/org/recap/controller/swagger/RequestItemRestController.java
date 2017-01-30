@@ -70,7 +70,6 @@ public class RequestItemRestController {
             itemResponseInformation.setTitleIdentifier(itemRequestInfo.getTitleIdentifier());
             itemResponseInformation.setDeliveryLocation(itemRequestInfo.getDeliveryLocation());
             itemResponseInformation.setEmailAddress(itemRequestInfo.getEmailAddress());
-            itemResponseInformation.setExpirationDate(itemRequestInfo.getExpirationDate());
             itemResponseInformation.setPatronBarcode(itemRequestInfo.getPatronBarcode());
             itemResponseInformation.setRequestType(itemRequestInfo.getRequestType());
             itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
@@ -175,11 +174,10 @@ public class RequestItemRestController {
             itemRequestInfo.setItemOwningInstitution(itemHoldRequest.getItemOwningInstitution());
             itemRequestInfo.setRequestingInstitution(itemHoldRequest.getItemOwningInstitution());
             itemRequestInfo.setPatronBarcode(itemHoldRequest.getPatronIdentifier());
-            itemRequestInfo.setExpirationDate(itemHoldRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemHoldRequest.getBibId());
             itemRequestInfo.setDeliveryLocation(itemHoldRequest.getPickupLocation());
             itemRequestInfo.setTrackingId(itemHoldRequest.getTrackingId());
-            itemRequestInfo.setTitle(itemHoldRequest.getTitle());
+            itemRequestInfo.setTitleIdentifier(itemHoldRequest.getTitle());
             itemRequestInfo.setAuthor(itemHoldRequest.getAuthor());
             itemRequestInfo.setCallNumber(itemHoldRequest.getCallNumber());
 
@@ -211,7 +209,6 @@ public class RequestItemRestController {
             itemRequestInfo.setItemOwningInstitution(itemHoldCancelRequest.getItemOwningInstitution());
             itemRequestInfo.setRequestingInstitution(itemHoldCancelRequest.getItemOwningInstitution());
             itemRequestInfo.setPatronBarcode(itemHoldCancelRequest.getPatronIdentifier());
-            itemRequestInfo.setExpirationDate(itemHoldCancelRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemHoldCancelRequest.getBibId());
             itemRequestInfo.setDeliveryLocation(itemHoldCancelRequest.getPickupLocation());
             itemRequestInfo.setTrackingId(itemHoldCancelRequest.getTrackingId());
@@ -305,7 +302,6 @@ public class RequestItemRestController {
             itemRequestInfo.setItemOwningInstitution(itemRecalRequest.getItemOwningInstitution());
             itemRequestInfo.setRequestingInstitution(itemRecalRequest.getItemOwningInstitution());
             itemRequestInfo.setPatronBarcode(itemRecalRequest.getPatronIdentifier());
-            itemRequestInfo.setExpirationDate(itemRecalRequest.getExpirationDate());
             itemRequestInfo.setBibId(itemRecalRequest.getBibId());
             itemRequestInfo.setDeliveryLocation(itemRecalRequest.getPickupLocation());
 

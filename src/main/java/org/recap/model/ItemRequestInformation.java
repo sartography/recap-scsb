@@ -20,7 +20,6 @@ public class ItemRequestInformation {
     private String deliveryLocation="";
     private String requestNotes="";
     private String trackingId; // NYPL - trackingId
-    private String title; // NYPL - title
     private String author; // NYPL - author
     private String callNumber; // NYPL - callNumber
 
@@ -30,7 +29,6 @@ public class ItemRequestInformation {
     private Integer startPage=0;
     private Integer endPage=0;
     private String chapterTitle="";
-    private String expirationDate;
     private String bibId;
 
     public String getBibId() {
@@ -39,14 +37,6 @@ public class ItemRequestInformation {
 
     public void setBibId(String bibId) {
         this.bibId = bibId;
-    }
-
-    public String getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(String expirationDate) {
-        this.expirationDate = expirationDate;
     }
 
     public String getTitleIdentifier() {
@@ -71,14 +61,6 @@ public class ItemRequestInformation {
 
     public void setTrackingId(String trackingId) {
         this.trackingId = trackingId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getAuthor() {
