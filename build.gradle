@@ -15,6 +15,11 @@ apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'jacoco'
 
+//added to accept systemproperties while executing gradlew test cmd
+test {
+	systemProperties = System.properties
+}
+
 jar {
 	baseName = 'scsb'
 	version = '0.0.1-SNAPSHOT'
