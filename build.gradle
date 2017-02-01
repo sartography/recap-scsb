@@ -13,6 +13,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
+apply plugin: 'jacoco'
 
 jar {
 	baseName = 'scsb'
@@ -49,4 +50,14 @@ dependencies {
 	compile('org.apache.activemq:activemq-client:5.14.1')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+jacocoTestReport {
+	group = "Reporting"
+	reports {
+		xml.enabled true
+		csv.enabled false
+		html.enabled = true
+		html.destination "${buildDir}/jacocoHtml"
+	}
 }
