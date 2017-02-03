@@ -29,14 +29,33 @@ public class ReportsRestController {
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
+    public String getServerProtocol() {
+        return serverProtocol;
+    }
+
+    public void setServerProtocol(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    public String getScsbSolrClientUrl() {
+        return scsbSolrClient;
+    }
+
+    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
+        this.scsbSolrClient = scsbSolrClientUrl;
+    }
+
     @RequestMapping(value="/accessionDeaccessionCounts", method = RequestMethod.POST)
     public ReportsResponse accessionDeaccessionCounts(@RequestBody ReportsRequest reportsRequest) {
         ReportsResponse reportsResponse = new ReportsResponse();
         try {
-            RestTemplate restTemplate = new RestTemplate();
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
 
-            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -52,7 +71,7 @@ public class ReportsRestController {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
 
-            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -68,7 +87,7 @@ public class ReportsRestController {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
 
-            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(e.getMessage());

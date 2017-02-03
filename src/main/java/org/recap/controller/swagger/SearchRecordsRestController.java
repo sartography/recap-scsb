@@ -32,6 +32,26 @@ public class SearchRecordsRestController {
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
+    public String getServerProtocol() {
+        return serverProtocol;
+    }
+
+    public void setServerProtocol(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    public String getScsbSolrClientUrl() {
+        return scsbSolrClient;
+    }
+
+    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
+        this.scsbSolrClient = scsbSolrClientUrl;
+    }
+
     @RequestMapping(value="/search", method = RequestMethod.POST)
     //@ApiOperation(value = "search",notes = "Search Books in ReCAP - Using Method Post, Request data is String", nickname = "search", position = 0, consumes="application/json")
     //@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
@@ -41,7 +61,7 @@ public class SearchRecordsRestController {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
 
-            ResponseEntity<SearchRecordsResponse> responseEntity = restTemplate.exchange(serverProtocol + scsbSolrClient + ReCAPConstants.URL_SEARChBYJSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
+            ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARChBYJSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -69,7 +89,7 @@ public class SearchRecordsRestController {
         List<SearchResultRow> searchResultRows = null;
         try {
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_SEARChBYPARAM)
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARChBYPARAM)
                     .queryParam("fieldValue", fieldValue)
                     .queryParam("fieldName", fieldName)
                     .queryParam("owningInstitutions", owningInstitutions)
@@ -79,7 +99,7 @@ public class SearchRecordsRestController {
                     .queryParam("useRestrictions", useRestrictions)
                     .queryParam("pageSize", pageSize);
 
-            responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class);
+            responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class);
             searchResultRows = responseEntity.getBody();
         } catch (Exception e) {
             searchResultRows = new ArrayList<>();

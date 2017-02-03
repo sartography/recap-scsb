@@ -28,6 +28,26 @@ public class UpdateCgdRestController {
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
+    public String getServerProtocol() {
+        return serverProtocol;
+    }
+
+    public void setServerProtocol(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    public String getScsbSolrClientUrl() {
+        return scsbSolrClient;
+    }
+
+    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
+        this.scsbSolrClient = scsbSolrClientUrl;
+    }
+
     @RequestMapping(value="/updateCgd", method = RequestMethod.GET)
     public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
         String statusResponse = null;
@@ -35,14 +55,14 @@ public class UpdateCgdRestController {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_UPDATE_CGD)
                     .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
                     .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
                     .queryParam(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)
                     .queryParam(ReCAPConstants.NEW_CGD, newCollectionGroupDesignation)
                     .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes);
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
+            ResponseEntity<String> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             statusResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(e.getMessage());
