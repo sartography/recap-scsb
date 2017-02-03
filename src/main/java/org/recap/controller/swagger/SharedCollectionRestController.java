@@ -34,6 +34,34 @@ public class SharedCollectionRestController {
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
 
+    public String getServerProtocol() {
+        return serverProtocol;
+    }
+
+    public void setServerProtocol(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public String getScsbCircUrl() {
+        return scsbCircUrl;
+    }
+
+    public void setScsbCircUrl(String scsbCircUrl) {
+        this.scsbCircUrl = scsbCircUrl;
+    }
+
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    public String getScsbSolrClientUrl() {
+        return scsbSolrClientUrl;
+    }
+
+    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
+        this.scsbSolrClientUrl = scsbSolrClientUrl;
+    }
+
     @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.GET)
     @ApiOperation(value = "itemAvailabilityStatus",
             notes = "Item Availability Status", nickname = "itemAvailabilityStatus", position = 0)
@@ -43,8 +71,8 @@ public class SharedCollectionRestController {
         RestTemplate restTemplate = new RestTemplate();
         String itemStatus = null;
         try {
-            itemStatus = restTemplate
-                    .getForObject(serverProtocol+scsbSolrClientUrl+"/sharedCollection/itemAvailabilityStatus?itemBarcode="+itemBarcode,  String.class);
+            itemStatus = getRestTemplate()
+                    .getForObject(getServerProtocol()+getScsbSolrClientUrl()+"/sharedCollection/itemAvailabilityStatus?itemBarcode="+itemBarcode,  String.class);
         } catch (Exception exception) {
             ResponseEntity responseEntity = new ResponseEntity("Scsb Solr Client Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
@@ -66,7 +94,7 @@ public class SharedCollectionRestController {
     public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
         RestTemplate restTemplate = new RestTemplate();
         try {
-            String response = restTemplate.postForObject(serverProtocol + scsbSolrClientUrl + "/sharedCollection/deAccession", deAccessionRequest, String.class);
+            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/deAccession", deAccessionRequest, String.class);
             ResponseEntity responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
             return responseEntity;
         } catch (Exception ex) {
@@ -83,7 +111,7 @@ public class SharedCollectionRestController {
     public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody AccessionRequest accessionRequest) {
         RestTemplate restTemplate = new RestTemplate();
         try {
-            String response = restTemplate.postForObject(serverProtocol + scsbSolrClientUrl + "sharedCollection/accession", accessionRequest, String.class);
+            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequest, String.class);
             ResponseEntity responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
             return responseEntity;
         } catch (Exception exception) {
@@ -103,7 +131,7 @@ public class SharedCollectionRestController {
                 .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
         ResponseEntity responseEntity;
         try {
-            String response = restTemplate.postForObject(serverProtocol + scsbCircUrl + "sharedCollection/submitCollection", inputRecords, String.class);
+            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbCircUrl() + "sharedCollection/submitCollection", inputRecords, String.class);
             if(response.equalsIgnoreCase(ReCAPConstants.INVALID_MARC_XML_FORMAT_MESSAGE) || response.equalsIgnoreCase(ReCAPConstants.INVALID_SCSB_XML_FORMAT_MESSAGE)
                     || response.equalsIgnoreCase(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR)){
                 responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.BAD_REQUEST);
