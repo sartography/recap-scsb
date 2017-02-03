@@ -1,20 +1,61 @@
 package org.recap.controller;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.recap.ReCAPConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 /**
  * Created by rajeshbabuk on 3/1/17.
  */
 public class UpdateCgdRestControllerUT extends BaseControllerUT {
+
+    @Value("${server.protocol}")
+    String serverProtocol;
+
+    @Value("${scsb.solr.client.url}")
+    String scsbSolrClient;
+
+    @Mock
+    RestTemplate mockRestTemplate;
+
+    @Mock
+    UpdateCgdRestController updateCgdRestController;
+
+    @Mock
+    UriComponentsBuilder builder;
+
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    public String getServerProtocol() {
+        return serverProtocol;
+    }
+
+    public void setServerProtocol(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public String getScsbSolrClientUrl() {
+        return scsbSolrClient;
+    }
+
+    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
+        this.scsbSolrClient = scsbSolrClient;
+    }
 
     @Test
     public void updateCgdForItem() throws Exception {
@@ -23,18 +64,21 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         String oldCollectionGroupDesignation = "Shared";
         String newCollectionGroupDesignation = "Private";
         String cgdChangeNotes = "Notes";
-        MvcResult savedResult = this.mockMvc.perform(get("/updateCgdService/updateCgd")
-                .headers(getHttpHeaders())
-                .param(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, String.valueOf(itemBarcode))
-                .param(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
-                .param(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)
-                .param(ReCAPConstants.NEW_CGD, newCollectionGroupDesignation)
-                .param(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String statusResponse = savedResult.getResponse().getContentAsString();
-        assertNotNull(statusResponse);
+        ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.SUCCESS,HttpStatus.OK);
+        HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
+                .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
+                .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
+                .queryParam(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)
+                .queryParam(ReCAPConstants.NEW_CGD, newCollectionGroupDesignation)
+                .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes);
+        Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class)).thenReturn(responseEntity);
+        Mockito.when(updateCgdRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(updateCgdRestController.getServerProtocol()).thenReturn(serverProtocol);
+        Mockito.when(updateCgdRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
+        Mockito.when(updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes)).thenCallRealMethod();
+        String response = updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes);
+        assertNotNull(response);
     }
 
     private HttpHeaders getHttpHeaders() {

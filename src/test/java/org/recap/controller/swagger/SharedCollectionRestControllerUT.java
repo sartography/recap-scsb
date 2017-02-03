@@ -1,23 +1,25 @@
 package org.recap.controller.swagger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.recap.ReCAPConstants;
 import org.recap.controller.BaseControllerUT;
 import org.recap.model.AccessionRequest;
 import org.recap.model.DeAccessionRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by chenchulakshmig on 14/10/16.
@@ -33,7 +35,43 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
 
-    String updatedMarcXml = "<collection xmlns=\"http://www.loc.gov/MARC21/slim\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd\">\n" +
+
+    @Mock
+    RestTemplate mockRestTemplate;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    public String getServerProtocol() {
+        return serverProtocol;
+    }
+
+    public void setServerProtocol(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public String getScsbCircUrl() {
+        return scsbCircUrl;
+    }
+
+    public void setScsbCircUrl(String scsbCircUrl) {
+        this.scsbCircUrl = scsbCircUrl;
+    }
+
+    public String getScsbSolrClientUrl() {
+        return scsbSolrClientUrl;
+    }
+
+    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
+        this.scsbSolrClientUrl = scsbSolrClientUrl;
+    }
+
+    @Mock
+    SharedCollectionRestController sharedCollectionRestController;
+
+    String inputRecords = "<collection xmlns=\"http://www.loc.gov/MARC21/slim\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd\">\n" +
             "<record>\n" +
             "<leader>01011cam a2200289 a 4500</leader>\n" +
             "<controlfield tag=\"001\">115115</controlfield>\n" +
@@ -143,75 +181,64 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
             "</datafield>\n" +
             "</record>\n" +
             "</collection>";
+
     @Test
     public void itemAvailabilityStatus() throws Exception {
         String itemBarcode = "32101056185125";
-        MvcResult savedResult = this.mockMvc.perform(get("/sharedCollection/itemAvailabilityStatus")
-                .headers(getHttpHeaders())
-                .param("itemBarcode", itemBarcode))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String itemStatus = savedResult.getResponse().getContentAsString();
-        assertNotNull(itemStatus);
-        assertEquals(itemStatus, "Available");
+        Mockito.when(mockRestTemplate.getForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus?itemBarcode="+itemBarcode, String.class)).thenReturn("Available");
+        Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
+        Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
+        Mockito.when(sharedCollectionRestController.itemAvailabilityStatus("32101056185125")).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.itemAvailabilityStatus("32101056185125");
+        assertNotNull(responseEntity1);
+        assertEquals(responseEntity1.getBody(), "Available");
     }
 
     @Test
     public void deAccession() throws Exception {
         Random random = new Random();
         String itemBarcode = String.valueOf(random.nextInt());
-
         DeAccessionRequest deAccessionRequest = new DeAccessionRequest();
         deAccessionRequest.setItemBarcodes(Arrays.asList(itemBarcode));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        MvcResult mvcResult = this.mockMvc.perform(post("/sharedCollection/deAccession")
-                .headers(getHttpHeaders())
-                .contentType(contentType)
-                .content(objectMapper.writeValueAsString(deAccessionRequest)))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String result = mvcResult.getResponse().getContentAsString();
-        assertNotNull(result);
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/deAccession",deAccessionRequest, String.class)).thenReturn("Success");
+        Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
+        Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
+        Mockito.when(sharedCollectionRestController.deAccession(deAccessionRequest)).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.deAccession(deAccessionRequest);
+        assertNotNull(responseEntity1);
+        assertEquals(responseEntity1.getBody(),"Success");
     }
 
     @Test
     public void accession() throws Exception {
-
         AccessionRequest accessionRequest = new AccessionRequest();
         accessionRequest.setCustomerCode("PB");
         accessionRequest.setItemBarcode("32101095533293");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        MvcResult mvcResult = this.mockMvc.perform(post("/sharedCollection/accession")
-                .headers(getHttpHeaders())
-                .contentType(contentType)
-                .content(objectMapper.writeValueAsString(accessionRequest)))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String result = mvcResult.getResponse().getContentAsString();
-        assertEquals(result, "Success");
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequest, String.class)).thenReturn("Success");
+        Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
+        Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
+        Mockito.when(sharedCollectionRestController.accession(accessionRequest)).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.accession(accessionRequest);
+        assertNotNull(responseEntity1);
+        assertEquals(responseEntity1.getBody(),"Success");
     }
 
     @Test
     public void submitCollection() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(post("/sharedCollection/submitCollection")
-                .headers(getHttpHeaders())
-                .content(updatedMarcXml))
-                .andExpect(status().isOk())
-                .andReturn();
-        String result = mvcResult.getResponse().getContentAsString();
-        assertEquals(result, "Success");
+        mockRestTemplate.getMessageConverters()
+                .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbCircUrl() + "sharedCollection/submitCollection",inputRecords, String.class)).thenReturn("Success");
+        Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
+        Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
+        Mockito.when(sharedCollectionRestController.submitCollection(inputRecords)).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.submitCollection(inputRecords);
+        assertNotNull(responseEntity1);
+        assertEquals(responseEntity1.getBody(), "Success");
     }
 
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("api_key", "recap");
-        return headers;
-    }
 
 }

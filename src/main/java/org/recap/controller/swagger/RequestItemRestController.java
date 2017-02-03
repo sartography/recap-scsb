@@ -39,6 +39,42 @@ public class RequestItemRestController {
     @Autowired
     private ProducerTemplate producer;
 
+    public String getServerProtocol() {
+        return serverProtocol;
+    }
+
+    public void setServerProtocol(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public String getScsbCircUrl() {
+        return scsbCircUrl;
+    }
+
+    public void setScsbCircUrl(String scsbCircUrl) {
+        this.scsbCircUrl = scsbCircUrl;
+    }
+
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    public ProducerTemplate getProducer() {
+        return producer;
+    }
+
+    public void setProducer(ProducerTemplate producer) {
+        this.producer = producer;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
     @RequestMapping(value = ReCAPConstants.REST_URL_REQUEST_ITEM, method = RequestMethod.POST)
     @ApiOperation(value = "Request Item", notes = "Item Request from Owning institution", nickname = "requestItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -88,16 +124,16 @@ public class RequestItemRestController {
     @ResponseBody
     public ResponseEntity validateItemRequest(@ApiParam(value = "Parameters for requesting an item" , required = true , name = "requestItemJson")@RequestBody ItemRequestInformation itemRequestInfo){
         ResponseEntity responseEntity = null;
-        String response = "";
-        RestTemplate restTemplate = new RestTemplate();
+        String response = null;
         try {
-            response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + "requestItem/validateItemRequestInformations", itemRequestInfo, String.class).getBody();
+            responseEntity = getRestTemplate().postForEntity(getServerProtocol() + getScsbCircUrl() + "requestItem/validateItemRequestInformations", itemRequestInfo, String.class);
+            response = (String) responseEntity.getBody();
         }catch (HttpClientErrorException httpEx){
             HttpStatus statusCode = httpEx.getStatusCode();
             String responseBodyAsString = httpEx.getResponseBodyAsString();
             return new ResponseEntity(responseBodyAsString,getHttpHeaders(),statusCode);
         }catch(Exception ex){
-            logger.debug("scsbCircUrl : "+scsbCircUrl);
+            logger.debug("scsbCircUrl : "+getScsbCircUrl());
             responseEntity = new ResponseEntity("Scsb circ Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
         }
