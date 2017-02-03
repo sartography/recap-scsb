@@ -64,7 +64,7 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
         searchRecordsResponse.setTotalPageCount(3);
         ResponseEntity<SearchRecordsResponse> responseEntity = new ResponseEntity<SearchRecordsResponse>(searchRecordsResponse,HttpStatus.OK);
-        Mockito.when(mockRestTemplate.exchange(serverProtocol+scsbSolrClient+ ReCAPConstants.URL_SEARChBYJSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
+        Mockito.when(mockRestTemplate.exchange(serverProtocol+scsbSolrClient+ ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
         Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(searchRecordsRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
@@ -78,7 +78,7 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         HttpEntity request = new HttpEntity(getHttpHeaders());
         List<SearchResultRow> searchResultRowList = new ArrayList<>();
         ResponseEntity<List> httpEntity = new ResponseEntity<List>(searchResultRowList,HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_SEARChBYPARAM)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_PARAM)
                 .queryParam("fieldValue", "test")
                 .queryParam("fieldName", "test")
                 .queryParam("owningInstitutions", "PUL")

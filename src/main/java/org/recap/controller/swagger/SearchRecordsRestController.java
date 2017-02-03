@@ -61,7 +61,7 @@ public class SearchRecordsRestController {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
 
-            ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARChBYJSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
+            ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -89,7 +89,7 @@ public class SearchRecordsRestController {
         List<SearchResultRow> searchResultRows = null;
         try {
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARChBYPARAM)
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_PARAM)
                     .queryParam("fieldValue", fieldValue)
                     .queryParam("fieldName", fieldName)
                     .queryParam("owningInstitutions", owningInstitutions)
