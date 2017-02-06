@@ -5,7 +5,6 @@ package org.recap.model;
  */
 public class ItemHoldRequest extends AbstractRequestItem {
     private String patronIdentifier;
-    private String expirationDate;
     private String bibId;
     private String pickupLocation;
     private String trackingId; // NYPL - trackingId
@@ -19,14 +18,6 @@ public class ItemHoldRequest extends AbstractRequestItem {
 
     public void setPatronIdentifier(String patronIdentifier) {
         this.patronIdentifier = patronIdentifier;
-    }
-
-    public String getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(String expirationDate) {
-        this.expirationDate = expirationDate;
     }
 
     public String getBibId() {

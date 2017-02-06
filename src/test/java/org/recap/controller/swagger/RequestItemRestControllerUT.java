@@ -224,8 +224,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
             ItemRequestInformation itemRequestInformation=new ItemRequestInformation();
             itemRequestInformation.setItemBarcodes(Arrays.asList("PULTST54321"));
             itemRequestInformation.setPatronBarcode("45678913");
-            itemRequestInformation.setExpirationDate("20161231    190405");
-            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
+             itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
             itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
             itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
             itemRequestInformation.setDeliveryLocation("htcsc");
