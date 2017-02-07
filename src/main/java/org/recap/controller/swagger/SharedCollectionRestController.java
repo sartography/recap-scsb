@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by chenchulakshmig on 6/10/16.
@@ -108,10 +109,10 @@ public class SharedCollectionRestController {
             notes = "Accession", nickname = "accession", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody AccessionRequest accessionRequest) {
+    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
         RestTemplate restTemplate = new RestTemplate();
         try {
-            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequest, String.class);
+            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, String.class);
             ResponseEntity responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
             return responseEntity;
         } catch (Exception exception) {
