@@ -69,7 +69,6 @@ public class SharedCollectionRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity itemAvailabilityStatus(@ApiParam(value = "Item Barcode", required = true, name = "itemBarcode") @RequestParam String itemBarcode) {
-        RestTemplate restTemplate = new RestTemplate();
         String itemStatus = null;
         try {
             itemStatus = getRestTemplate()
@@ -93,7 +92,6 @@ public class SharedCollectionRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
-        RestTemplate restTemplate = new RestTemplate();
         try {
             String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/deAccession", deAccessionRequest, String.class);
             ResponseEntity responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
@@ -110,10 +108,14 @@ public class SharedCollectionRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
-        RestTemplate restTemplate = new RestTemplate();
         try {
+            ResponseEntity responseEntity ;
             String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, String.class);
-            ResponseEntity responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+            if(response.contains(ReCAPConstants.ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE)){
+                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            }else{
+                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+            }
             return responseEntity;
         } catch (Exception exception) {
             ResponseEntity responseEntity = new ResponseEntity("Scsb Solr Client Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
