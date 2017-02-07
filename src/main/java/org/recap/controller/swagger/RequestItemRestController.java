@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -398,10 +399,30 @@ public class RequestItemRestController {
         return itemRefileResponse;
     }
 
+    @RequestMapping(value = "/cancelRequest", method = RequestMethod.POST)
+    @ApiOperation(value = "cancelRequest", notes = "Cancel and existing request", nickname = "cancelRequest")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public CancelRequestResponse cancelRequest(@ApiParam(value = "Parameters for cancelling request", required = true, name = "requestId") @RequestParam Integer requestId) {
+        CancelRequestResponse cancelRequestResponse = null;
+        HttpEntity request = new HttpEntity<>(getHttpHeadersAuth());
+        RestTemplate restTemplate = new RestTemplate();
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_CANCEL).queryParam("requestId", requestId);
+        HttpEntity<CancelRequestResponse> responseEntity  = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.POST, request, CancelRequestResponse.class);
+        cancelRequestResponse = responseEntity.getBody();
+        return cancelRequestResponse;
+    }
+
     private HttpHeaders getHttpHeaders() {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(ReCAPConstants.RESPONSE_DATE, new Date().toString());
         return responseHeaders;
     }
 
+    private HttpHeaders getHttpHeadersAuth() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
+        return headers;
+    }
 }
