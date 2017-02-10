@@ -64,6 +64,7 @@ public class SearchRecordsRestController {
             ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
         } catch (Exception e) {
+            logger.error("error--."+e);
             logger.error(e.getMessage());
             searchRecordsResponse.setErrorMessage(e.getMessage());
         }
@@ -103,7 +104,7 @@ public class SearchRecordsRestController {
             searchResultRows = responseEntity.getBody();
         } catch (Exception e) {
             searchResultRows = new ArrayList<>();
-            logger.error("Exception",e);
+            logger.error("Exception"+e);
         }
         return searchResultRows;
     }

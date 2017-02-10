@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -220,8 +221,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
-        Mockito.when(sharedCollectionRestController.accession(accessionRequest)).thenCallRealMethod();
-        ResponseEntity responseEntity1 = sharedCollectionRestController.accession(accessionRequest);
+        Mockito.when(sharedCollectionRestController.accession((List<AccessionRequest>) accessionRequest)).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.accession((List<AccessionRequest>)accessionRequest);
         assertNotNull(responseEntity1);
         assertEquals(responseEntity1.getBody(),"Success");
     }

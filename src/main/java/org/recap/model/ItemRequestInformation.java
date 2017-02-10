@@ -169,7 +169,7 @@ public class ItemRequestInformation {
     }
     @JsonIgnore
     public boolean isOwningInstitutionItem(){
-        boolean bSuccess=false;
+        boolean bSuccess;
         if (itemOwningInstitution.equalsIgnoreCase(requestingInstitution)){
             bSuccess=true;
         }else {
