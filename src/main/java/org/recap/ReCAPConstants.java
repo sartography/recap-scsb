@@ -74,4 +74,11 @@ public class ReCAPConstants {
     public static final String ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE = "Input limit exceeded, maximum allowed input limit is ";
 
 
+    public static final String SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE = "Scsb Solr Client Service is Unavailable.";
+    public static final String SCSB_CIRC_SERVICE_UNAVAILABLE = "Scsb Circ Service is Unavailable.";
+
+    //Logger Error
+    public static final String LOG_ERROR="error-->";
+
+
 }
