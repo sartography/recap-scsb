@@ -30,6 +30,7 @@ public class ItemRequestInformation {
     private Integer endPage=0;
     private String chapterTitle="";
     private String bibId;
+    private String username;
 
     public String getBibId() {
         return bibId;
@@ -153,6 +154,14 @@ public class ItemRequestInformation {
 
     public void setItemOwningInstitution(String itemOwningInstitution) {
         this.itemOwningInstitution = itemOwningInstitution;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getItemOwningInstitution() {
