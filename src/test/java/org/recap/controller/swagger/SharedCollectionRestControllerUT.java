@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.recap.ReCAPConstants;
 import org.recap.controller.BaseControllerUT;
 import org.recap.model.AccessionRequest;
 import org.recap.model.DeAccessionRequest;
@@ -15,7 +14,9 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -213,15 +214,17 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
 
     @Test
     public void accession() throws Exception {
+        List<AccessionRequest> accessionRequestList = new ArrayList<>();
         AccessionRequest accessionRequest = new AccessionRequest();
         accessionRequest.setCustomerCode("PB");
         accessionRequest.setItemBarcode("32101095533293");
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequest, String.class)).thenReturn("Success");
+        accessionRequestList.add(accessionRequest);
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, String.class)).thenReturn("Success");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
-        Mockito.when(sharedCollectionRestController.accession(accessionRequest)).thenCallRealMethod();
-        ResponseEntity responseEntity1 = sharedCollectionRestController.accession(accessionRequest);
+        Mockito.when(sharedCollectionRestController.accession(accessionRequestList)).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.accession(accessionRequestList);
         assertNotNull(responseEntity1);
         assertEquals(responseEntity1.getBody(),"Success");
     }
