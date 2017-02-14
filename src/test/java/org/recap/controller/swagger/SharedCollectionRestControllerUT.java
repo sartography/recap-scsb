@@ -219,14 +219,14 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         accessionRequest.setCustomerCode("PB");
         accessionRequest.setItemBarcode("32101095533293");
         accessionRequestList.add(accessionRequest);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, String.class)).thenReturn("Success");
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, String.class)).thenReturn("32101095533293 - Success");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(sharedCollectionRestController.accession(accessionRequestList)).thenCallRealMethod();
         ResponseEntity responseEntity1 = sharedCollectionRestController.accession(accessionRequestList);
         assertNotNull(responseEntity1);
-        assertEquals(responseEntity1.getBody(),"Success");
+        assertEquals(responseEntity1.getBody(),"32101095533293 - Success");
     }
 
     @Test
