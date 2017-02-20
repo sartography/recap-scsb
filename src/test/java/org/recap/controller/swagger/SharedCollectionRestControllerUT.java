@@ -202,10 +202,10 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         String itemBarcode = String.valueOf(random.nextInt());
         DeAccessionRequest deAccessionRequest = new DeAccessionRequest();
         deAccessionRequest.setItemBarcodes(Arrays.asList(itemBarcode));
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/deAccession",deAccessionRequest, String.class)).thenReturn("Success");
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession",deAccessionRequest, String.class)).thenReturn("Success");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
-        Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
+        Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(sharedCollectionRestController.deAccession(deAccessionRequest)).thenCallRealMethod();
         ResponseEntity responseEntity1 = sharedCollectionRestController.deAccession(deAccessionRequest);
         assertNotNull(responseEntity1);
