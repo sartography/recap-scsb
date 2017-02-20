@@ -133,12 +133,12 @@ public class RequestItemRestController {
             responseEntity = getRestTemplate().postForEntity(getServerProtocol() + getScsbCircUrl() + "requestItem/validateItemRequestInformations", itemRequestInfo, String.class);
             response = (String) responseEntity.getBody();
         }catch (HttpClientErrorException httpEx){
-            logger.error("error-->"+httpEx);
+            logger.error("error-->",httpEx);
             HttpStatus statusCode = httpEx.getStatusCode();
             String responseBodyAsString = httpEx.getResponseBodyAsString();
             return new ResponseEntity(responseBodyAsString,getHttpHeaders(),statusCode);
         }catch(Exception ex){
-            logger.error("scsbCircUrl"+ex);
+            logger.error("scsbCircUrl",ex);
             logger.debug("scsbCircUrl : "+getScsbCircUrl());
             responseEntity = new ResponseEntity("Scsb circ Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
@@ -166,10 +166,10 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemCheckoutResponse = om.readValue(response, ItemCheckoutResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST+ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST,ex);
             itemCheckoutResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION+ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION,ex);
             itemCheckoutResponse.setScreenMessage(ex.getMessage());
         }
         return itemCheckoutResponse;
@@ -194,9 +194,9 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemCheckinResponse = om.readValue(response, ItemCheckinResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST+ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST,ex);
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION+ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION,ex);
         }
         return itemCheckinResponse;
     }
@@ -231,7 +231,7 @@ public class RequestItemRestController {
             logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION , ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         }
@@ -261,11 +261,11 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemHoldResponse = om.readValue(response, ItemHoldResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST , ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION , ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         }
@@ -293,11 +293,11 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemCreateBibResponse = om.readValue(response, ItemCreateBibResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST , ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex.getMessage());
             itemCreateBibResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION , ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex.getMessage());
             itemCreateBibResponse.setScreenMessage(ex.getMessage());
         }
@@ -320,13 +320,13 @@ public class RequestItemRestController {
             responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_INFORMATION, HttpMethod.POST, request, ItemInformationResponse.class);
             itemInformationResponse = responseEntity.getBody();
         } catch (RestClientException ex) {
-            logger.error("RestClient : "+ ex);
+            logger.error("RestClient : ", ex);
             if (itemInformationResponse == null) {
                 itemInformationResponse = new ItemInformationResponse();
             }
             itemInformationResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error("Exception : "+ ex);
+            logger.error("Exception : ", ex);
             if (itemInformationResponse == null) {
                 itemInformationResponse = new ItemInformationResponse();
             }
@@ -357,11 +357,11 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemRecallResponse = om.readValue(response, ItemRecallResponse.class);
         }catch(RestClientException ex){
-            logger.error("RestClient : "+ ex);
+            logger.error("RestClient : ",ex);
             logger.error("RestClient : "+ ex.getMessage());
             itemRecallResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
-            logger.error("Exception : "+ex);
+            logger.error("Exception : ",ex);
             logger.error("Exception : "+ex.getMessage());
             itemRecallResponse.setScreenMessage(ex.getMessage());
         }
@@ -384,10 +384,10 @@ public class RequestItemRestController {
             responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_PATRON_INFORMATION, HttpMethod.POST, request, PatronInformationResponse.class);
             patronInformation = responseEntity.getBody();
         }catch(RestClientException ex){
-            logger.error("RestClient : "+ex);
+            logger.error("RestClient : ",ex);
             patronInformation.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
-            logger.error("Exception : "+ex);
+            logger.error("Exception : ",ex);
             patronInformation.setScreenMessage(ex.getMessage());
         }
         return patronInformation;

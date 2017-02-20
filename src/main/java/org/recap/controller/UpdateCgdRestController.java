@@ -65,7 +65,7 @@ public class UpdateCgdRestController {
             ResponseEntity<String> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             statusResponse = responseEntity.getBody();
         } catch (Exception e) {
-            logger.error(ReCAPConstants.LOG_ERROR+e);
+            logger.error(ReCAPConstants.LOG_ERROR,e);
             statusResponse = ReCAPConstants.FAILURE + "-" + e.getMessage();
         }
         return statusResponse;

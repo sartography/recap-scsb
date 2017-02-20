@@ -58,7 +58,7 @@ public class ReportsRestController {
             ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
-            logger.error(ReCAPConstants.LOG_ERROR+e);
+            logger.error(ReCAPConstants.LOG_ERROR,e);
             reportsResponse.setMessage(e.getMessage());
         }
         return reportsResponse;
@@ -74,7 +74,7 @@ public class ReportsRestController {
             ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
-            logger.error(ReCAPConstants.LOG_ERROR+e);
+            logger.error(ReCAPConstants.LOG_ERROR,e);
             reportsResponse.setMessage(e.getMessage());
         }
         return reportsResponse;
@@ -90,7 +90,7 @@ public class ReportsRestController {
             ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
-            logger.error(ReCAPConstants.LOG_ERROR+e);
+            logger.error(ReCAPConstants.LOG_ERROR,e);
             reportsResponse.setMessage(e.getMessage());
         }
         return reportsResponse;
