@@ -5,8 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.recap.ReCAPConstants;
 import org.recap.model.AccessionRequest;
 import org.recap.model.DeAccessionRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chenchulakshmig on 6/10/16.
@@ -27,8 +26,6 @@ import java.util.List;
 @RequestMapping("/sharedCollection")
 @Api(value = "sharedCollection", description = "Shared Collection", position = 1)
 public class SharedCollectionRestController {
-
-    Logger logger = LoggerFactory.getLogger(SharedCollectionRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;
@@ -78,13 +75,15 @@ public class SharedCollectionRestController {
             itemStatus = getRestTemplate()
                     .getForObject(getServerProtocol()+getScsbSolrClientUrl()+"/sharedCollection/itemAvailabilityStatus?itemBarcode="+itemBarcode,  String.class);
         } catch (Exception exception) {
-            logger.error(ReCAPConstants.LOG_ERROR,exception);
-            return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            ResponseEntity responseEntity = new ResponseEntity("Scsb Solr Client Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return responseEntity;
         }
         if (StringUtils.isEmpty(itemStatus)) {
-            return new ResponseEntity(ReCAPConstants.ITEM_BARCDE_DOESNOT_EXIST, getHttpHeaders(), HttpStatus.OK);
+            ResponseEntity responseEntity = new ResponseEntity(ReCAPConstants.ITEM_BARCDE_DOESNOT_EXIST, getHttpHeaders(), HttpStatus.OK);
+            return responseEntity;
         } else {
-            return new ResponseEntity(itemStatus, getHttpHeaders(), HttpStatus.OK);
+            ResponseEntity responseEntity = new ResponseEntity(itemStatus, getHttpHeaders(), HttpStatus.OK);
+            return responseEntity;
         }
     }
 
@@ -95,11 +94,12 @@ public class SharedCollectionRestController {
     @ResponseBody
     public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
         try {
-            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/deAccession", deAccessionRequest, String.class);
-            return new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+            Map<String, String> resultMap = getRestTemplate().postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession", deAccessionRequest, Map.class);
+            ResponseEntity responseEntity = new ResponseEntity(resultMap, getHttpHeaders(), HttpStatus.OK);
+            return responseEntity;
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.LOG_ERROR,ex);
-            return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            ResponseEntity responseEntity = new ResponseEntity("Scsb Solr Client Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return responseEntity;
         }
     }
 
@@ -119,8 +119,8 @@ public class SharedCollectionRestController {
             }
             return responseEntity;
         } catch (Exception exception) {
-            logger.error(ReCAPConstants.LOG_ERROR,exception);
-            return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            ResponseEntity responseEntity = new ResponseEntity("Scsb Solr Client Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return responseEntity;
         }
     }
 
@@ -144,9 +144,8 @@ public class SharedCollectionRestController {
             }
             return responseEntity;
         } catch (Exception exception) {
-            logger.error(ReCAPConstants.LOG_ERROR,exception);
-            logger.error(ReCAPConstants.LOG_ERROR,exception);
-            responseEntity = new ResponseEntity(ReCAPConstants.SCSB_CIRC_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            exception.printStackTrace();
+            responseEntity = new ResponseEntity("Scsb Circ Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
         }
     }
