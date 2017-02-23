@@ -5,9 +5,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.recap.ReCAPConstants;
 import org.recap.controller.BaseControllerUT;
 import org.recap.model.AccessionRequest;
+import org.recap.model.DeAccessionItem;
 import org.recap.model.DeAccessionRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -201,11 +202,15 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         Random random = new Random();
         String itemBarcode = String.valueOf(random.nextInt());
         DeAccessionRequest deAccessionRequest = new DeAccessionRequest();
-        deAccessionRequest.setItemBarcodes(Arrays.asList(itemBarcode));
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/deAccession",deAccessionRequest, String.class)).thenReturn("Success");
+        DeAccessionItem deAccessionItem = new DeAccessionItem();
+        deAccessionItem.setItemBarcode(itemBarcode);
+        deAccessionItem.setDeliveryLocation("PB");
+        deAccessionRequest.setDeAccessionItems(Arrays.asList(deAccessionItem));
+        deAccessionRequest.setUsername("Test");
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession",deAccessionRequest, String.class)).thenReturn("Success");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
-        Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
+        Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(sharedCollectionRestController.deAccession(deAccessionRequest)).thenCallRealMethod();
         ResponseEntity responseEntity1 = sharedCollectionRestController.deAccession(deAccessionRequest);
         assertNotNull(responseEntity1);
@@ -214,17 +219,19 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
 
     @Test
     public void accession() throws Exception {
+        List<AccessionRequest> accessionRequestList = new ArrayList<>();
         AccessionRequest accessionRequest = new AccessionRequest();
         accessionRequest.setCustomerCode("PB");
         accessionRequest.setItemBarcode("32101095533293");
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequest, String.class)).thenReturn("Success");
+        accessionRequestList.add(accessionRequest);
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, String.class)).thenReturn("32101095533293 - Success");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
-        Mockito.when(sharedCollectionRestController.accession((List<AccessionRequest>) accessionRequest)).thenCallRealMethod();
-        ResponseEntity responseEntity1 = sharedCollectionRestController.accession((List<AccessionRequest>)accessionRequest);
+        Mockito.when(sharedCollectionRestController.accession(accessionRequestList)).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.accession(accessionRequestList);
         assertNotNull(responseEntity1);
-        assertEquals(responseEntity1.getBody(),"Success");
+        assertEquals(responseEntity1.getBody(),"32101095533293 - Success");
     }
 
     @Test

@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chenchulakshmig on 6/10/16.
@@ -95,8 +96,8 @@ public class SharedCollectionRestController {
     @ResponseBody
     public ResponseEntity deAccession(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
         try {
-            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/deAccession", deAccessionRequest, String.class);
-            return new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+            Map<String, String> resultMap = getRestTemplate().postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession", deAccessionRequest, Map.class);
+            return new ResponseEntity(resultMap, getHttpHeaders(), HttpStatus.OK);
         } catch (Exception ex) {
             logger.error(ReCAPConstants.LOG_ERROR,ex);
             return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -144,7 +145,6 @@ public class SharedCollectionRestController {
             }
             return responseEntity;
         } catch (Exception exception) {
-            logger.error(ReCAPConstants.LOG_ERROR,exception);
             logger.error(ReCAPConstants.LOG_ERROR,exception);
             responseEntity = new ResponseEntity(ReCAPConstants.SCSB_CIRC_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
