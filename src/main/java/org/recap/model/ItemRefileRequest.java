@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class ItemRefileRequest  {
     private List<String> itemBarcodes;
-
+    private List<Integer> requestIds;
 
     public List<String> getItemBarcodes() {
         return itemBarcodes;
@@ -17,4 +17,11 @@ public class ItemRefileRequest  {
         this.itemBarcodes = itemBarcodes;
     }
 
+    public List<Integer> getRequestIds() {
+        return requestIds;
+    }
+
+    public void setRequestIds(List<Integer> requestIds) {
+        this.requestIds = requestIds;
+    }
 }
