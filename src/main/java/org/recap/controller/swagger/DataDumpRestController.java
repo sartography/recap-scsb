@@ -73,7 +73,7 @@ public class DataDumpRestController {
     }
 
     private HttpStatus getHttpStatus(String message){
-        if(message.equals(ReCAPConstants.DATADUMP_PROCESS_STARTED) || message.equals(ReCAPConstants.DATADUMP_NO_RECORD)){
+        if(message.equals(ReCAPConstants.DATADUMP_PROCESS_STARTED) || message.equals(ReCAPConstants.DATADUMP_NO_RECORD) || message.contains(ReCAPConstants.XML)){
             return HttpStatus.OK;
         }else{
             return HttpStatus.BAD_REQUEST;
