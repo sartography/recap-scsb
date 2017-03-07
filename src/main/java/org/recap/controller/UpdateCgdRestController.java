@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/updateCgdService")
 public class UpdateCgdRestController {
 
-    private Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;
@@ -52,7 +52,6 @@ public class UpdateCgdRestController {
     public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
         String statusResponse = null;
         try {
-            RestTemplate restTemplate = new RestTemplate();
             HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_UPDATE_CGD)
@@ -65,7 +64,7 @@ public class UpdateCgdRestController {
             ResponseEntity<String> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             statusResponse = responseEntity.getBody();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(ReCAPConstants.LOG_ERROR,e);
             statusResponse = ReCAPConstants.FAILURE + "-" + e.getMessage();
         }
         return statusResponse;

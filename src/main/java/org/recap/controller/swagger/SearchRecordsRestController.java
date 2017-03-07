@@ -24,7 +24,7 @@ import java.util.List;
 @Api(value="search", description="Search Records", position = 1)
 public class SearchRecordsRestController {
 
-    private Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;
@@ -64,6 +64,7 @@ public class SearchRecordsRestController {
             ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
         } catch (Exception e) {
+            logger.error("error--.",e);
             logger.error(e.getMessage());
             searchRecordsResponse.setErrorMessage(e.getMessage());
         }

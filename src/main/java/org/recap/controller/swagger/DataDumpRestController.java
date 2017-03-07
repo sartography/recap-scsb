@@ -59,12 +59,10 @@ public class DataDumpRestController {
             headers.set("api_key","recap");
             HttpEntity requestEntity = new HttpEntity(headers);
             ResponseEntity<String> response = restTemplate.exchange(serverProtocol + scsbEtlUrl + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
-            ResponseEntity responseEntity = new ResponseEntity(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
-            return responseEntity;
+            return new ResponseEntity(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
-            exception.printStackTrace();
-            ResponseEntity responseEntity = new ResponseEntity("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
-            return responseEntity;
+            logger.error("error-->",exception);
+            return new ResponseEntity("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 

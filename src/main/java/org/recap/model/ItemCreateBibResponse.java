@@ -6,14 +6,14 @@ package org.recap.model;
 public class ItemCreateBibResponse extends AbstractResponseItem {
 
     private String bibId;
-    private String ItemId;
+    private String itemId;
 
     public String getItemId() {
-        return ItemId;
+        return itemId;
     }
 
     public void setItemId(String itemId) {
-        ItemId = itemId;
+        this.itemId = itemId;
     }
 
     public String getBibId() {
