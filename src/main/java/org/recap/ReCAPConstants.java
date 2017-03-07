@@ -76,6 +76,7 @@ public class ReCAPConstants {
 
     public static final String SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE = "Scsb Solr Client Service is Unavailable.";
     public static final String SCSB_CIRC_SERVICE_UNAVAILABLE = "Scsb Circ Service is Unavailable.";
+    public static final String XML = "xml";
 
     //Logger Error
     public static final String LOG_ERROR="error-->";
