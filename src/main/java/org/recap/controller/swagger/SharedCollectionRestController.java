@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.recap.ReCAPConstants;
 import org.recap.model.AccessionRequest;
 import org.recap.model.DeAccessionRequest;
+import org.recap.model.ItemAvailabityStatusRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,26 +69,26 @@ public class SharedCollectionRestController {
         this.scsbSolrClientUrl = scsbSolrClientUrl;
     }
 
-    @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.GET)
+    @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "itemAvailabilityStatus",
             notes = "Item Availability Status", nickname = "itemAvailabilityStatus", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity itemAvailabilityStatus(@ApiParam(value = "Item Barcode", required = true, name = "itemBarcode") @RequestParam String itemBarcode) {
-        String itemStatus = null;
+    public ResponseEntity itemAvailabilityStatus(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody ItemAvailabityStatusRequest itemAvailabityStatus) {
+        String response;
         try {
-            itemStatus = getRestTemplate()
-                    .getForObject(getServerProtocol()+getScsbSolrClientUrl()+"/sharedCollection/itemAvailabilityStatus?itemBarcode="+itemBarcode,  String.class);
+            response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus", itemAvailabityStatus, String.class);
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR,exception);
             return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
-        if (StringUtils.isEmpty(itemStatus)) {
+        if (StringUtils.isEmpty(response)) {
             return new ResponseEntity(ReCAPConstants.ITEM_BARCDE_DOESNOT_EXIST, getHttpHeaders(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(itemStatus, getHttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
         }
     }
+
 
     @RequestMapping(value = "/deAccession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "deAccession",
