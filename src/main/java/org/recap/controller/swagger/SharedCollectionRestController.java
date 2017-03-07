@@ -30,7 +30,7 @@ import java.util.Map;
 @Api(value = "sharedCollection", description = "Shared Collection", position = 1)
 public class SharedCollectionRestController {
 
-    Logger logger = LoggerFactory.getLogger(SharedCollectionRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SharedCollectionRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;

@@ -24,7 +24,7 @@ import java.util.List;
 @Api(value="search", description="Search Records", position = 1)
 public class SearchRecordsRestController {
 
-    private Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;

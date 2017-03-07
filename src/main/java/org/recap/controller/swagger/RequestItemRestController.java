@@ -29,7 +29,7 @@ import java.util.List;
 @Api(value = "requestItem")
 public class RequestItemRestController {
 
-    private Logger logger = LoggerFactory.getLogger(RequestItemRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestItemRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;
@@ -66,14 +66,6 @@ public class RequestItemRestController {
 
     public void setProducer(ProducerTemplate producer) {
         this.producer = producer;
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
     }
 
     @RequestMapping(value = ReCAPConstants.REST_URL_REQUEST_ITEM, method = RequestMethod.POST)

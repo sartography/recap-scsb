@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by hemalathas on 4/11/16.
  */
 public class RequestItemRestControllerUT extends BaseTestCase{
-    private Logger logger = Logger.getLogger(RequestItemRestControllerUT.class);
+    private static final Logger logger = Logger.getLogger(RequestItemRestControllerUT.class);
 
     @Mock
     RequestItemRestController requestItemRestController;

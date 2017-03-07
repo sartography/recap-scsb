@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/updateCgdService")
 public class UpdateCgdRestController {
 
-    private Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;
