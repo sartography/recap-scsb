@@ -9,6 +9,7 @@ import org.recap.controller.BaseControllerUT;
 import org.recap.model.AccessionRequest;
 import org.recap.model.DeAccessionItem;
 import org.recap.model.DeAccessionRequest;
+import org.recap.model.ItemAvailabityStatusRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -186,13 +187,16 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
 
     @Test
     public void itemAvailabilityStatus() throws Exception {
-        String itemBarcode = "32101056185125";
-        Mockito.when(mockRestTemplate.getForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus?itemBarcode="+itemBarcode, String.class)).thenReturn("Available");
+        ItemAvailabityStatusRequest itemAvailabityStatus = new ItemAvailabityStatusRequest();
+        List<String> barcodes = new ArrayList<>();
+        barcodes.add("32101056185125");
+        itemAvailabityStatus.setBarcodes(barcodes);
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus", itemAvailabityStatus, String.class)).thenReturn("Available");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
-        Mockito.when(sharedCollectionRestController.itemAvailabilityStatus("32101056185125")).thenCallRealMethod();
-        ResponseEntity responseEntity1 = sharedCollectionRestController.itemAvailabilityStatus("32101056185125");
+        Mockito.when(sharedCollectionRestController.itemAvailabilityStatus(itemAvailabityStatus)).thenCallRealMethod();
+        ResponseEntity responseEntity1 = sharedCollectionRestController.itemAvailabilityStatus(itemAvailabityStatus);
         assertNotNull(responseEntity1);
         assertEquals(responseEntity1.getBody(), "Available");
     }
