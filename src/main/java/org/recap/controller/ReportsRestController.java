@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/reportsService")
 public class ReportsRestController {
 
-    private Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
     @Value("${server.protocol}")
     String serverProtocol;
@@ -68,7 +68,6 @@ public class ReportsRestController {
     public ReportsResponse cgdItemCounts(@RequestBody ReportsRequest reportsRequest) {
         ReportsResponse reportsResponse = new ReportsResponse();
         try {
-            RestTemplate restTemplate;
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
 
             ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
@@ -84,7 +83,6 @@ public class ReportsRestController {
     public ReportsResponse deaccessionResults(@RequestBody ReportsRequest reportsRequest) {
         ReportsResponse reportsResponse = new ReportsResponse();
         try {
-            RestTemplate restTemplate;
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
 
             ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
