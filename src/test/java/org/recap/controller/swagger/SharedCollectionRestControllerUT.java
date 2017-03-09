@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.recap.ReCAPConstants;
 import org.recap.controller.BaseControllerUT;
 import org.recap.model.AccessionRequest;
 import org.recap.model.DeAccessionItem;
@@ -16,10 +17,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -211,14 +209,20 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         deAccessionItem.setDeliveryLocation("PB");
         deAccessionRequest.setDeAccessionItems(Arrays.asList(deAccessionItem));
         deAccessionRequest.setUsername("Test");
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession",deAccessionRequest, String.class)).thenReturn("Success");
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put(itemBarcode, ReCAPConstants.SUCCESS);
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession",deAccessionRequest, Map.class)).thenReturn(resultMap);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(sharedCollectionRestController.deAccession(deAccessionRequest)).thenCallRealMethod();
         ResponseEntity responseEntity1 = sharedCollectionRestController.deAccession(deAccessionRequest);
         assertNotNull(responseEntity1);
-        assertEquals(responseEntity1.getBody(),"Success");
+        Map<String, String> responseMap = (Map) responseEntity1.getBody();
+        assertNotNull(responseMap);
+        String status = responseMap.get(itemBarcode);
+        assertNotNull(status);
+        assertEquals(status, ReCAPConstants.SUCCESS);
     }
 
     @Test
