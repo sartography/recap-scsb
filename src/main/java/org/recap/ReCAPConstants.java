@@ -11,15 +11,15 @@ public class ReCAPConstants {
     public static final String FAILURE = "Failure";
     public static final String SUCCESS = "Success";
 
-    public static final String ITEM_BARCDE_DOESNOT_EXIST = "Item Barcode doesn't exist in SCSB database.";
+    public static final String ITEM_BARCDE_DOESNOT_EXIST = "Item barcode doesn't exist in SCSB database.";
     public static final String COLUMBIA = "CUL";
     public static final String PRINCETON = "PUL";
     public static final String NYPL = "NYPL";
 
     public static final String RESPONSE_DATE = "Date";
 
-    public static final String INVALID_REQUEST_INSTITUTION = "Please enter valid Institution PUL/CUL/NYPL for requestingInstitution";
-    public static final String START_PAGE_AND_END_PAGE_REQUIRED = "Startpage and endpage information is required for the request type EDD";
+    public static final String INVALID_REQUEST_INSTITUTION = "Enter valid RequestingInstitution: PUL, CUL or NYPL.";
+    public static final String START_PAGE_AND_END_PAGE_REQUIRED = "Start page and End page information is required for EDD request.";
     public static final String VALID_REQUEST = "All request parameters are valid.Patron is eligible to raise a request";
 
 
@@ -71,7 +71,7 @@ public class ReCAPConstants {
 
     public static final String REQUEST_EXCEPTION_REST = "RestClient : ";
     public static final String REQUEST_EXCEPTION = "Exception : ";
-    public static final String ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE = "Input limit exceeded, maximum allowed input limit is ";
+    public static final String ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE = "Input limit exceeded. Maximum allowed input limit is";
 
 
     public static final String SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE = "Scsb Solr Client Service is Unavailable.";
