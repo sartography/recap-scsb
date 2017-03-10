@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,11 +114,11 @@ public class SharedCollectionRestController {
     public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
         try {
             ResponseEntity responseEntity ;
-            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, String.class);
-            if(response.contains(ReCAPConstants.ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE)){
-                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            List<LinkedHashMap> linkedHashMap = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, List.class);
+            if(linkedHashMap.get(0).get("message").toString().contains(ReCAPConstants.ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE)){
+                responseEntity = new ResponseEntity(linkedHashMap, getHttpHeaders(), HttpStatus.BAD_REQUEST);
             }else{
-                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+                responseEntity = new ResponseEntity(linkedHashMap, getHttpHeaders(), HttpStatus.OK);
             }
             return responseEntity;
         } catch (Exception exception) {
