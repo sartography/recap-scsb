@@ -55,10 +55,9 @@ public class SearchRecordsRestController {
     @RequestMapping(value="/search", method = RequestMethod.POST)
     //@ApiOperation(value = "search",notes = "Search Books in ReCAP - Using Method Post, Request data is String", nickname = "search", position = 0, consumes="application/json")
     //@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
-    public SearchRecordsResponse searchRecordsServiceGetParam(@RequestBody SearchRecordsRequest searchRecordsRequest) {
+    public SearchRecordsResponse searchRecordsServiceGetParam(@ApiParam(value = "Parameters to search a record in SCSB", required = true, name = "searchRecordsRequest")@RequestBody SearchRecordsRequest searchRecordsRequest) {
         SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
         try {
-            RestTemplate restTemplate = new RestTemplate();
             HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
 
             ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
@@ -86,7 +85,6 @@ public class SearchRecordsRestController {
     ) {
         HttpEntity<List> responseEntity = null;
         HttpEntity request = new HttpEntity(getHttpHeaders());
-        RestTemplate restTemplate = new RestTemplate();
         List<SearchResultRow> searchResultRows = null;
         try {
 

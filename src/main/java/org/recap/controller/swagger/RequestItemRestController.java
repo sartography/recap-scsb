@@ -72,7 +72,7 @@ public class RequestItemRestController {
     @ApiOperation(value = "Request Item", notes = "Item Request from Owning institution", nickname = "requestItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemResponseInformation itemRequest(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
+    public ItemResponseInformation itemRequest(@ApiParam(value = "Parameters to place a request on an Item", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
         ItemResponseInformation itemResponseInformation = new ItemResponseInformation();
         List itemBarcodes = null;
         boolean bSuccess = false;
@@ -115,10 +115,10 @@ public class RequestItemRestController {
 
     @RequestMapping(value = ReCAPConstants.REST_URL_VALIDATE_REQUEST_ITEM, method = RequestMethod.POST)
     @ApiOperation(value = "validateItemRequestInformations",
-            notes = "Validate Item Request Informations", nickname = "validateItemRequestInformation")
+            notes = "Validate item request information", nickname = "validateItemRequestInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity validateItemRequest(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
+    public ResponseEntity validateItemRequest(@ApiParam(value = "Parameters to validate information prior to request", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
         ResponseEntity responseEntity = null;
         String response = null;
         try {
@@ -169,10 +169,10 @@ public class RequestItemRestController {
 
     @RequestMapping(value = "/checkinItem", method = RequestMethod.POST)
     @ApiOperation(value = "checkinItem",
-            notes = "Checkin Item Request from Owning institution", nickname = "checkinItem")
+            notes = "Send a checkin request to the owning institution", nickname = "checkinItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem checkinItemRequest(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemCheckInRequest itemCheckInRequest) {
+    public AbstractResponseItem checkinItemRequest(@ApiParam(value = "Parameters for checking in an item", required = true, name = "requestItemJson") @RequestBody ItemCheckInRequest itemCheckInRequest) {
         ItemCheckinResponse itemCheckinResponse = null;
         ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
@@ -195,10 +195,10 @@ public class RequestItemRestController {
 
     @RequestMapping(value = "/holdItem", method = RequestMethod.POST)
     @ApiOperation(value = "holdItem",
-            notes = "hold Item Request from Owning institution", nickname = "holdItem")
+            notes = "Place a hold on the item in the requestor's ILS", nickname = "holdItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem holdItemRequest(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemHoldRequest itemHoldRequest) {
+    public AbstractResponseItem holdItemRequest(@ApiParam(value = "Parameters for placing a hold on the item in the ILS", required = true, name = "requestItemJson") @RequestBody ItemHoldRequest itemHoldRequest) {
         ItemHoldResponse itemHoldResponse = null;
         ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
@@ -235,7 +235,7 @@ public class RequestItemRestController {
             notes = "Cancel hold Item Request from Owning institution", nickname = "cancelHoldItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem cancelHoldItemRequest(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemHoldCancelRequest itemHoldCancelRequest) {
+    public AbstractResponseItem cancelHoldItemRequest(@ApiParam(value = "Parameters for canceling a hold on the Item", required = true, name = "requestItemJson") @RequestBody ItemHoldCancelRequest itemHoldCancelRequest) {
         ItemHoldResponse itemHoldResponse = null;
         ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
@@ -266,10 +266,10 @@ public class RequestItemRestController {
 
     @RequestMapping(value = "/createBib", method = RequestMethod.POST)
     @ApiOperation(value = "createBib",
-            notes = "Create Bibliographic Request from Owning institution", nickname = "createBib")
+            notes = "Create a bibliographic record in the requestor's ILS", nickname = "createBib")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem createBibRequest(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemCreateBibRequest itemCreateBibRequest) {
+    public AbstractResponseItem createBibRequest(@ApiParam(value = "Parameters for creating a temporary bibliographic record in the ILS", required = true, name = "requestItemJson") @RequestBody ItemCreateBibRequest itemCreateBibRequest) {
         ItemCreateBibResponse itemCreateBibResponse = new ItemCreateBibResponse();
         ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
@@ -297,10 +297,10 @@ public class RequestItemRestController {
     }
 
     @RequestMapping(value = "/itemInformation", method = RequestMethod.POST)
-    @ApiOperation(value = "itemInformation", notes = "item Information and status of Circulation", nickname = "itemInformation")
+    @ApiOperation(value = "itemInformation", notes = "Retrieve Item and Circ Status from ILS", nickname = "itemInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem itemInformation(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemInformationRequest itemRequestInfo) {
+    public AbstractResponseItem itemInformation(@ApiParam(value = "Parameters to retrieve the item information from the ILS", required = true, name = "requestItemJson") @RequestBody ItemInformationRequest itemRequestInfo) {
         HttpEntity<ItemInformationResponse> responseEntity = null;
         ItemInformationResponse itemInformationResponse = null;
         ItemInformationRequest itemInformationRequest = new ItemInformationRequest();
@@ -332,7 +332,7 @@ public class RequestItemRestController {
             notes = "Recall Item Request from Owning institution", nickname = "RecallItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem recallItem(@ApiParam(value = "Parameters for requesting an item", required = true, name = "requestItemJson") @RequestBody ItemRecalRequest itemRecalRequest) {
+    public AbstractResponseItem recallItem(@ApiParam(value = "Parameters to recall an item", required = true, name = "requestItemJson") @RequestBody ItemRecalRequest itemRecalRequest) {
         ItemRecallResponse itemRecallResponse = new ItemRecallResponse();
         ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
         String response = "";
@@ -364,7 +364,7 @@ public class RequestItemRestController {
     @ApiOperation(value = "patronInformation"     , notes = "Patron Information", nickname = "patronInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public PatronInformationResponse patronInformation(@ApiParam(value = "Parameters for requesting an patron" , required = true , name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest){
+    public PatronInformationResponse patronInformation(@ApiParam(value = "Parameters to retrieve the patron information from the ILS" , required = true , name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest){
         HttpEntity<PatronInformationResponse> responseEntity = null;
         PatronInformationResponse patronInformation =null;
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
@@ -386,10 +386,10 @@ public class RequestItemRestController {
     }
 
     @RequestMapping(value = "/refile"  , method = RequestMethod.POST)
-    @ApiOperation(value = "refile"     , notes = "Re-File for testing item status change back to Available and execute Solr Index", nickname = "Re-File")
+    @ApiOperation(value = "refile"     , notes = "Refile item", nickname = "Re-File")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemRefileResponse refileItem(@ApiParam(value = "Parameters for requesting re-file" , required = true , name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest){
+    public ItemRefileResponse refileItem(@ApiParam(value = "Parameters to refile an Item" , required = true , name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest){
         ItemRefileResponse itemRefileResponse;
         HttpEntity<ItemRefileResponse> responseEntity;
         HttpEntity request = new HttpEntity(itemRefileRequest);
@@ -402,10 +402,10 @@ public class RequestItemRestController {
     }
 
     @RequestMapping(value = "/cancelRequest", method = RequestMethod.POST)
-    @ApiOperation(value = "cancelRequest", notes = "Cancel and existing request", nickname = "cancelRequest")
+    @ApiOperation(value = "cancelRequest", notes = "Cancel an existing request", nickname = "cancelRequest")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public CancelRequestResponse cancelRequest(@ApiParam(value = "Parameters for cancelling request", required = true, name = "requestId") @RequestParam Integer requestId) {
+    public CancelRequestResponse cancelRequest(@ApiParam(value = "Parameters for canceling a request on the Item", required = true, name = "requestId") @RequestParam Integer requestId) {
         CancelRequestResponse cancelRequestResponse;
         HttpEntity request = new HttpEntity<>(getHttpHeadersAuth());
         RestTemplate restTemplate = new RestTemplate();
