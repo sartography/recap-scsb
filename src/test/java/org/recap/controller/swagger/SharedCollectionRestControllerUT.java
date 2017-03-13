@@ -232,14 +232,19 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         accessionRequest.setCustomerCode("PB");
         accessionRequest.setItemBarcode("32101095533293");
         accessionRequestList.add(accessionRequest);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, String.class)).thenReturn("32101095533293 - Success");
+        List<LinkedHashMap> linkedHashMapList = new ArrayList<>();
+        LinkedHashMap linkedHashMap = new LinkedHashMap();
+        linkedHashMap.put("itemBarcode","32101095533293");
+        linkedHashMap.put("message","Success");
+        linkedHashMapList.add(linkedHashMap);
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, List.class)).thenReturn(linkedHashMapList);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(sharedCollectionRestController.accession(accessionRequestList)).thenCallRealMethod();
-        ResponseEntity responseEntity1 = sharedCollectionRestController.accession(accessionRequestList);
-        assertNotNull(responseEntity1);
-        assertEquals(responseEntity1.getBody(),"32101095533293 - Success");
+        ResponseEntity responseEntity = sharedCollectionRestController.accession(accessionRequestList);
+        assertNotNull(responseEntity);
+        assertEquals(linkedHashMapList,responseEntity.getBody());
     }
 
     @Test
