@@ -81,6 +81,6 @@ public class ReCAPConstants {
 
     //Logger Error
     public static final String LOG_ERROR="error-->";
-
+    public static final String LOG_ERROR_REST_CLIENT="RestClient : ";
 
 }

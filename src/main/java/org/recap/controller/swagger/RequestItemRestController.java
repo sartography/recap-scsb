@@ -108,7 +108,7 @@ public class RequestItemRestController {
             itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
             logger.info("Message In Queue");
         } catch (JsonProcessingException e) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION+e);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION,e);
         }
         return itemResponseInformation;
     }
@@ -312,13 +312,13 @@ public class RequestItemRestController {
             responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_INFORMATION, HttpMethod.POST, request, ItemInformationResponse.class);
             itemInformationResponse = responseEntity.getBody();
         } catch (RestClientException ex) {
-            logger.error("RestClient : ", ex);
+            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT, ex);
             if (itemInformationResponse == null) {
                 itemInformationResponse = new ItemInformationResponse();
             }
             itemInformationResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error("Exception : ", ex);
+            logger.error(ReCAPConstants.LOG_ERROR, ex);
             if (itemInformationResponse == null) {
                 itemInformationResponse = new ItemInformationResponse();
             }
@@ -349,12 +349,12 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemRecallResponse = om.readValue(response, ItemRecallResponse.class);
         }catch(RestClientException ex){
-            logger.error("RestClient : ",ex);
-            logger.error("RestClient : "+ ex.getMessage());
+            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT,ex);
+            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT+ ex.getMessage());
             itemRecallResponse.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
-            logger.error("Exception : ",ex);
-            logger.error("Exception : "+ex.getMessage());
+            logger.error(ReCAPConstants.LOG_ERROR,ex);
+            logger.error(ReCAPConstants.LOG_ERROR+ex.getMessage());
             itemRecallResponse.setScreenMessage(ex.getMessage());
         }
         return itemRecallResponse;
@@ -376,10 +376,10 @@ public class RequestItemRestController {
             responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_PATRON_INFORMATION, HttpMethod.POST, request, PatronInformationResponse.class);
             patronInformation = responseEntity.getBody();
         }catch(RestClientException ex){
-            logger.error("RestClient : ",ex);
+            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT,ex);
             patronInformation.setScreenMessage(ex.getMessage());
         }catch(Exception ex){
-            logger.error("Exception : ",ex);
+            logger.error(ReCAPConstants.LOG_ERROR,ex);
             patronInformation.setScreenMessage(ex.getMessage());
         }
         return patronInformation;
