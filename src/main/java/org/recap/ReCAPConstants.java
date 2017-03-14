@@ -55,6 +55,7 @@ public class ReCAPConstants {
     public static final String URL_REPORTS_ACCESSION_DEACCESSION_COUNTS = "reportsService/accessionDeaccessionCounts";
     public static final String URL_REPORTS_CGD_ITEM_COUNTS = "reportsService/cgdItemCounts";
     public static final String URL_REPORTS_DEACCESSION_RESULTS = "reportsService/deaccessionResults";
+    public static final String URL_REPORTS_INCOMPLETE_RESULTS = "reportsService/incompleteRecords";
 
     public static final String INVALID_SCSB_XML_FORMAT_MESSAGE = "Please provide valid SCSB xml format";
     public static final String INVALID_MARC_XML_FORMAT_MESSAGE = "Please provide valid Marc xml format";

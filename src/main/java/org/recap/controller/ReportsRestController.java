@@ -94,6 +94,21 @@ public class ReportsRestController {
         return reportsResponse;
     }
 
+    @RequestMapping(value="/incompleteRecords", method = RequestMethod.POST)
+    public ReportsResponse incompleteRecords(@RequestBody ReportsRequest reportsRequest) {
+        ReportsResponse reportsResponse = new ReportsResponse();
+        try {
+            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
+            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_INCOMPLETE_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            reportsResponse = responseEntity.getBody();
+        } catch (Exception e) {
+            logger.error(ReCAPConstants.LOG_ERROR,e);
+            reportsResponse.setMessage(e.getMessage());
+        }
+        return reportsResponse;
+    }
+
+
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
