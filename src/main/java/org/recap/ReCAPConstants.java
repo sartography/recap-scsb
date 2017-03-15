@@ -83,4 +83,5 @@ public class ReCAPConstants {
     public static final String LOG_ERROR="error-->";
     public static final String LOG_ERROR_REST_CLIENT="RestClient : ";
 
+    public static final String COMPLETE_STATUS = "Complete";
 }

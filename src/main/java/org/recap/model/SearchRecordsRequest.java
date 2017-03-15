@@ -2,6 +2,7 @@ package org.recap.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.recap.ReCAPConstants;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,68 +21,38 @@ public class SearchRecordsRequest implements Serializable {
     @ApiModelProperty(name ="fieldName", value= "Select a field name",position = 1)
     private String fieldName;
 
-    @ApiModelProperty(name= "owningInstitutions", value= "Publications Owning Instutions", position = 3, allowableValues="PUL, NYPL, CUL")
+    @ApiModelProperty(name= "owningInstitutions", value= "Publications Owning Instutions", position = 2, allowableValues="PUL, NYPL, CUL")
     private List<String> owningInstitutions = null;
 
-    @ApiModelProperty(name= "collectionGroupDesignations", value= "Collection Group Designations",position = 4)
+    @ApiModelProperty(name= "collectionGroupDesignations", value= "Collection Group Designations",position = 3)
     private List<String> collectionGroupDesignations = null;
 
-    @ApiModelProperty(name= "availability", value= "Availability of books in ReCAP",position = 5)
+    @ApiModelProperty(name= "availability", value= "Availability of books in ReCAP",position = 4)
     private List<String> availability = null;
 
-    @ApiModelProperty(name= "materialTypes", value= "Material Types",position = 6)
+    @ApiModelProperty(name= "materialTypes", value= "Material Types",position = 5)
     private List<String> materialTypes = null;
 
-    @ApiModelProperty(name= "useRestrictions", value= "Book Use Restrictions",position = 7)
+    @ApiModelProperty(name= "useRestrictions", value= "Book Use Restrictions",position = 6)
     private List<String> useRestrictions = null;
 
-    @ApiModelProperty(name= "searchResultRows", value= "Search Response",position = 8)
-    private List<SearchResultRow> searchResultRows = new ArrayList<>();
+    @ApiModelProperty(name= "isDeleted", value= "Is Deleted",position = 7)
+    private boolean isDeleted = false;
 
-    @ApiModelProperty(name= "totalPageCount", value= "Total Page Count",position = 9)
-    private Integer totalPageCount = 0;
+    @ApiModelProperty(name= "catalogingStatus", value= "Cataloging Status",position = 8)
+    private String catalogingStatus;
 
-    @ApiModelProperty(name= "totalBibRecordsCount", value= "Total Bibliograph Records Count",position = 10)
-    private String totalBibRecordsCount = "0";
-
-    @ApiModelProperty(name= "totalItemRecordsCount", value= "Total Item Count",position = 11)
-    private String totalItemRecordsCount = "0";
-
-    @ApiModelProperty(name= "totalRecordsCount", value= "Total Records Count",position = 12)
-    private String totalRecordsCount = "0";
-
-    @ApiModelProperty(name= "pageNumber", value= "Current Page Number",position = 13)
+    @ApiModelProperty(name= "pageNumber", value= "Current Page Number",position = 9)
     private Integer pageNumber = 0;
 
-    @ApiModelProperty(name= "pageSize", value= "Total records to show is page",position = 14)
+    @ApiModelProperty(name= "pageSize", value= "Total records to show is page",position = 10)
     private Integer pageSize = 10;
-
-    @ApiModelProperty(name= "showResults", value= "Show Results",position = 15)
-    private boolean showResults = false;
-
-    @ApiModelProperty(name= "selectAll", value= "select All Fields",position = 16)
-    private boolean selectAll = false;
-
-    @ApiModelProperty(name= "selectAllFacets", value= "Select All Facets",position = 17)
-    private boolean selectAllFacets = false;
-
-    @ApiModelProperty(name= "showTotalCount", value= "Show Total Count",position = 18)
-    private boolean showTotalCount = false;
-
-    @ApiModelProperty(name= "index", value= "index",position = 19)
-    private Integer index;
-
-    @ApiModelProperty(name= "errorMessage", value= "Error Message",position = 20)
-    private String errorMessage;
-
-    @ApiModelProperty(name= "isDeleted", value= "Is Deleted",position = 21)
-    private boolean isDeleted = false;
 
     public SearchRecordsRequest() {
         this.setFieldName("");
         this.setFieldValue("");
-        this.setSelectAllFacets(true);
         this.setDeleted(false);
+        this.setCatalogingStatus(ReCAPConstants.COMPLETE_STATUS);
 
         this.getOwningInstitutions().add("NYPL");
         this.getOwningInstitutions().add("CUL");
@@ -104,7 +75,6 @@ public class SearchRecordsRequest implements Serializable {
 
         this.setPageNumber(0);
         this.setPageSize(10);
-        this.setShowResults(false);
     }
 
     public String getFieldValue() {
@@ -178,23 +148,20 @@ public class SearchRecordsRequest implements Serializable {
         this.useRestrictions = useRestrictions;
     }
 
-    public List<SearchResultRow> getSearchResultRows() {
-        if (null == searchResultRows) {
-            searchResultRows = new ArrayList<>();
-        }
-        return searchResultRows;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setSearchResultRows(List<SearchResultRow> searchResultRows) {
-        this.searchResultRows = searchResultRows;
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
-    public Integer getTotalPageCount() {
-        return totalPageCount;
+    public String getCatalogingStatus() {
+        return catalogingStatus;
     }
 
-    public void setTotalPageCount(Integer totalPageCount) {
-        this.totalPageCount = totalPageCount;
+    public void setCatalogingStatus(String catalogingStatus) {
+        this.catalogingStatus = catalogingStatus;
     }
 
     public Integer getPageNumber() {
@@ -211,97 +178,5 @@ public class SearchRecordsRequest implements Serializable {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
-    }
-
-    public String getTotalBibRecordsCount() {
-        return totalBibRecordsCount;
-    }
-
-    public void setTotalBibRecordsCount(String totalBibRecordsCount) {
-        this.totalBibRecordsCount = totalBibRecordsCount;
-    }
-
-    public String getTotalItemRecordsCount() {
-        return totalItemRecordsCount;
-    }
-
-    public void setTotalItemRecordsCount(String totalItemRecordsCount) {
-        this.totalItemRecordsCount = totalItemRecordsCount;
-    }
-
-    public String getTotalRecordsCount() {
-        return totalRecordsCount;
-    }
-
-    public void setTotalRecordsCount(String totalRecordsCount) {
-        this.totalRecordsCount = totalRecordsCount;
-    }
-
-    public boolean isShowResults() {
-        return showResults;
-    }
-
-    public void setShowResults(boolean showResults) {
-        this.showResults = showResults;
-    }
-
-    public boolean isSelectAll() {
-        return selectAll;
-    }
-
-    public boolean isSelectAllFacets() {
-        return selectAllFacets;
-    }
-
-    public void setSelectAllFacets(boolean selectAllFacets) {
-        this.selectAllFacets = selectAllFacets;
-    }
-
-    public void setSelectAll(boolean selectAll) {
-        this.selectAll = selectAll;
-    }
-
-    public boolean isShowTotalCount() {
-        return showTotalCount;
-    }
-
-    public void setShowTotalCount(boolean showTotalCount) {
-        this.showTotalCount = showTotalCount;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public void resetPageNumber() {
-        this.pageNumber = 0;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    public void reset() {
-        this.totalBibRecordsCount = String.valueOf(0);
-        this.totalItemRecordsCount = String.valueOf(0);
-        this.totalRecordsCount = String.valueOf(0);
-        this.showTotalCount = false;
-        this.errorMessage = null;
     }
 }
