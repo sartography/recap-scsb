@@ -57,7 +57,6 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
         searchRecordsRequest.setFieldValue("test");
         searchRecordsRequest.setFieldName("test");
-        searchRecordsRequest.setTotalPageCount(3);
         searchRecordsRequest.setAvailability(Arrays.asList("Available"));
         searchRecordsRequest.setOwningInstitutions(Arrays.asList("PUL"));
         HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
