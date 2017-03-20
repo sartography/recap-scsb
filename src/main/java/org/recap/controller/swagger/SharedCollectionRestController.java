@@ -47,16 +47,8 @@ public class SharedCollectionRestController {
         return serverProtocol;
     }
 
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
-    }
-
     public String getScsbCircUrl() {
         return scsbCircUrl;
-    }
-
-    public void setScsbCircUrl(String scsbCircUrl) {
-        this.scsbCircUrl = scsbCircUrl;
     }
 
     public RestTemplate getRestTemplate() {
@@ -65,10 +57,6 @@ public class SharedCollectionRestController {
 
     public String getScsbSolrClientUrl() {
         return scsbSolrClientUrl;
-    }
-
-    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
-        this.scsbSolrClientUrl = scsbSolrClientUrl;
     }
 
     @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

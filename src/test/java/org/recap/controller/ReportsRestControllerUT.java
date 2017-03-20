@@ -6,12 +6,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.ReCAPConstants;
+import org.recap.model.DeaccessionItemResultsRow;
 import org.recap.model.ReportsRequest;
 import org.recap.model.ReportsResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
+import java.util.Date;
+
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -26,10 +30,10 @@ public class ReportsRestControllerUT extends BaseControllerUT {
     String scsbSolrClientUrl;
 
     @Mock
-    RestTemplate mockRestTemplate;
+    private RestTemplate mockRestTemplate;
 
     @Mock
-    ReportsRestController reportsRestController;
+    private ReportsRestController reportsRestController;
 
     @Before
     public void setUp() throws Exception {
@@ -59,8 +63,10 @@ public class ReportsRestControllerUT extends BaseControllerUT {
         reportsRequest.setAccessionDeaccessionToDate("01/27/2017");
         reportsRequest.setOwningInstitutions(Arrays.asList("CUL", "PUL", "NYPL"));
         reportsRequest.setCollectionGroupDesignations(Arrays.asList("Private", "Open", "Shared"));
+        DeaccessionItemResultsRow deaccessionItemResultsRow = getDeaccessionItemResultsRow();
         ReportsResponse reportsResponse = new ReportsResponse();
         reportsResponse.setMessage(ReCAPConstants.SUCCESS);
+        reportsResponse.setDeaccessionItemResultsRows(Arrays.asList(deaccessionItemResultsRow));
         ResponseEntity<ReportsResponse> responseEntity = new ResponseEntity<ReportsResponse>(reportsResponse,HttpStatus.OK);
 
         HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
@@ -71,6 +77,25 @@ public class ReportsRestControllerUT extends BaseControllerUT {
         Mockito.when(reportsRestController.accessionDeaccessionCounts(reportsRequest)).thenCallRealMethod();
         ReportsResponse reportsResponse1 = reportsRestController.accessionDeaccessionCounts(reportsRequest);
         assertNotNull(reportsResponse1);
+        assertNotNull(deaccessionItemResultsRow.getCgd());
+        assertNotNull(deaccessionItemResultsRow.getDeaccessionDate());
+        assertNotNull(deaccessionItemResultsRow.getDeaccessionNotes());
+        assertEquals(deaccessionItemResultsRow.getDeaccessionOwnInst(),"PUL");
+        assertNotNull(deaccessionItemResultsRow.getItemBarcode());
+        assertNotNull(deaccessionItemResultsRow.getItemId());
+        assertNotNull(deaccessionItemResultsRow.getTitle());
+    }
+
+    public DeaccessionItemResultsRow getDeaccessionItemResultsRow(){
+        DeaccessionItemResultsRow deaccessionItemResultsRow = new DeaccessionItemResultsRow();
+        deaccessionItemResultsRow.setItemId(123);
+        deaccessionItemResultsRow.setCgd("Open");
+        deaccessionItemResultsRow.setDeaccessionDate(new Date().toString());
+        deaccessionItemResultsRow.setDeaccessionNotes("test");
+        deaccessionItemResultsRow.setTitle("test");
+        deaccessionItemResultsRow.setDeaccessionOwnInst("PUL");
+        deaccessionItemResultsRow.setItemBarcode("326598741256985");
+        return deaccessionItemResultsRow;
     }
 
     @Test
