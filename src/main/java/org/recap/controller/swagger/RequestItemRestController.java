@@ -90,29 +90,39 @@ public class RequestItemRestController {
     @ResponseBody
     public ItemResponseInformation itemRequest(@ApiParam(value = "Parameters to place a request on an Item", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
         ItemResponseInformation itemResponseInformation = new ItemResponseInformation();
-        List itemBarcodes = null;
-        boolean bSuccess = false;
-        String screenMessage = "Request message recevied is in imporoper format, Please verify the message";
+        List itemBarcodes;
+        HttpStatus statusCode;
+        boolean bSuccess;
+        String screenMessage;
+        ObjectMapper objectMapper;
+
+        ResponseEntity responseEntity = null;
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json;
-            if (itemRequestInfo.getItemBarcodes() != null && ReCAPConstants.REQUEST_TYPE_LIST.contains(itemRequestInfo.getRequestType())) {
+            responseEntity = getRestTemplate().postForEntity(getServerProtocol() + getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST, itemRequestInfo, String.class);
+            statusCode = responseEntity.getStatusCode();
+            screenMessage = responseEntity.getBody().toString();
+        } catch (HttpClientErrorException httpEx) {
+            logger.error("error-->", httpEx);
+            statusCode = httpEx.getStatusCode();
+            screenMessage = httpEx.getResponseBodyAsString();
+        }
+        try {
+
+            if (statusCode != null && statusCode == HttpStatus.OK) {
+                objectMapper = new ObjectMapper();
                 itemBarcodes = itemRequestInfo.getItemBarcodes();
                 itemRequestInfo.setItemBarcodes(null);
-                if (itemBarcodes.size() > 1) {
-                    for (int i = 0; i < itemBarcodes.size(); i++) {
-                        itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(i).toString().trim()));
-                        json = objectMapper.writeValueAsString(itemRequestInfo);
-                        producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
-                    }
-                } else if (itemBarcodes.size() == 1) {
-                    itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(0).toString().trim()));
-                    json = objectMapper.writeValueAsString(itemRequestInfo);
+                for (int i = 0; i < itemBarcodes.size(); i++) {
+                    itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(i).toString().trim()));
+                    String json = objectMapper.writeValueAsString(itemRequestInfo);
                     producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
                 }
                 bSuccess = true;
-                screenMessage = "Message recevied, your request will be processed";
+                screenMessage = ReCAPConstants.REQUEST_MESSAGE_RECEVIED;
+            } else {
+                bSuccess = false;
             }
+
             itemResponseInformation.setSuccess(bSuccess);
             itemResponseInformation.setScreenMessage(screenMessage);
             itemResponseInformation.setItemBarcodes(itemRequestInfo.getItemBarcodes());
@@ -123,8 +133,8 @@ public class RequestItemRestController {
             itemResponseInformation.setRequestType(itemRequestInfo.getRequestType());
             itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
             logger.info("Message In Queue");
-        } catch (JsonProcessingException e) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION,e);
+        } catch (Exception e) {
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION, e);
         }
         return itemResponseInformation;
     }
