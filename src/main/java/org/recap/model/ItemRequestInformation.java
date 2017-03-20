@@ -12,13 +12,13 @@ public class ItemRequestInformation {
 
     private List<String> itemBarcodes;
     private String titleIdentifier;
-    private String itemOwningInstitution=""; // PUL, CUL, NYPL
-    private String patronBarcode="";
-    private String emailAddress="";
-    private String requestingInstitution=""; // PUL, CUL, NYPL
-    private String requestType=""; // Retrieval,EDD, Hold, Recall, Borrow Direct
-    private String deliveryLocation="";
-    private String requestNotes="";
+    private String itemOwningInstitution = ""; // PUL, CUL, NYPL
+    private String patronBarcode = "";
+    private String emailAddress = "";
+    private String requestingInstitution = ""; // PUL, CUL, NYPL
+    private String requestType = ""; // Retrieval,EDD, Hold, Recall, Borrow Direct
+    private String deliveryLocation = "";
+    private String requestNotes = "";
     private String trackingId; // NYPL - trackingId
     private String author; // NYPL - author
     private String callNumber; // NYPL - callNumber
@@ -28,9 +28,11 @@ public class ItemRequestInformation {
      */
     private String startPage;
     private String endPage;
-    private String chapterTitle="";
+    private String chapterTitle = "";
     private String bibId;
     private String username;
+    private String issue;
+    private String volume;
 
     public String getBibId() {
         return bibId;
@@ -167,13 +169,30 @@ public class ItemRequestInformation {
     public String getItemOwningInstitution() {
         return this.itemOwningInstitution;
     }
+
+    public String getIssue() {
+        return issue;
+    }
+
+    public void setIssue(String issue) {
+        this.issue = issue;
+    }
+
+    public String getVolume() {
+        return volume;
+    }
+
+    public void setVolume(String volume) {
+        this.volume = volume;
+    }
+
     @JsonIgnore
-    public boolean isOwningInstitutionItem(){
+    public boolean isOwningInstitutionItem() {
         boolean bSuccess;
-        if (itemOwningInstitution.equalsIgnoreCase(requestingInstitution)){
-            bSuccess=true;
-        }else {
-            bSuccess=false;
+        if (itemOwningInstitution.equalsIgnoreCase(requestingInstitution)) {
+            bSuccess = true;
+        } else {
+            bSuccess = false;
         }
         return bSuccess;
     }
