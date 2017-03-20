@@ -12,6 +12,7 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -27,13 +28,13 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
     String scsbSolrClient;
 
     @Mock
-    RestTemplate mockRestTemplate;
+    private RestTemplate mockRestTemplate;
 
     @Mock
-    UpdateCgdRestController updateCgdRestController;
+    private UpdateCgdRestController updateCgdRestController;
 
     @Mock
-    UriComponentsBuilder builder;
+    private UriComponentsBuilder builder;
 
 
     @Before
@@ -59,7 +60,7 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
 
     @Test
     public void updateCgdForItem() throws Exception {
-        String itemBarcode = "1";
+        String itemBarcode = "3568783121445";
         String owningInstitution = "PUL";
         String oldCollectionGroupDesignation = "Shared";
         String newCollectionGroupDesignation = "Private";
@@ -79,6 +80,7 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         Mockito.when(updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes)).thenCallRealMethod();
         String response = updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes);
         assertNotNull(response);
+        assertEquals(response,ReCAPConstants.SUCCESS);
     }
 
     private HttpHeaders getHttpHeaders() {
