@@ -74,29 +74,39 @@ public class RequestItemRestController {
     @ResponseBody
     public ItemResponseInformation itemRequest(@ApiParam(value = "Parameters to place a request on an Item", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
         ItemResponseInformation itemResponseInformation = new ItemResponseInformation();
-        List itemBarcodes = null;
-        boolean bSuccess = false;
-        String screenMessage = "Request message recevied is in imporoper format, Please verify the message";
+        List itemBarcodes;
+        HttpStatus statusCode;
+        boolean bSuccess;
+        String screenMessage;
+        ObjectMapper objectMapper;
+
+        ResponseEntity responseEntity = null;
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json;
-            if (itemRequestInfo.getItemBarcodes() != null && ReCAPConstants.REQUEST_TYPE_LIST.contains(itemRequestInfo.getRequestType())) {
+            responseEntity = getRestTemplate().postForEntity(getServerProtocol() + getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST, itemRequestInfo, String.class);
+            statusCode = responseEntity.getStatusCode();
+            screenMessage = responseEntity.getBody().toString();
+        } catch (HttpClientErrorException httpEx) {
+            logger.error("error-->", httpEx);
+            statusCode = httpEx.getStatusCode();
+            screenMessage = httpEx.getResponseBodyAsString();
+        }
+        try {
+
+            if (statusCode != null && statusCode == HttpStatus.OK) {
+                objectMapper = new ObjectMapper();
                 itemBarcodes = itemRequestInfo.getItemBarcodes();
                 itemRequestInfo.setItemBarcodes(null);
-                if (itemBarcodes.size() > 1) {
-                    for (int i = 0; i < itemBarcodes.size(); i++) {
-                        itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(i).toString().trim()));
-                        json = objectMapper.writeValueAsString(itemRequestInfo);
-                        producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
-                    }
-                } else if (itemBarcodes.size() == 1) {
-                    itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(0).toString().trim()));
-                    json = objectMapper.writeValueAsString(itemRequestInfo);
+                for (int i = 0; i < itemBarcodes.size(); i++) {
+                    itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(i).toString().trim()));
+                    String json = objectMapper.writeValueAsString(itemRequestInfo);
                     producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
                 }
                 bSuccess = true;
-                screenMessage = "Message recevied, your request will be processed";
+                screenMessage = ReCAPConstants.REQUEST_MESSAGE_RECEVIED;
+            } else {
+                bSuccess = false;
             }
+
             itemResponseInformation.setSuccess(bSuccess);
             itemResponseInformation.setScreenMessage(screenMessage);
             itemResponseInformation.setItemBarcodes(itemRequestInfo.getItemBarcodes());
@@ -107,8 +117,8 @@ public class RequestItemRestController {
             itemResponseInformation.setRequestType(itemRequestInfo.getRequestType());
             itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
             logger.info("Message In Queue");
-        } catch (JsonProcessingException e) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION,e);
+        } catch (Exception e) {
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION, e);
         }
         return itemResponseInformation;
     }
@@ -119,23 +129,23 @@ public class RequestItemRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity validateItemRequest(@ApiParam(value = "Parameters to validate information prior to request", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
-        ResponseEntity responseEntity = null;
+        ResponseEntity responseEntity;
         String response = null;
         try {
             responseEntity = getRestTemplate().postForEntity(getServerProtocol() + getScsbCircUrl() + "requestItem/validateItemRequestInformations", itemRequestInfo, String.class);
             response = (String) responseEntity.getBody();
-        }catch (HttpClientErrorException httpEx){
-            logger.error("error-->",httpEx);
+        } catch (HttpClientErrorException httpEx) {
+            logger.error("error-->", httpEx.getMessage());
             HttpStatus statusCode = httpEx.getStatusCode();
             String responseBodyAsString = httpEx.getResponseBodyAsString();
-            return new ResponseEntity(responseBodyAsString,getHttpHeaders(),statusCode);
-        }catch(Exception ex){
-            logger.error("scsbCircUrl",ex);
-            logger.debug("scsbCircUrl : "+getScsbCircUrl());
+            return new ResponseEntity(responseBodyAsString, getHttpHeaders(), statusCode);
+        } catch (Exception ex) {
+            logger.error("scsbCircUrl", ex);
+            logger.debug("scsbCircUrl : " + getScsbCircUrl());
             responseEntity = new ResponseEntity("Scsb circ Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
         }
-        responseEntity =  new ResponseEntity(response,getHttpHeaders(), HttpStatus.OK);
+        responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
         return responseEntity;
     }
 
@@ -158,10 +168,12 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemCheckoutResponse = om.readValue(response, ItemCheckoutResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST,ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST, ex);
+            itemCheckoutResponse = new ItemCheckoutResponse();
             itemCheckoutResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION,ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION, ex);
+            itemCheckoutResponse = new ItemCheckoutResponse();
             itemCheckoutResponse.setScreenMessage(ex.getMessage());
         }
         return itemCheckoutResponse;
@@ -186,9 +198,9 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemCheckinResponse = om.readValue(response, ItemCheckinResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST,ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST, ex);
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION,ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION, ex);
         }
         return itemCheckinResponse;
     }
@@ -219,11 +231,11 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemHoldResponse = om.readValue(response, ItemHoldResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST ,ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST, ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION , ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION, ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         }
@@ -253,11 +265,11 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemHoldResponse = om.readValue(response, ItemHoldResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST , ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST, ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION , ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION, ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex.getMessage());
             itemHoldResponse.setScreenMessage(ex.getMessage());
         }
@@ -285,11 +297,11 @@ public class RequestItemRestController {
             ObjectMapper om = new ObjectMapper();
             itemCreateBibResponse = om.readValue(response, ItemCreateBibResponse.class);
         } catch (RestClientException ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST , ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST, ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION_REST + ex.getMessage());
             itemCreateBibResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
-            logger.error(ReCAPConstants.REQUEST_EXCEPTION , ex);
+            logger.error(ReCAPConstants.REQUEST_EXCEPTION, ex);
             logger.error(ReCAPConstants.REQUEST_EXCEPTION + ex.getMessage());
             itemCreateBibResponse.setScreenMessage(ex.getMessage());
         }
@@ -313,15 +325,11 @@ public class RequestItemRestController {
             itemInformationResponse = responseEntity.getBody();
         } catch (RestClientException ex) {
             logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT, ex);
-            if (itemInformationResponse == null) {
-                itemInformationResponse = new ItemInformationResponse();
-            }
+            itemInformationResponse = new ItemInformationResponse();
             itemInformationResponse.setScreenMessage(ex.getMessage());
         } catch (Exception ex) {
             logger.error(ReCAPConstants.LOG_ERROR, ex);
-            if (itemInformationResponse == null) {
-                itemInformationResponse = new ItemInformationResponse();
-            }
+            itemInformationResponse = new ItemInformationResponse();
             itemInformationResponse.setScreenMessage(ex.getMessage());
         }
         return itemInformationResponse;
@@ -348,55 +356,55 @@ public class RequestItemRestController {
             response = restTemplate.postForEntity(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_ITEM_RECALL, itemRequestInfo, String.class).getBody();
             ObjectMapper om = new ObjectMapper();
             itemRecallResponse = om.readValue(response, ItemRecallResponse.class);
-        }catch(RestClientException ex){
-            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT,ex);
-            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT+ ex.getMessage());
+        } catch (RestClientException ex) {
+            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT, ex);
+            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT + ex.getMessage());
             itemRecallResponse.setScreenMessage(ex.getMessage());
-        }catch(Exception ex){
-            logger.error(ReCAPConstants.LOG_ERROR,ex);
-            logger.error(ReCAPConstants.LOG_ERROR+ex.getMessage());
+        } catch (Exception ex) {
+            logger.error(ReCAPConstants.LOG_ERROR, ex);
+            logger.error(ReCAPConstants.LOG_ERROR + ex.getMessage());
             itemRecallResponse.setScreenMessage(ex.getMessage());
         }
         return itemRecallResponse;
     }
 
-    @RequestMapping(value = "/patronInformation"  , method = RequestMethod.POST)
-    @ApiOperation(value = "patronInformation"     , notes = "Patron Information", nickname = "patronInformation")
+    @RequestMapping(value = "/patronInformation", method = RequestMethod.POST)
+    @ApiOperation(value = "patronInformation", notes = "Patron Information", nickname = "patronInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public PatronInformationResponse patronInformation(@ApiParam(value = "Parameters to retrieve the patron information from the ILS" , required = true , name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest){
+    public PatronInformationResponse patronInformation(@ApiParam(value = "Parameters to retrieve the patron information from the ILS", required = true, name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest) {
         HttpEntity<PatronInformationResponse> responseEntity = null;
-        PatronInformationResponse patronInformation =null;
+        PatronInformationResponse patronInformation = null;
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         RestTemplate restTemplate = new RestTemplate();
         try {
-            itemRequestInformation.setPatronBarcode (patronInformationRequest.getPatronIdentifier());
+            itemRequestInformation.setPatronBarcode(patronInformationRequest.getPatronIdentifier());
             itemRequestInformation.setItemOwningInstitution(patronInformationRequest.getItemOwningInstitution());
             HttpEntity request = new HttpEntity(itemRequestInformation);
-            responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_PATRON_INFORMATION, HttpMethod.POST, request, PatronInformationResponse.class);
+            responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_PATRON_INFORMATION, HttpMethod.POST, request, PatronInformationResponse.class);
             patronInformation = responseEntity.getBody();
-        }catch(RestClientException ex){
-            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT,ex);
+        } catch (RestClientException ex) {
+            logger.error(ReCAPConstants.LOG_ERROR_REST_CLIENT, ex);
             patronInformation.setScreenMessage(ex.getMessage());
-        }catch(Exception ex){
-            logger.error(ReCAPConstants.LOG_ERROR,ex);
+        } catch (Exception ex) {
+            logger.error(ReCAPConstants.LOG_ERROR, ex);
             patronInformation.setScreenMessage(ex.getMessage());
         }
         return patronInformation;
     }
 
-    @RequestMapping(value = "/refile"  , method = RequestMethod.POST)
-    @ApiOperation(value = "refile"     , notes = "Refile item", nickname = "Re-File")
+    @RequestMapping(value = "/refile", method = RequestMethod.POST)
+    @ApiOperation(value = "refile", notes = "Refile item", nickname = "Re-File")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ItemRefileResponse refileItem(@ApiParam(value = "Parameters to refile an Item" , required = true , name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest){
+    public ItemRefileResponse refileItem(@ApiParam(value = "Parameters to refile an Item", required = true, name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest) {
         ItemRefileResponse itemRefileResponse;
         HttpEntity<ItemRefileResponse> responseEntity;
         HttpEntity request = new HttpEntity(itemRefileRequest);
         RestTemplate restTemplate = new RestTemplate();
 
-        responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl +   ReCAPConstants.URL_REQUEST_RE_FILE, HttpMethod.POST, request, ItemRefileResponse.class);
-        itemRefileResponse =responseEntity.getBody();
+        responseEntity = restTemplate.exchange(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_RE_FILE, HttpMethod.POST, request, ItemRefileResponse.class);
+        itemRefileResponse = responseEntity.getBody();
 
         return itemRefileResponse;
     }
@@ -410,7 +418,7 @@ public class RequestItemRestController {
         HttpEntity request = new HttpEntity<>(getHttpHeadersAuth());
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbCircUrl + ReCAPConstants.URL_REQUEST_CANCEL).queryParam("requestId", requestId);
-        HttpEntity<CancelRequestResponse> responseEntity  = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.POST, request, CancelRequestResponse.class);
+        HttpEntity<CancelRequestResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.POST, request, CancelRequestResponse.class);
         cancelRequestResponse = responseEntity.getBody();
         return cancelRequestResponse;
     }

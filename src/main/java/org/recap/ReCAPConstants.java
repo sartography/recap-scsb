@@ -1,12 +1,9 @@
 package org.recap;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created by premkb on 19/8/16.
  */
-public class ReCAPConstants {
+public final class ReCAPConstants {
 
     public static final String FAILURE = "Failure";
     public static final String SUCCESS = "Success";
@@ -28,12 +25,10 @@ public class ReCAPConstants {
     public static final String REQUEST_TYPE_EDD = "EDD";
     public static final String REQUEST_TYPE_RECALL = "RECALL";
     public static final String REQUEST_TYPE_BORROW_DIRECT = "BORROW DIRECT";
-    public static final List<String> REQUEST_TYPE_LIST = Arrays.asList(REQUEST_TYPE_RETRIEVAL, REQUEST_TYPE_EDD, REQUEST_TYPE_RECALL, REQUEST_TYPE_BORROW_DIRECT);
 
     // MQ URI
     public static final String REQUEST_ITEM_QUEUE = "scsbactivemq:queue:RequestItemQ";
     public static final String REQUEST_TYPE_QUEUE_HEADER = "RequestType";
-
 
     public static final String URL_REQUEST_ITEM_INFORMATION = "requestItem/itemInformation";
     public static final String URL_REQUEST_ITEM_HOLD = "requestItem/holdItem";
@@ -41,6 +36,7 @@ public class ReCAPConstants {
     public static final String URL_REQUEST_ITEM_CREATEBIB = "requestItem/createBib";
     public static final String URL_REQUEST_PATRON_INFORMATION = "requestItem/patronInformation";
     public static final String URL_REQUEST_RE_FILE = "requestItem/refile";
+    public static final String URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST = "requestItem/validateItemRequest";
     public static final String URL_REQUEST_CANCEL = "cancelRequest/cancel";
 
     public static final String REST_URL_REQUEST_ITEM = "/requestItem";
@@ -80,8 +76,12 @@ public class ReCAPConstants {
     public static final String XML = "xml";
 
     //Logger Error
-    public static final String LOG_ERROR="error-->";
-    public static final String LOG_ERROR_REST_CLIENT="RestClient : ";
+    public static final String LOG_ERROR = "error-->";
+    public static final String LOG_ERROR_REST_CLIENT = "RestClient : ";
 
     public static final String COMPLETE_STATUS = "Complete";
+    public static final String REQUEST_MESSAGE_RECEVIED = "Message recevied, your request will be processed";
+
+    private ReCAPConstants() {
+    }
 }
