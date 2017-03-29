@@ -63,6 +63,13 @@ public class ReportsRestControllerUT extends BaseControllerUT {
         reportsRequest.setAccessionDeaccessionToDate("01/27/2017");
         reportsRequest.setOwningInstitutions(Arrays.asList("CUL", "PUL", "NYPL"));
         reportsRequest.setCollectionGroupDesignations(Arrays.asList("Private", "Open", "Shared"));
+        reportsRequest.setPageNumber(1);
+        reportsRequest.setPageSize(10);
+        reportsRequest.setDeaccessionOwningInstitution("CUL");
+        reportsRequest.setIncompleteRequestingInstitution("PUL");
+        reportsRequest.setIncompletePageNumber(10);
+        reportsRequest.setIncompletePageSize(10);
+        reportsRequest.setExport(true);
         DeaccessionItemResultsRow deaccessionItemResultsRow = getDeaccessionItemResultsRow();
         ReportsResponse reportsResponse = new ReportsResponse();
         reportsResponse.setMessage(ReCAPConstants.SUCCESS);
@@ -84,6 +91,17 @@ public class ReportsRestControllerUT extends BaseControllerUT {
         assertNotNull(deaccessionItemResultsRow.getItemBarcode());
         assertNotNull(deaccessionItemResultsRow.getItemId());
         assertNotNull(deaccessionItemResultsRow.getTitle());
+        assertNotNull(reportsRequest.getAccessionDeaccessionFromDate());
+        assertNotNull(reportsRequest.getAccessionDeaccessionToDate());
+        assertNotNull(reportsRequest.getOwningInstitutions());
+        assertNotNull(reportsRequest.getCollectionGroupDesignations());
+        assertNotNull(reportsRequest.getPageNumber());
+        assertNotNull(reportsRequest.getPageSize());
+        assertNotNull(reportsRequest.getDeaccessionOwningInstitution());
+        assertNotNull(reportsRequest.getIncompleteRequestingInstitution());
+        assertNotNull(reportsRequest.getIncompletePageNumber());
+        assertNotNull(reportsRequest.getIncompletePageSize());
+        assertNotNull(reportsRequest.isExport());
     }
 
     public DeaccessionItemResultsRow getDeaccessionItemResultsRow(){

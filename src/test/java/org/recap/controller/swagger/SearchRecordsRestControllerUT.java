@@ -59,9 +59,15 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         searchRecordsRequest.setFieldName("test");
         searchRecordsRequest.setAvailability(Arrays.asList("Available"));
         searchRecordsRequest.setOwningInstitutions(Arrays.asList("PUL"));
+        searchRecordsRequest.setCollectionGroupDesignations(Arrays.asList("Open"));
+        searchRecordsRequest.setUseRestrictions(Arrays.asList("Others"));
+        searchRecordsRequest.setMaterialTypes(Arrays.asList("Monograph"));
+        searchRecordsRequest.setCatalogingStatus("Complete");
+        searchRecordsRequest.setDeleted(false);
+        searchRecordsRequest.setPageSize(10);
+        searchRecordsRequest.setPageNumber(10);
         HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
-        SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
-        searchRecordsResponse.setTotalPageCount(3);
+        SearchRecordsResponse searchRecordsResponse = getSearchRecordsResponse();
         ResponseEntity<SearchRecordsResponse> responseEntity = new ResponseEntity<SearchRecordsResponse>(searchRecordsResponse,HttpStatus.OK);
         Mockito.when(mockRestTemplate.exchange(serverProtocol+scsbSolrClient+ ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
         Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
@@ -70,6 +76,23 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         Mockito.when(searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest)).thenCallRealMethod();
         SearchRecordsResponse recordsResponse = searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest);
         assertNotNull(recordsResponse);
+        assertNotNull(recordsResponse.getErrorMessage());
+        assertNotNull(recordsResponse.getSearchResultRows());
+        assertNotNull(recordsResponse.getTotalBibRecordsCount());
+        assertNotNull(recordsResponse.getTotalItemRecordsCount());
+        assertNotNull(recordsResponse.getTotalPageCount());
+        assertNotNull(recordsResponse.getTotalRecordsCount());
+        assertNotNull(searchRecordsRequest.getFieldValue());
+        assertNotNull(searchRecordsRequest.getFieldName());
+        assertNotNull(searchRecordsRequest.getOwningInstitutions());
+        assertNotNull(searchRecordsRequest.getCollectionGroupDesignations());
+        assertNotNull(searchRecordsRequest.getAvailability());
+        assertNotNull(searchRecordsRequest.getMaterialTypes());
+        assertNotNull(searchRecordsRequest.getUseRestrictions());
+        assertNotNull(searchRecordsRequest.isDeleted());
+        assertNotNull(searchRecordsRequest.getCatalogingStatus());
+        assertNotNull(searchRecordsRequest.getPageNumber());
+        assertNotNull(searchRecordsRequest.getPageSize());
     }
 
     @Test
@@ -101,5 +124,17 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
         return headers;
+    }
+
+    public SearchRecordsResponse getSearchRecordsResponse(){
+        SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
+        searchRecordsResponse.setTotalPageCount(3);
+        searchRecordsResponse.setTotalRecordsCount("1");
+        searchRecordsResponse.setShowTotalCount(true);
+        searchRecordsResponse.setTotalBibRecordsCount("1");
+        searchRecordsResponse.setTotalItemRecordsCount("1");
+        searchRecordsResponse.setErrorMessage("message");
+        searchRecordsResponse.setSearchResultRows(Arrays.asList(new SearchResultRow()));
+        return searchRecordsResponse;
     }
 }

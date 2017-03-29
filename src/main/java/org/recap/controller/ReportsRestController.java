@@ -33,9 +33,6 @@ public class ReportsRestController {
         return serverProtocol;
     }
 
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
-    }
 
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
@@ -45,9 +42,6 @@ public class ReportsRestController {
         return scsbSolrClient;
     }
 
-    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
-        this.scsbSolrClient = scsbSolrClientUrl;
-    }
 
     @RequestMapping(value="/accessionDeaccessionCounts", method = RequestMethod.POST)
     public ReportsResponse accessionDeaccessionCounts(@RequestBody ReportsRequest reportsRequest) {
