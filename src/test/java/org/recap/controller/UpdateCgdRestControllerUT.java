@@ -66,6 +66,8 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         String newCollectionGroupDesignation = "Private";
         String cgdChangeNotes = "Notes";
         ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.SUCCESS,HttpStatus.OK);
+        updateCgdRestController.setScsbSolrClientUrl(getScsbSolrClientUrl());
+        updateCgdRestController.setServerProtocol(getServerProtocol());
         HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
                 .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)

@@ -301,6 +301,10 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         Mockito.when(requestItemRestController.refileItem(itemRefileRequest)).thenCallRealMethod();
         ItemRefileResponse itemRefileResponse1 = requestItemRestController.refileItem(itemRefileRequest);
         assertNotNull(itemRefileResponse1);
+        assertNotNull(itemRefileRequest.getItemBarcodes());
+        assertNotNull(itemRefileRequest.getRequestIds());
+        assertNotNull(itemRefileResponse.getScreenMessage());
+        assertNotNull(itemRefileResponse.isSuccess());
     }
 
     @Test
@@ -394,6 +398,8 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         AbstractResponseItem abstractResponseItem = requestItemRestController.createBibRequest(itemCreateBibRequest);
         assertNotNull(abstractResponseItem);
         assertTrue(abstractResponseItem.isSuccess());
+        assertNotNull(itemCreateBibResponse.getBibId());
+        assertNotNull(itemCreateBibResponse.getItemId());
 
     }
 

@@ -194,6 +194,7 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         ResponseEntity responseEntity1 = sharedCollectionRestController.itemAvailabilityStatus(itemAvailabityStatus);
         assertNotNull(responseEntity1);
         assertEquals(responseEntity1.getBody(), "Available");
+        assertNotNull(itemAvailabityStatus.getBarcodes());
     }
 
     @Test
@@ -209,6 +210,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         ResponseEntity responseEntity = sharedCollectionRestController.bibAvailabilityStatus(bibItemAvailabityStatusRequest);
         assertNotNull(responseEntity);
         assertEquals(responseEntity.getBody(),"Available");
+        assertNotNull(bibItemAvailabityStatusRequest.getBibliographicId());
+        assertNotNull(bibItemAvailabityStatusRequest.getInstitutionId());
 
     }
 
@@ -236,6 +239,10 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         String status = responseMap.get(itemBarcode);
         assertNotNull(status);
         assertEquals(status, ReCAPConstants.SUCCESS);
+        assertNotNull(deAccessionItem.getItemBarcode());
+        assertNotNull(deAccessionItem.getDeliveryLocation());
+        assertNotNull(deAccessionRequest.getDeAccessionItems());
+        assertNotNull(deAccessionItem.getItemBarcode());
     }
 
     @Test
@@ -258,6 +265,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         ResponseEntity responseEntity = sharedCollectionRestController.accession(accessionRequestList);
         assertNotNull(responseEntity);
         assertEquals(linkedHashMapList,responseEntity.getBody());
+        assertNotNull(accessionRequest.getCustomerCode());
+        assertNotNull(accessionRequest.getItemBarcode());
     }
 
     @Test
