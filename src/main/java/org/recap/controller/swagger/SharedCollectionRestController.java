@@ -81,7 +81,7 @@ public class SharedCollectionRestController {
 
     @RequestMapping(value = "/bibAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "bibAvailabilityStatus",
-            notes = "Item Availability Status", nickname = "bibAvailabilityStatus")
+            notes = "Bibliography Availability Status", nickname = "bibAvailabilityStatus")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),@ApiResponse(code = 503, message = "Service Not Available")})
     @ResponseBody
     public ResponseEntity bibAvailabilityStatus(@ApiParam(value = "Owning Inst BibID, or SCSB BibId", required = true, name = "") @RequestBody BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest) {
