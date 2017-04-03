@@ -223,13 +223,36 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     }
 
     @Test
-    public void testItemInformation(){
+    public void testItemInformationPUL(){
         ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
         itemInformationResponse.setItemOwningInstitution("PUL");
         itemInformationResponse.setSuccess(true);
         itemInformationResponse.setBibID("111");
         itemInformationResponse.setCreatedDate(new Date().toString());
-        ResponseEntity<ItemInformationResponse> responseEntity = new ResponseEntity<ItemInformationResponse>(itemInformationResponse,HttpStatus.OK);
+        ResponseEntity<ItemInformationResponse> responseEntity = new ResponseEntity<>(itemInformationResponse,HttpStatus.OK);
+        ItemInformationRequest itemInformationRequest = new ItemInformationRequest();
+        itemInformationRequest.setItemBarcodes(Arrays.asList("233"));
+        itemInformationRequest.setItemOwningInstitution("PUL");
+        HttpEntity request = new HttpEntity(itemInformationRequest);
+        Mockito.when(requestItemRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(requestItemRestController.getServerProtocol()).thenReturn(serverProtocol);
+        Mockito.when(requestItemRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
+        Mockito.when(requestItemRestController.getItemInformationRequest()).thenReturn(itemInformationRequest);
+        Mockito.when(requestItemRestController.getRestTemplate().exchange(getServerProtocol() + getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_INFORMATION, org.springframework.http.HttpMethod.POST, request, ItemInformationResponse.class)).thenReturn(responseEntity);
+        Mockito.when(requestItemRestController.itemInformation(itemInformationRequest)).thenCallRealMethod();
+        AbstractResponseItem abstractResponseItem = requestItemRestController.itemInformation(itemInformationRequest);
+        assertNotNull(abstractResponseItem);
+        assertTrue(abstractResponseItem.isSuccess());
+    }
+
+    @Test
+    public void testItemInformationCUL(){
+        ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
+        itemInformationResponse.setItemOwningInstitution("CUL");
+        itemInformationResponse.setSuccess(true);
+        itemInformationResponse.setBibID("111");
+        itemInformationResponse.setCreatedDate(new Date().toString());
+        ResponseEntity<ItemInformationResponse> responseEntity = new ResponseEntity<>(itemInformationResponse,HttpStatus.OK);
         ItemInformationRequest itemInformationRequest = new ItemInformationRequest();
         itemInformationRequest.setItemBarcodes(Arrays.asList("233"));
         itemInformationRequest.setItemOwningInstitution("PUL");
