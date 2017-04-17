@@ -42,6 +42,8 @@ public final class ReCAPConstants {
     public static final String REST_URL_REQUEST_ITEM = "/requestItem";
     public static final String REST_URL_VALIDATE_REQUEST_ITEM = "/validateItemRequestInformations";
 
+    public static final String REST_URL_PURGE_EMAIL_ADDRESS = "purge/purgeEmailAddress";
+
     public static final String DATADUMP_NO_RECORD = "There is no data to export.";
     public static final String DATADUMP_PROCESS_STARTED = "Export process has started and we will send an email notification upon completion";
 
