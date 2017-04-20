@@ -64,6 +64,20 @@ public class PurgeRestController {
         return new ResponseEntity(response,getHttpHeaders(),HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/purgeExceptionRequests", method = RequestMethod.GET)
+    public ResponseEntity purgeExceptionRequests() {
+        ResponseEntity<String> responseEntity = null;
+        String response = null;
+        try {
+            HttpEntity requestEntity = getHttpEntity();
+            responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EXCEPTION_REQUESTS, HttpMethod.GET, requestEntity, String.class);
+            response = responseEntity.getBody();
+        } catch (Exception e) {
+            getLogger().error("Exception", e);
+        }
+        return new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+    }
+
     private HttpHeaders getHttpHeaders() {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(ReCAPConstants.RESPONSE_DATE, new Date().toString());
