@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -117,6 +118,8 @@ public class SharedCollectionRestController {
     @ResponseBody
     public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
         try {
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
             ResponseEntity responseEntity;
             List<LinkedHashMap> linkedHashMapList = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, List.class);
             if (null != linkedHashMapList && linkedHashMapList.get(0).get("message").toString().contains(ReCAPConstants.ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE)) {
@@ -124,6 +127,8 @@ public class SharedCollectionRestController {
             } else {
                 responseEntity = new ResponseEntity(linkedHashMapList, getHttpHeaders(), HttpStatus.OK);
             }
+            stopWatch.stop();
+            logger.info("Total time taken for accession-->{}sec",stopWatch.getTotalTimeSeconds());
             return responseEntity;
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
