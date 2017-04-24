@@ -66,6 +66,21 @@ public class PurgeRestControllerUT extends BaseTestCase{
         assertNotNull(responseEntity);
     }
 
+    @Test
+    public void testPurgeExceptionRequests() {
+        Mockito.when(purgeEmailAddressRestController.getRestTemplate()).thenReturn(restTemplate);
+        Mockito.when(purgeEmailAddressRestController.getServerProtocol()).thenReturn(serverProtocol);
+        Mockito.when(purgeEmailAddressRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
+        Mockito.when(purgeEmailAddressRestController.getLogger()).thenReturn(logger);
+        HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
+        Mockito.when(purgeEmailAddressRestController.getHttpEntity()).thenReturn(requestEntity);
+        ResponseEntity responseEntity1 = new ResponseEntity(ReCAPConstants.SUCCESS, HttpStatus.OK);
+        Mockito.when(purgeEmailAddressRestController.getRestTemplate().exchange(getServerProtocol() + getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET, requestEntity, String.class)).thenReturn(responseEntity1);
+        Mockito.when(purgeEmailAddressRestController.purgeExceptionRequests()).thenCallRealMethod();
+        ResponseEntity responseEntity = purgeEmailAddressRestController.purgeExceptionRequests();
+        assertNotNull(responseEntity);
+    }
+
     private HttpHeaders getHttpHeaders() {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(ReCAPConstants.RESPONSE_DATE, new Date().toString());

@@ -43,6 +43,7 @@ public final class ReCAPConstants {
     public static final String REST_URL_VALIDATE_REQUEST_ITEM = "/validateItemRequestInformations";
 
     public static final String REST_URL_PURGE_EMAIL_ADDRESS = "purge/purgeEmailAddress";
+    public static final String REST_URL_PURGE_EXCEPTION_REQUESTS = "purge/purgeExceptionRequests";
 
     public static final String DATADUMP_NO_RECORD = "There is no data to export.";
     public static final String DATADUMP_PROCESS_STARTED = "Export process has started and we will send an email notification upon completion";
@@ -54,6 +55,7 @@ public final class ReCAPConstants {
     public static final String URL_REPORTS_CGD_ITEM_COUNTS = "reportsService/cgdItemCounts";
     public static final String URL_REPORTS_DEACCESSION_RESULTS = "reportsService/deaccessionResults";
     public static final String URL_REPORTS_INCOMPLETE_RESULTS = "reportsService/incompleteRecords";
+    public static final String URL_SCHEDULE_JOBS= "scheduleService/scheduleJob";
 
     public static final String INVALID_SCSB_XML_FORMAT_MESSAGE = "Please provide valid SCSB xml format";
     public static final String INVALID_MARC_XML_FORMAT_MESSAGE = "Please provide valid Marc xml format";
@@ -83,6 +85,9 @@ public final class ReCAPConstants {
 
     public static final String COMPLETE_STATUS = "Complete";
     public static final String REQUEST_MESSAGE_RECEVIED = "Message recevied, your request will be processed";
+
+    public static final String PURGE_EXCEPTION_REQUESTS = "PurgeExceptionRequests";
+    public static final String SCHEDULE = "Schedule";
 
     private ReCAPConstants() {
     }
