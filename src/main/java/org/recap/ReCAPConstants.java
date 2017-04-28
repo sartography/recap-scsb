@@ -88,6 +88,7 @@ public final class ReCAPConstants {
 
     public static final String PURGE_EXCEPTION_REQUESTS = "PurgeExceptionRequests";
     public static final String SCHEDULE = "Schedule";
+    public static final String STATUS = "Status";
 
     private ReCAPConstants() {
     }
