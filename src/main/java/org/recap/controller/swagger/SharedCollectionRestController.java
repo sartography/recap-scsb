@@ -111,6 +111,26 @@ public class SharedCollectionRestController {
         }
     }
 
+    @RequestMapping(value = "/accessionBatch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "accessionBatch",
+            notes = "Accession Batch", nickname = "accessionBatch")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ResponseEntity accessionBatch(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
+        try {
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            String responseMessage = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accessionBatch", accessionRequestList, String.class);
+            ResponseEntity responseEntity = new ResponseEntity(responseMessage, getHttpHeaders(), HttpStatus.OK);
+            stopWatch.stop();
+            logger.info("Total time taken for saving accession request-->{}sec", stopWatch.getTotalTimeSeconds());
+            return responseEntity;
+        } catch (Exception exception) {
+            logger.error(ReCAPConstants.LOG_ERROR, exception);
+            return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
     @RequestMapping(value = "/accession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "accession",
             notes = "Accession", nickname = "accession")
