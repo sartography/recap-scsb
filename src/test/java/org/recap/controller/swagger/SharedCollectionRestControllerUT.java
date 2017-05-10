@@ -246,18 +246,18 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
     }
 
     @Test
-    public void accession() throws Exception {
+    public void accessionBatch() throws Exception {
         List<AccessionRequest> accessionRequestList = new ArrayList<>();
         AccessionRequest accessionRequest = new AccessionRequest();
         accessionRequest.setCustomerCode("PB");
         accessionRequest.setItemBarcode("32101095533293");
         accessionRequestList.add(accessionRequest);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, String.class)).thenReturn(ReCAPConstants.SUCCESS);
+        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accessionBatch",accessionRequestList, String.class)).thenReturn(ReCAPConstants.SUCCESS);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
-        Mockito.when(sharedCollectionRestController.accession(accessionRequestList)).thenCallRealMethod();
-        ResponseEntity responseEntity = sharedCollectionRestController.accession(accessionRequestList);
+        Mockito.when(sharedCollectionRestController.accessionBatch(accessionRequestList)).thenCallRealMethod();
+        ResponseEntity responseEntity = sharedCollectionRestController.accessionBatch(accessionRequestList);
         assertNotNull(responseEntity);
         assertEquals(ReCAPConstants.SUCCESS,responseEntity.getBody());
         assertNotNull(accessionRequest.getCustomerCode());

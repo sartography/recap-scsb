@@ -111,16 +111,16 @@ public class SharedCollectionRestController {
         }
     }
 
-    @RequestMapping(value = "/accession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "accession",
-            notes = "Accession", nickname = "accession")
+    @RequestMapping(value = "/accessionBatch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "accessionBatch",
+            notes = "Accession Batch", nickname = "accessionBatch")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
+    public ResponseEntity accessionBatch(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
         try {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            String responseMessage = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, String.class);
+            String responseMessage = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accessionBatch", accessionRequestList, String.class);
             ResponseEntity responseEntity = new ResponseEntity(responseMessage, getHttpHeaders(), HttpStatus.OK);
             stopWatch.stop();
             logger.info("Total time taken for saving accession request-->{}sec", stopWatch.getTotalTimeSeconds());
