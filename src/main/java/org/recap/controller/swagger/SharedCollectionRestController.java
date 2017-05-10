@@ -131,17 +131,17 @@ public class SharedCollectionRestController {
         }
     }
 
-    @RequestMapping(value = "/accessionImmediate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "accessionImmediate",
-            notes = "Accession Immediate", nickname = "accessionImmediate")
+    @RequestMapping(value = "/accession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "accession",
+            notes = "Accession", nickname = "accession")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity accessionImmediate(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
+    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
         try {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             ResponseEntity responseEntity;
-            List<LinkedHashMap> linkedHashMapList = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accessionImmediate", accessionRequestList, List.class);
+            List<LinkedHashMap> linkedHashMapList = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, List.class);
             if (null != linkedHashMapList && linkedHashMapList.get(0).get("message").toString().contains(ReCAPConstants.ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE)) {
                 responseEntity = new ResponseEntity(linkedHashMapList, getHttpHeaders(), HttpStatus.BAD_REQUEST);
             } else {
