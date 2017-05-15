@@ -23,32 +23,68 @@ public class PurgeRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(PurgeRestController.class);
 
+    /**
+     * The Server protocol.
+     */
     @Value("${server.protocol}")
     String serverProtocol;
 
+    /**
+     * The Scsb circ url.
+     */
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
 
+    /**
+     * Gets server protocol.
+     *
+     * @return the server protocol
+     */
     public String getServerProtocol() {
         return serverProtocol;
     }
 
+    /**
+     * Gets scsb circ url.
+     *
+     * @return the scsb circ url
+     */
     public String getScsbCircUrl() {
         return scsbCircUrl;
     }
 
+    /**
+     * Get rest template rest template.
+     *
+     * @return the rest template
+     */
     public RestTemplate getRestTemplate(){
         return new RestTemplate();
     }
 
+    /**
+     * Get http entity http entity.
+     *
+     * @return the http entity
+     */
     public HttpEntity getHttpEntity(){
         return new HttpEntity<>(getHttpHeaders());
     }
 
+    /**
+     * Gets logger.
+     *
+     * @return the logger
+     */
     public Logger getLogger() {
         return logger;
     }
 
+    /**
+     * Purge patron's email address response entity.
+     * This method will call circ project to remove patron's email address after 60/90 days
+     * @return the response entity
+     */
     @RequestMapping(value = "/purgeEmailAddress", method = RequestMethod.GET)
     public ResponseEntity purgeEmailAddress(){
         ResponseEntity<Map> responseEntity = null;
@@ -64,6 +100,12 @@ public class PurgeRestController {
         return new ResponseEntity(response,getHttpHeaders(),HttpStatus.OK);
     }
 
+    /**
+     * Purge exception requests response entity.
+     * This method will call circ project to remove exception request in the database
+     *
+     * @return the response entity
+     */
     @RequestMapping(value = "/purgeExceptionRequests", method = RequestMethod.GET)
     public ResponseEntity purgeExceptionRequests() {
         Map response = null;

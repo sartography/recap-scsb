@@ -16,39 +16,75 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Created by rajeshbabuk on 5/4/17.
  */
-
 @RestController
 @RequestMapping("/scheduleService")
 public class ScheduleJobsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
 
+    /**
+     * The Server protocol.
+     */
     @Value("${server.protocol}")
     String serverProtocol;
 
+    /**
+     * The Scsb schedule url.
+     */
     @Value("${scsb.batch.schedule.url}")
     String scsbScheduleUrl;
 
+    /**
+     * Gets server protocol.
+     *
+     * @return the server protocol
+     */
     public String getServerProtocol() {
         return serverProtocol;
     }
 
+    /**
+     * Sets server protocol.
+     *
+     * @param serverProtocol the server protocol
+     */
     public void setServerProtocol(String serverProtocol) {
         this.serverProtocol = serverProtocol;
     }
 
+    /**
+     * Gets scsb schedule url.
+     *
+     * @return the scsb schedule url
+     */
     public String getScsbScheduleUrl() {
         return scsbScheduleUrl;
     }
 
+    /**
+     * Sets scsb schedule url.
+     *
+     * @param scsbScheduleUrl the scsb schedule url
+     */
     public void setScsbScheduleUrl(String scsbScheduleUrl) {
         this.scsbScheduleUrl = scsbScheduleUrl;
     }
 
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Schedule job schedule job response.
+     *
+     * @param scheduleJobRequest the schedule job request
+     * @return the schedule job response
+     */
     @RequestMapping(value="/scheduleJob", method = RequestMethod.POST)
     public ScheduleJobResponse scheduleJob(@RequestBody ScheduleJobRequest scheduleJobRequest) {
         ScheduleJobResponse scheduleJobResponse = new ScheduleJobResponse();
