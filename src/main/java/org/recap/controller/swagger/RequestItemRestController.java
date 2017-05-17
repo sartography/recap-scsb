@@ -30,59 +30,126 @@ public class RequestItemRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestItemRestController.class);
 
+    /**
+     * The Server protocol.
+     */
     @Value("${server.protocol}")
     String serverProtocol;
 
+    /**
+     * The Scsb circ url.
+     */
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
 
     @Autowired
     private ProducerTemplate producer;
 
+    /**
+     * Gets server protocol.
+     *
+     * @return the server protocol
+     */
     public String getServerProtocol() {
         return serverProtocol;
     }
 
+    /**
+     * Sets server protocol.
+     *
+     * @param serverProtocol the server protocol
+     */
     public void setServerProtocol(String serverProtocol) {
         this.serverProtocol = serverProtocol;
     }
 
+    /**
+     * Gets scsb circ url.
+     *
+     * @return the scsb circ url
+     */
     public String getScsbCircUrl() {
         return scsbCircUrl;
     }
 
+    /**
+     * Sets scsb circ url.
+     *
+     * @param scsbCircUrl the scsb circ url
+     */
     public void setScsbCircUrl(String scsbCircUrl) {
         this.scsbCircUrl = scsbCircUrl;
     }
 
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Gets producer.
+     *
+     * @return the producer
+     */
     public ProducerTemplate getProducer() {
         return producer;
     }
 
+    /**
+     * Sets producer.
+     *
+     * @param producer the producer
+     */
     public void setProducer(ProducerTemplate producer) {
         this.producer = producer;
     }
 
+    /**
+     * Gets item request information.
+     *
+     * @return the item request information
+     */
     public ItemRequestInformation getItemRequestInformation() {
         return new ItemRequestInformation();
     }
 
+    /**
+     * Gets item information request.
+     *
+     * @return the item information request
+     */
     public ItemInformationRequest getItemInformationRequest() {
         return new ItemInformationRequest();
     }
 
+    /**
+     * Gets object mapper.
+     *
+     * @return the object mapper
+     */
     public ObjectMapper getObjectMapper() {
         return new ObjectMapper();
     }
 
+    /**
+     * Gets logger.
+     *
+     * @return the logger
+     */
     public Logger getLogger() {
         return logger;
     }
 
+    /**
+     * Item request item response information.
+     * This method will call circ project to place a request
+     * @param itemRequestInfo the item request info
+     * @return the item response information
+     */
     @RequestMapping(value = ReCAPConstants.REST_URL_REQUEST_ITEM, method = RequestMethod.POST)
     @ApiOperation(value = "Request Item", notes = "Item Request from Owning institution", nickname = "requestItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -138,6 +205,12 @@ public class RequestItemRestController {
         return itemResponseInformation;
     }
 
+    /**
+     * Validate item request response entity.
+     * This method will call circ project to validate item request
+     * @param itemRequestInfo the item request info
+     * @return the response entity
+     */
     @RequestMapping(value = ReCAPConstants.REST_URL_VALIDATE_REQUEST_ITEM, method = RequestMethod.POST)
     @ApiOperation(value = "validateItemRequestInformations",
             notes = "Validate item request information", nickname = "validateItemRequestInformation")
@@ -164,6 +237,12 @@ public class RequestItemRestController {
         return responseEntity;
     }
 
+    /**
+     * Checkout item request item checkout response.
+     * This method will call circ project to checkout an item and returns the response
+     * @param itemCheckOutRequest the item check out request
+     * @return the item checkout response
+     */
     @RequestMapping(value = "/checkoutItem", method = RequestMethod.POST)
     @ApiOperation(value = "checkoutItem",
             notes = "Checkout Item Request from Owning institution", nickname = "checkoutItem")
@@ -194,6 +273,12 @@ public class RequestItemRestController {
         return itemCheckoutResponse;
     }
 
+    /**
+     * Checkin item request abstract response item.
+     * This metgod will call circ project to checkin an item
+     * @param itemCheckInRequest the item check in request
+     * @return the abstract response item
+     */
     @RequestMapping(value = "/checkinItem", method = RequestMethod.POST)
     @ApiOperation(value = "checkinItem",
             notes = "Send a checkin request to the owning institution", nickname = "checkinItem")
@@ -221,6 +306,12 @@ public class RequestItemRestController {
         return itemCheckinResponse;
     }
 
+    /**
+     * Hold item request abstract response item.
+     * This method will be placing a hold on the item in the ILS
+     * @param itemHoldRequest the item hold request
+     * @return the abstract response item
+     */
     @RequestMapping(value = "/holdItem", method = RequestMethod.POST)
     @ApiOperation(value = "holdItem",
             notes = "Place a hold on the item in the requestor's ILS", nickname = "holdItem")
@@ -258,6 +349,12 @@ public class RequestItemRestController {
         return itemHoldResponse;
     }
 
+    /**
+     * Cancel hold item request abstract response item.
+     * This method will be canceling a hold on the Item
+     * @param itemHoldCancelRequest the item hold cancel request
+     * @return the abstract response item
+     */
     @RequestMapping(value = "/cancelHoldItem", method = RequestMethod.POST)
     @ApiOperation(value = "cancelHoldItem",
             notes = "Cancel hold Item Request from Owning institution", nickname = "cancelHoldItem")
@@ -294,6 +391,12 @@ public class RequestItemRestController {
         return itemHoldResponse;
     }
 
+    /**
+     * Create bib request abstract response item.
+     *
+     * @param itemCreateBibRequest the item create bib request
+     * @return the abstract response item
+     */
     @RequestMapping(value = "/createBib", method = RequestMethod.POST)
     @ApiOperation(value = "createBib",
             notes = "Create a bibliographic record in the requestor's ILS", nickname = "createBib")
@@ -327,6 +430,12 @@ public class RequestItemRestController {
         return itemCreateBibResponse;
     }
 
+    /**
+     * Item information abstract response item.
+     *
+     * @param itemRequestInfo the item request info
+     * @return the abstract response item
+     */
     @RequestMapping(value = "/itemInformation", method = RequestMethod.POST)
     @ApiOperation(value = "itemInformation", notes = "Retrieve Item and Circ Status from ILS", nickname = "itemInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -353,6 +462,12 @@ public class RequestItemRestController {
         return itemInformationResponse;
     }
 
+    /**
+     * Recall item abstract response item.
+     *
+     * @param itemRecalRequest the item recal request
+     * @return the abstract response item
+     */
     @RequestMapping(value = "/recall", method = RequestMethod.POST)
     @ApiOperation(value = "recall",
             notes = "Recall Item Request from Owning institution", nickname = "RecallItem")
@@ -386,6 +501,12 @@ public class RequestItemRestController {
         return itemRecallResponse;
     }
 
+    /**
+     * Patron information patron information response.
+     *
+     * @param patronInformationRequest the patron information request
+     * @return the patron information response
+     */
     @RequestMapping(value = "/patronInformation", method = RequestMethod.POST)
     @ApiOperation(value = "patronInformation", notes = "Patron Information", nickname = "patronInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -413,6 +534,12 @@ public class RequestItemRestController {
         return patronInformation;
     }
 
+    /**
+     * Refile item item refile response.
+     *
+     * @param itemRefileRequest the item refile request
+     * @return the item refile response
+     */
     @RequestMapping(value = "/refile", method = RequestMethod.POST)
     @ApiOperation(value = "refile", notes = "Refile item", nickname = "Re-File")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -426,6 +553,12 @@ public class RequestItemRestController {
         return itemRefileResponse;
     }
 
+    /**
+     * Cancel request cancel request response.
+     *
+     * @param requestId the request id
+     * @return the cancel request response
+     */
     @RequestMapping(value = "/cancelRequest", method = RequestMethod.POST)
     @ApiOperation(value = "cancelRequest", notes = "Cancel an existing request", nickname = "cancelRequest")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})

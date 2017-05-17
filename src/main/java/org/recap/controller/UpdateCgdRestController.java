@@ -15,39 +15,80 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * Created by rajeshbabuk on 3/1/17.
  */
-
 @RestController
 @RequestMapping("/updateCgdService")
 public class UpdateCgdRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
+    /**
+     * The Server protocol.
+     */
     @Value("${server.protocol}")
     String serverProtocol;
 
+    /**
+     * The Scsb solr client.
+     */
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
+    /**
+     * Gets server protocol.
+     *
+     * @return the server protocol
+     */
     public String getServerProtocol() {
         return serverProtocol;
     }
 
+    /**
+     * Sets server protocol.
+     *
+     * @param serverProtocol the server protocol
+     */
     public void setServerProtocol(String serverProtocol) {
         this.serverProtocol = serverProtocol;
     }
 
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Gets scsb solr client url.
+     *
+     * @return the scsb solr client url
+     */
     public String getScsbSolrClientUrl() {
         return scsbSolrClient;
     }
 
+    /**
+     * Sets scsb solr client url.
+     *
+     * @param scsbSolrClientUrl the scsb solr client url
+     */
     public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
         this.scsbSolrClient = scsbSolrClientUrl;
     }
 
+    /**
+     * Update cgd for item string.
+     * This method will make rest call to solr client project to update CGD for an item in database and returns response message
+     *
+     * @param itemBarcode                   the item barcode
+     * @param owningInstitution             the owning institution
+     * @param oldCollectionGroupDesignation the old collection group designation
+     * @param newCollectionGroupDesignation the new collection group designation
+     * @param cgdChangeNotes                the cgd change notes
+     * @return the string
+     */
     @RequestMapping(value="/updateCgd", method = RequestMethod.GET)
     public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
         String statusResponse = null;

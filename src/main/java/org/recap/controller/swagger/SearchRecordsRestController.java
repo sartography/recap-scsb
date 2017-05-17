@@ -26,32 +26,69 @@ public class SearchRecordsRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
 
+    /**
+     * The Server protocol.
+     */
     @Value("${server.protocol}")
     String serverProtocol;
 
+    /**
+     * The Scsb solr client.
+     */
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
+    /**
+     * Gets server protocol.
+     *
+     * @return the server protocol
+     */
     public String getServerProtocol() {
         return serverProtocol;
     }
 
+    /**
+     * Sets server protocol.
+     *
+     * @param serverProtocol the server protocol
+     */
     public void setServerProtocol(String serverProtocol) {
         this.serverProtocol = serverProtocol;
     }
 
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Gets scsb solr client url.
+     *
+     * @return the scsb solr client url
+     */
     public String getScsbSolrClientUrl() {
         return scsbSolrClient;
     }
 
+    /**
+     * Sets scsb solr client url.
+     *
+     * @param scsbSolrClientUrl the scsb solr client url
+     */
     public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
         this.scsbSolrClient = scsbSolrClientUrl;
     }
 
+    /**
+     * Search records service get param search records response.
+     *
+     * @param searchRecordsRequest the search records request
+     * @return the search records response
+     */
     @RequestMapping(value="/search", method = RequestMethod.POST)
     //@ApiOperation(value = "search",notes = "Search Books in ReCAP - Using Method Post, Request data is String", nickname = "search", position = 0, consumes="application/json")
     //@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
@@ -70,6 +107,19 @@ public class SearchRecordsRestController {
         return searchRecordsResponse;
     }
 
+    /**
+     * Search records service get list.
+     *
+     * @param fieldValue                  the field value
+     * @param fieldName                   the field name
+     * @param owningInstitutions          the owning institutions
+     * @param collectionGroupDesignations the collection group designations
+     * @param availability                the availability
+     * @param materialTypes               the material types
+     * @param useRestrictions             the use restrictions
+     * @param pageSize                    the page size
+     * @return the list
+     */
     @RequestMapping(value="/searchByParam", method = RequestMethod.GET)
     @ApiOperation(value = "searchParam",notes = "Search Books in ReCAP - Using Method GET, Request data as parameter", nickname = "search", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})

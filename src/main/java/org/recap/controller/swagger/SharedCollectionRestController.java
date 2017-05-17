@@ -35,31 +35,67 @@ public class SharedCollectionRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(SharedCollectionRestController.class);
 
+    /**
+     * The Server protocol.
+     */
     @Value("${server.protocol}")
     String serverProtocol;
 
+    /**
+     * The Scsb solr client url.
+     */
     @Value("${scsb.solr.client.url}")
     String scsbSolrClientUrl;
 
+    /**
+     * The Scsb circ url.
+     */
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
 
+    /**
+     * Gets server protocol.
+     *
+     * @return the server protocol
+     */
     public String getServerProtocol() {
         return serverProtocol;
     }
 
+    /**
+     * Gets scsb circ url.
+     *
+     * @return the scsb circ url
+     */
     public String getScsbCircUrl() {
         return scsbCircUrl;
     }
 
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Gets scsb solr client url.
+     *
+     * @return the scsb solr client url
+     */
     public String getScsbSolrClientUrl() {
         return scsbSolrClientUrl;
     }
 
+    /**
+     * Item availability status response entity.
+     * This method will make rest call to sole client project to get Item availability status
+     *
+     * @param itemAvailabityStatus the item availabity status
+     * @return the response entity
+     */
     @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "itemAvailabilityStatus",
             notes = "Item Availability Status", nickname = "itemAvailabilityStatus")
@@ -80,6 +116,12 @@ public class SharedCollectionRestController {
         }
     }
 
+    /**
+     * Bib availability status response entity.
+     *
+     * @param bibItemAvailabityStatusRequest the bib item availabity status request
+     * @return the response entity
+     */
     @RequestMapping(value = "/bibAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "bibAvailabilityStatus",
             notes = "Bibliography Availability Status", nickname = "bibAvailabilityStatus")
@@ -96,6 +138,13 @@ public class SharedCollectionRestController {
         return new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
     }
 
+    /**
+     * De accession response entity.
+     * This method will call circ project to make soft delete the  given items in the database
+     *
+     * @param deAccessionRequest the de accession request
+     * @return the response entity
+     */
     @RequestMapping(value = "/deAccession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "deaccession",
             notes = "Deaccession", nickname = "deaccession")
@@ -111,6 +160,13 @@ public class SharedCollectionRestController {
         }
     }
 
+    /**
+     * Accession batch response entity.
+     *
+     *
+     * @param accessionRequestList the accession request list
+     * @return the response entity
+     */
     @RequestMapping(value = "/accessionBatch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "accessionBatch",
             notes = "Accession Batch", nickname = "accessionBatch")
@@ -131,6 +187,12 @@ public class SharedCollectionRestController {
         }
     }
 
+    /**
+     * Accession response entity.
+     * This method will call solr client project to add new item in the database
+     * @param accessionRequestList the accession request list
+     * @return the response entity
+     */
     @RequestMapping(value = "/accession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "accession",
             notes = "Accession", nickname = "accession")
@@ -156,6 +218,12 @@ public class SharedCollectionRestController {
         }
     }
 
+    /**
+     * Submit collection response entity.
+     * This method will call circ project to update the items which is already present in the database
+     * @param inputRecords the input records
+     * @return the response entity
+     */
     @RequestMapping(value = "/submitCollection", method = RequestMethod.POST)
     @ApiOperation(value = "submitCollection",
             notes = "Submit Collection", nickname = "submitCollection")

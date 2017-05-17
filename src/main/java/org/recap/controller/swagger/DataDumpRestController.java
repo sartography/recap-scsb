@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * Created by premkb on 19/8/16.
  */
-
 @RestController
 @RequestMapping("/dataDump")
 @Api(value="dataDump", description="Export data dump", position = 1)
@@ -30,6 +29,19 @@ public class DataDumpRestController {
     @Value("${scsb.etl.url}")
     private String scsbEtlUrl;
 
+    /**
+     * Export data dump response entity.
+     *
+     * @param institutionCodes          the institution codes
+     * @param requestingInstitutionCode the requesting institution code
+     * @param fetchType                 the fetch type
+     * @param outputFormat              the output format
+     * @param date                      the date
+     * @param collectionGroupIds        the collection group ids
+     * @param transmissionType          the transmission type
+     * @param emailToAddress            the email to address
+     * @return the response entity
+     */
     @RequestMapping(value="/exportDataDump", method = RequestMethod.GET)
     @ApiOperation(value = "exportDataDump",
             notes = "Export datadumps to institutions", nickname = "exportDataDump", position = 0)

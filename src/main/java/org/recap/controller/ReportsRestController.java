@@ -16,33 +16,59 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Created by rajeshbabuk on 13/1/17.
  */
-
 @RestController
 @RequestMapping("/reportsService")
 public class ReportsRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
+    /**
+     * The Server protocol.
+     */
     @Value("${server.protocol}")
     String serverProtocol;
 
+    /**
+     * The Scsb solr client.
+     */
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
+    /**
+     * Gets server protocol.
+     *
+     * @return the server protocol
+     */
     public String getServerProtocol() {
         return serverProtocol;
     }
 
 
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Gets scsb solr client url.
+     *
+     * @return the scsb solr client url
+     */
     public String getScsbSolrClientUrl() {
         return scsbSolrClient;
     }
 
 
+    /**
+     * Accession deaccession counts reports response.
+     * This method will call solr client project to get totsl counts of accessioned and deaccessioned items.
+     * @param reportsRequest the reports request
+     * @return the reports response
+     */
     @RequestMapping(value="/accessionDeaccessionCounts", method = RequestMethod.POST)
     public ReportsResponse accessionDeaccessionCounts(@RequestBody ReportsRequest reportsRequest) {
         ReportsResponse reportsResponse = new ReportsResponse();
@@ -58,6 +84,12 @@ public class ReportsRestController {
         return reportsResponse;
     }
 
+    /**
+     * Cgd item counts reports response.
+     * This method will call solr client project to get updated cgd items counts
+     * @param reportsRequest the reports request
+     * @return the reports response
+     */
     @RequestMapping(value="/cgdItemCounts", method = RequestMethod.POST)
     public ReportsResponse cgdItemCounts(@RequestBody ReportsRequest reportsRequest) {
         ReportsResponse reportsResponse = new ReportsResponse();
@@ -73,6 +105,12 @@ public class ReportsRestController {
         return reportsResponse;
     }
 
+    /**
+     * Deaccession results reports response.
+     *
+     * @param reportsRequest the reports request
+     * @return the reports response
+     */
     @RequestMapping(value="/deaccessionResults", method = RequestMethod.POST)
     public ReportsResponse deaccessionResults(@RequestBody ReportsRequest reportsRequest) {
         ReportsResponse reportsResponse = new ReportsResponse();
@@ -88,6 +126,12 @@ public class ReportsRestController {
         return reportsResponse;
     }
 
+    /**
+     * Incomplete records reports response.
+     *
+     * @param reportsRequest the reports request
+     * @return the reports response
+     */
     @RequestMapping(value="/incompleteRecords", method = RequestMethod.POST)
     public ReportsResponse incompleteRecords(@RequestBody ReportsRequest reportsRequest) {
         ReportsResponse reportsResponse = new ReportsResponse();
