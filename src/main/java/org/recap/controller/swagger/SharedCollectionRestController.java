@@ -246,7 +246,7 @@ public class SharedCollectionRestController {
             return responseEntity;
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
-            responseEntity = new ResponseEntity(ReCAPConstants.SCSB_CIRC_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            responseEntity = new ResponseEntity(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
         }
     }
