@@ -235,12 +235,13 @@ public class SharedCollectionRestController {
     public ResponseEntity submitCollection(@ApiParam(value = "Provide marc xml or scsb xml format to update the records", required = true, name = "inputRecords") @RequestBody String inputRecords) {
         ResponseEntity responseEntity;
         try {
-            String response = getRestTemplate().postForObject(getServerProtocol() + getScsbCircUrl() + "sharedCollection/submitCollection", inputRecords, String.class);
-            if (response.equalsIgnoreCase(ReCAPConstants.INVALID_MARC_XML_FORMAT_MESSAGE) || response.equalsIgnoreCase(ReCAPConstants.INVALID_SCSB_XML_FORMAT_MESSAGE)
-                    || response.equalsIgnoreCase(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR)) {
-                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            List<LinkedHashMap> linkedHashMapList =getRestTemplate().postForObject(getServerProtocol() + getScsbCircUrl() + "sharedCollection/submitCollection", inputRecords, List.class);
+            String message = linkedHashMapList != null ? linkedHashMapList.get(0).get("message").toString():ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR;
+            if (message.equalsIgnoreCase(ReCAPConstants.INVALID_MARC_XML_FORMAT_MESSAGE) || message.equalsIgnoreCase(ReCAPConstants.INVALID_SCSB_XML_FORMAT_MESSAGE)
+                    || message.equalsIgnoreCase(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR)) {
+                responseEntity = new ResponseEntity(linkedHashMapList, getHttpHeaders(), HttpStatus.BAD_REQUEST);
             } else {
-                responseEntity = new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+                responseEntity = new ResponseEntity(linkedHashMapList, getHttpHeaders(), HttpStatus.OK);
             }
             return responseEntity;
         } catch (Exception exception) {
