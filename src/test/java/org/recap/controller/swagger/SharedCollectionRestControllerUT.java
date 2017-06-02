@@ -276,14 +276,21 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
     public void submitCollection() throws Exception {
         mockRestTemplate.getMessageConverters()
                 .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",inputRecords, String.class)).thenReturn("Success");
+        List<LinkedHashMap> linkedHashMapList = new ArrayList<>();
+        LinkedHashMap linkedHashMap = new LinkedHashMap();
+        linkedHashMap.put("itemBarcode","32101068878931");
+        linkedHashMap.put("message","SuccessRecord");
+        linkedHashMapList.add(linkedHashMap);
+        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",inputRecords, List.class)).thenReturn(linkedHashMapList);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(sharedCollectionRestController.submitCollection(inputRecords)).thenCallRealMethod();
-        ResponseEntity responseEntity1 = sharedCollectionRestController.submitCollection(inputRecords);
-        assertNotNull(responseEntity1);
-        assertEquals(responseEntity1.getBody(), "Success");
+        ResponseEntity responseEntity = sharedCollectionRestController.submitCollection(inputRecords);
+        assertNotNull(responseEntity);
+        assertEquals("[{itemBarcode=32101068878931, message=SuccessRecord}]",responseEntity.getBody().toString());
+
     }
+
 
 
 }
