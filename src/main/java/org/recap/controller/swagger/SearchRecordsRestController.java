@@ -27,34 +27,10 @@ public class SearchRecordsRestController {
     private static final Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
 
     /**
-     * The Server protocol.
-     */
-    @Value("${server.protocol}")
-    String serverProtocol;
-
-    /**
      * The Scsb solr client.
      */
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
-
-    /**
-     * Gets server protocol.
-     *
-     * @return the server protocol
-     */
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
-
-    /**
-     * Sets server protocol.
-     *
-     * @param serverProtocol the server protocol
-     */
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
-    }
 
     /**
      * Gets rest template.
@@ -97,7 +73,7 @@ public class SearchRecordsRestController {
         try {
             HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
 
-            ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
+            ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error("error--.",e);
@@ -138,7 +114,7 @@ public class SearchRecordsRestController {
         List<SearchResultRow> searchResultRows = null;
         try {
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_PARAM)
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_PARAM)
                     .queryParam("fieldValue", fieldValue)
                     .queryParam("fieldName", fieldName)
                     .queryParam("owningInstitutions", owningInstitutions)

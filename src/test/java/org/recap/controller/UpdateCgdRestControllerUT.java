@@ -21,9 +21,6 @@ import static org.junit.Assert.assertNotNull;
  */
 public class UpdateCgdRestControllerUT extends BaseControllerUT {
 
-    @Value("${server.protocol}")
-    String serverProtocol;
-
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
@@ -40,14 +37,6 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-    }
-
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
-
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
     }
 
     public String getScsbSolrClientUrl() {
@@ -67,9 +56,8 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         String cgdChangeNotes = "Notes";
         ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.SUCCESS,HttpStatus.OK);
         updateCgdRestController.setScsbSolrClientUrl(getScsbSolrClientUrl());
-        updateCgdRestController.setServerProtocol(getServerProtocol());
         HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
                 .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
                 .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
                 .queryParam(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)
@@ -77,7 +65,6 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
                 .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes);
         Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class)).thenReturn(responseEntity);
         Mockito.when(updateCgdRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(updateCgdRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(updateCgdRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
         Mockito.when(updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes)).thenCallRealMethod();
         String response = updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes);

@@ -24,25 +24,10 @@ public class PurgeRestController {
     private static final Logger logger = LoggerFactory.getLogger(PurgeRestController.class);
 
     /**
-     * The Server protocol.
-     */
-    @Value("${server.protocol}")
-    String serverProtocol;
-
-    /**
      * The Scsb circ url.
      */
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
-
-    /**
-     * Gets server protocol.
-     *
-     * @return the server protocol
-     */
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
 
     /**
      * Gets scsb circ url.
@@ -91,7 +76,7 @@ public class PurgeRestController {
         Map response = null;
         try{
             HttpEntity requestEntity = getHttpEntity();
-            responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbCircUrl()+ ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET,requestEntity,Map.class);
+            responseEntity = getRestTemplate().exchange(getScsbCircUrl()+ ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET,requestEntity,Map.class);
             response = responseEntity.getBody();
         }catch(Exception e){
             getLogger().error("Exception",e);
@@ -111,7 +96,7 @@ public class PurgeRestController {
         Map response = null;
         try {
             HttpEntity requestEntity = getHttpEntity();
-            ResponseEntity<Map> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EXCEPTION_REQUESTS, HttpMethod.GET, requestEntity, Map.class);
+            ResponseEntity<Map> responseEntity = getRestTemplate().exchange(getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EXCEPTION_REQUESTS, HttpMethod.GET, requestEntity, Map.class);
             response = responseEntity.getBody();
         } catch (Exception e) {
             getLogger().error("Exception", e);

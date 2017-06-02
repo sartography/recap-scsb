@@ -24,9 +24,6 @@ import static org.junit.Assert.*;
  */
 public class SearchRecordsRestControllerUT extends BaseTestCase{
 
-    @Value("${server.protocol}")
-    String serverProtocol;
-
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
 
@@ -35,14 +32,6 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
 
     @Mock
     SearchRecordsRestController searchRecordsRestController;
-
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
-
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
-    }
 
     public String getScsbSolrClient() {
         return scsbSolrClient;
@@ -69,9 +58,8 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
         SearchRecordsResponse searchRecordsResponse = getSearchRecordsResponse();
         ResponseEntity<SearchRecordsResponse> responseEntity = new ResponseEntity<SearchRecordsResponse>(searchRecordsResponse,HttpStatus.OK);
-        Mockito.when(mockRestTemplate.exchange(serverProtocol+scsbSolrClient+ ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
+        Mockito.when(mockRestTemplate.exchange(scsbSolrClient+ ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
         Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(searchRecordsRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
         Mockito.when(searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest)).thenCallRealMethod();
         SearchRecordsResponse recordsResponse = searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest);
@@ -100,7 +88,7 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         HttpEntity request = new HttpEntity(getHttpHeaders());
         List<SearchResultRow> searchResultRowList = new ArrayList<>();
         ResponseEntity<List> httpEntity = new ResponseEntity<List>(searchResultRowList,HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverProtocol + scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_PARAM)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_PARAM)
                 .queryParam("fieldValue", "test")
                 .queryParam("fieldName", "test")
                 .queryParam("owningInstitutions", "PUL")
@@ -111,7 +99,6 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
                 .queryParam("pageSize", 10);
         Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class)).thenReturn(httpEntity);
         Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(searchRecordsRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
         Mockito.when(searchRecordsRestController.searchRecordsServiceGet("test","test","PUL","Shared","Available","Monograph","NoRestrictions",10)).thenCallRealMethod();
         List<SearchResultRow> searchResultRows= searchRecordsRestController.searchRecordsServiceGet("test","test","PUL","Shared","Available","Monograph","NoRestrictions",10);

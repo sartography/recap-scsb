@@ -22,35 +22,12 @@ public class ScheduleJobsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
 
-    /**
-     * The Server protocol.
-     */
-    @Value("${server.protocol}")
-    String serverProtocol;
 
     /**
      * The Scsb schedule url.
      */
     @Value("${scsb.batch.schedule.url}")
     String scsbScheduleUrl;
-
-    /**
-     * Gets server protocol.
-     *
-     * @return the server protocol
-     */
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
-
-    /**
-     * Sets server protocol.
-     *
-     * @param serverProtocol the server protocol
-     */
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
-    }
 
     /**
      * Gets scsb schedule url.
@@ -91,7 +68,7 @@ public class ScheduleJobsController {
         try {
             HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getHttpHeaders());
 
-            ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(getServerProtocol() + getScsbScheduleUrl() + ReCAPConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
+            ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(getScsbScheduleUrl() + ReCAPConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
             scheduleJobResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(ReCAPConstants.LOG_ERROR,e);

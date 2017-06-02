@@ -19,9 +19,6 @@ import static org.junit.Assert.assertNotNull;
  */
 public class ScheduleJobsControllerUT extends BaseControllerUT {
 
-    @Value("${server.protocol}")
-    String serverProtocol;
-
     @Value("${scsb.batch.schedule.url}")
     String scsbScheduleUrl;
 
@@ -30,14 +27,6 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
 
     @Mock
     private ScheduleJobsController scheduleJobsController;
-
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
-
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
-    }
 
     public String getScsbScheduleUrl() {
         return scsbScheduleUrl;
@@ -62,9 +51,8 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
         scheduleJobResponse.setMessage("Scheduled");
         ResponseEntity<ScheduleJobResponse> responseEntity = new ResponseEntity<>(scheduleJobResponse, HttpStatus.OK);
         HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getHttpHeaders());
-        Mockito.when(mockRestTemplate.exchange(getServerProtocol() + getScsbScheduleUrl() + ReCAPConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class)).thenReturn(responseEntity);
+        Mockito.when(mockRestTemplate.exchange(getScsbScheduleUrl() + ReCAPConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class)).thenReturn(responseEntity);
         Mockito.when(scheduleJobsController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(scheduleJobsController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(scheduleJobsController.getScsbScheduleUrl()).thenReturn(scsbScheduleUrl);
         Mockito.when(scheduleJobsController.scheduleJob(scheduleJobRequest)).thenCallRealMethod();
         ScheduleJobResponse scheduleJobResponse1 = scheduleJobsController.scheduleJob(scheduleJobRequest);
