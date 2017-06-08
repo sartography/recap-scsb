@@ -24,9 +24,6 @@ import static org.junit.Assert.assertNotNull;
  */
 public class SharedCollectionRestControllerUT extends BaseControllerUT {
 
-    @Value("${server.protocol}")
-    String serverProtocol;
-
     @Value("${scsb.solr.client.url}")
     String scsbSolrClientUrl;
 
@@ -40,14 +37,6 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-    }
-
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
-
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
     }
 
     public String getScsbCircUrl() {
@@ -186,9 +175,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         List<String> barcodes = new ArrayList<>();
         barcodes.add("32101056185125");
         itemAvailabityStatus.setBarcodes(barcodes);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus", itemAvailabityStatus, String.class)).thenReturn("Available");
+        Mockito.when(mockRestTemplate.postForObject(getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus", itemAvailabityStatus, String.class)).thenReturn("Available");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(sharedCollectionRestController.itemAvailabilityStatus(itemAvailabityStatus)).thenCallRealMethod();
         ResponseEntity responseEntity1 = sharedCollectionRestController.itemAvailabilityStatus(itemAvailabityStatus);
@@ -202,9 +190,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest = new BibItemAvailabityStatusRequest();
         bibItemAvailabityStatusRequest.setBibliographicId("12365");
         bibItemAvailabityStatusRequest.setInstitutionId("1");
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus", bibItemAvailabityStatusRequest, String.class)).thenReturn("Available");
+        Mockito.when(mockRestTemplate.postForObject(getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus", bibItemAvailabityStatusRequest, String.class)).thenReturn("Available");
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(sharedCollectionRestController.bibAvailabilityStatus(bibItemAvailabityStatusRequest)).thenCallRealMethod();
         ResponseEntity responseEntity = sharedCollectionRestController.bibAvailabilityStatus(bibItemAvailabityStatusRequest);
@@ -227,9 +214,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         deAccessionRequest.setUsername("Test");
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put(itemBarcode, ReCAPConstants.SUCCESS);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession",deAccessionRequest, Map.class)).thenReturn(resultMap);
+        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "/sharedCollection/deAccession",deAccessionRequest, Map.class)).thenReturn(resultMap);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(sharedCollectionRestController.deAccession(deAccessionRequest)).thenCallRealMethod();
         ResponseEntity responseEntity1 = sharedCollectionRestController.deAccession(deAccessionRequest);
@@ -252,9 +238,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         accessionRequest.setCustomerCode("PB");
         accessionRequest.setItemBarcode("32101095533293");
         accessionRequestList.add(accessionRequest);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accessionBatch",accessionRequestList, String.class)).thenReturn(ReCAPConstants.SUCCESS);
+        Mockito.when(mockRestTemplate.postForObject(getScsbSolrClientUrl() + "sharedCollection/accessionBatch",accessionRequestList, String.class)).thenReturn(ReCAPConstants.SUCCESS);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(sharedCollectionRestController.accessionBatch(accessionRequestList)).thenCallRealMethod();
         ResponseEntity responseEntity = sharedCollectionRestController.accessionBatch(accessionRequestList);
@@ -276,14 +261,13 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         linkedHashMap.put("itemBarcode","32101095533293");
         linkedHashMap.put("message","Success");
         linkedHashMapList.add(linkedHashMap);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, List.class)).thenReturn(linkedHashMapList);
+        Mockito.when(mockRestTemplate.postForObject(getScsbSolrClientUrl() + "sharedCollection/accession",accessionRequestList, List.class)).thenReturn(linkedHashMapList);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(sharedCollectionRestController.accession(accessionRequestList)).thenCallRealMethod();
         ResponseEntity responseEntity = sharedCollectionRestController.accession(accessionRequestList);
         assertNotNull(responseEntity);
-        assertEquals("[{itemBarcode=32101095533293, message=Success}]",linkedHashMapList,responseEntity.getBody());
+        assertEquals(linkedHashMapList,responseEntity.getBody());
         assertNotNull(accessionRequest.getCustomerCode());
         assertNotNull(accessionRequest.getItemBarcode());
     }
@@ -297,9 +281,8 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         linkedHashMap.put("itemBarcode","32101068878931");
         linkedHashMap.put("message","SuccessRecord");
         linkedHashMapList.add(linkedHashMap);
-        Mockito.when(mockRestTemplate.postForObject(getServerProtocol() + getScsbCircUrl() + "sharedCollection/submitCollection",inputRecords, List.class)).thenReturn(linkedHashMapList);
+        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",inputRecords, List.class)).thenReturn(linkedHashMapList);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(sharedCollectionRestController.getServerProtocol()).thenReturn(serverProtocol);
         Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(sharedCollectionRestController.submitCollection(inputRecords)).thenCallRealMethod();
         ResponseEntity responseEntity = sharedCollectionRestController.submitCollection(inputRecords);
@@ -307,6 +290,7 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         assertEquals("[{itemBarcode=32101068878931, message=SuccessRecord}]",responseEntity.getBody().toString());
 
     }
+
 
 
 }

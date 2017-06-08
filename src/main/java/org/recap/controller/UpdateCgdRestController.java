@@ -22,34 +22,10 @@ public class UpdateCgdRestController {
     private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
     /**
-     * The Server protocol.
-     */
-    @Value("${server.protocol}")
-    String serverProtocol;
-
-    /**
      * The Scsb solr client.
      */
     @Value("${scsb.solr.client.url}")
     String scsbSolrClient;
-
-    /**
-     * Gets server protocol.
-     *
-     * @return the server protocol
-     */
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
-
-    /**
-     * Sets server protocol.
-     *
-     * @param serverProtocol the server protocol
-     */
-    public void setServerProtocol(String serverProtocol) {
-        this.serverProtocol = serverProtocol;
-    }
 
     /**
      * Gets rest template.
@@ -95,7 +71,7 @@ public class UpdateCgdRestController {
         try {
             HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getServerProtocol() + getScsbSolrClientUrl() + ReCAPConstants.URL_UPDATE_CGD)
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbSolrClientUrl() + ReCAPConstants.URL_UPDATE_CGD)
                     .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
                     .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
                     .queryParam(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)

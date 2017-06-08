@@ -23,9 +23,6 @@ public class DataDumpRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(DataDumpRestController.class);
 
-    @Value("${server.protocol}")
-    private String serverProtocol;
-
     @Value("${scsb.etl.url}")
     private String scsbEtlUrl;
 
@@ -70,7 +67,7 @@ public class DataDumpRestController {
             HttpHeaders headers = new HttpHeaders();
             headers.set("api_key","recap");
             HttpEntity requestEntity = new HttpEntity(headers);
-            ResponseEntity<String> response = restTemplate.exchange(serverProtocol + scsbEtlUrl + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
+            ResponseEntity<String> response = restTemplate.exchange(scsbEtlUrl + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
             return new ResponseEntity(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
             logger.error("error-->",exception);

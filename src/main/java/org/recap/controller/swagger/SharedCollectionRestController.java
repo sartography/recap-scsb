@@ -36,12 +36,6 @@ public class SharedCollectionRestController {
     private static final Logger logger = LoggerFactory.getLogger(SharedCollectionRestController.class);
 
     /**
-     * The Server protocol.
-     */
-    @Value("${server.protocol}")
-    String serverProtocol;
-
-    /**
      * The Scsb solr client url.
      */
     @Value("${scsb.solr.client.url}")
@@ -52,15 +46,6 @@ public class SharedCollectionRestController {
      */
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
-
-    /**
-     * Gets server protocol.
-     *
-     * @return the server protocol
-     */
-    public String getServerProtocol() {
-        return serverProtocol;
-    }
 
     /**
      * Gets scsb circ url.
@@ -107,7 +92,7 @@ public class SharedCollectionRestController {
     public ResponseEntity itemAvailabilityStatus(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody ItemAvailabityStatusRequest itemAvailabityStatus) {
         String response;
         try {
-            response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus", itemAvailabityStatus, String.class);
+            response = getRestTemplate().postForObject(getScsbSolrClientUrl() + "/sharedCollection/itemAvailabilityStatus", itemAvailabityStatus, String.class);
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
             return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -133,7 +118,7 @@ public class SharedCollectionRestController {
     public ResponseEntity bibAvailabilityStatus(@ApiParam(value = "Owning Inst BibID, or SCSB BibId", required = true, name = "") @RequestBody BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest) {
         String response;
         try {
-            response = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus", bibItemAvailabityStatusRequest, String.class);
+            response = getRestTemplate().postForObject(getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus", bibItemAvailabityStatusRequest, String.class);
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
             return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.OK);
@@ -155,7 +140,7 @@ public class SharedCollectionRestController {
     @ResponseBody
     public ResponseEntity deAccession(@ApiParam(value = "Provide item barcodes to be deaccessioned, separated by comma", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
         try {
-            Map<String, String> resultMap = getRestTemplate().postForObject(getServerProtocol() + getScsbCircUrl() + "/sharedCollection/deAccession", deAccessionRequest, Map.class);
+            Map<String, String> resultMap = getRestTemplate().postForObject(getScsbCircUrl() + "/sharedCollection/deAccession", deAccessionRequest, Map.class);
             return new ResponseEntity(resultMap, getHttpHeaders(), HttpStatus.OK);
         } catch (Exception ex) {
             logger.error(ReCAPConstants.LOG_ERROR, ex);
@@ -179,7 +164,7 @@ public class SharedCollectionRestController {
         try {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            String responseMessage = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accessionBatch", accessionRequestList, String.class);
+            String responseMessage = getRestTemplate().postForObject(getScsbSolrClientUrl() + "sharedCollection/accessionBatch", accessionRequestList, String.class);
             ResponseEntity responseEntity = new ResponseEntity(responseMessage, getHttpHeaders(), HttpStatus.OK);
             stopWatch.stop();
             logger.info("Total time taken for saving accession request-->{}sec", stopWatch.getTotalTimeSeconds());
@@ -206,7 +191,7 @@ public class SharedCollectionRestController {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             ResponseEntity responseEntity;
-            List<LinkedHashMap> linkedHashMapList = getRestTemplate().postForObject(getServerProtocol() + getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, List.class);
+            List<LinkedHashMap> linkedHashMapList = getRestTemplate().postForObject(getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, List.class);
             if (null != linkedHashMapList && linkedHashMapList.get(0).get("message").toString().contains(ReCAPConstants.ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE)) {
                 responseEntity = new ResponseEntity(linkedHashMapList, getHttpHeaders(), HttpStatus.BAD_REQUEST);
             } else {
@@ -235,7 +220,7 @@ public class SharedCollectionRestController {
     public ResponseEntity submitCollection(@ApiParam(value = "Provide marc xml or scsb xml format to update the records", required = true, name = "inputRecords") @RequestBody String inputRecords) {
         ResponseEntity responseEntity;
         try {
-            List<LinkedHashMap> linkedHashMapList =getRestTemplate().postForObject(getServerProtocol() + getScsbCircUrl() + "sharedCollection/submitCollection", inputRecords, List.class);
+            List<LinkedHashMap> linkedHashMapList =getRestTemplate().postForObject(getScsbCircUrl() + "sharedCollection/submitCollection", inputRecords, List.class);
             String message = linkedHashMapList != null ? linkedHashMapList.get(0).get("message").toString():ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR;
             if (message.equalsIgnoreCase(ReCAPConstants.INVALID_MARC_XML_FORMAT_MESSAGE) || message.equalsIgnoreCase(ReCAPConstants.INVALID_SCSB_XML_FORMAT_MESSAGE)
                     || message.equalsIgnoreCase(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR)) {
