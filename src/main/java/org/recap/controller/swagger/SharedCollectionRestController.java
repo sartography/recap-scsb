@@ -35,17 +35,11 @@ public class SharedCollectionRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(SharedCollectionRestController.class);
 
-    /**
-     * The Scsb solr client url.
-     */
     @Value("${scsb.solr.client.url}")
-    String scsbSolrClientUrl;
+    private String scsbSolrClientUrl;
 
-    /**
-     * The Scsb circ url.
-     */
     @Value("${scsb.circ.url}")
-    String scsbCircUrl;
+    private String scsbCircUrl;
 
     /**
      * Gets scsb circ url.
@@ -78,8 +72,7 @@ public class SharedCollectionRestController {
     }
 
     /**
-     * Item availability status response entity.
-     * This method will make rest call to sole client project to get Item availability status
+     * This method will call scsb-solr-client microservice to get item availability status in scsb.
      *
      * @param itemAvailabityStatus the item availabity status
      * @return the response entity
@@ -105,7 +98,7 @@ public class SharedCollectionRestController {
     }
 
     /**
-     * Bib availability status response entity.
+     *This method will call scsb-solr-client microservice to get the bib availability status in scsb.
      *
      * @param bibItemAvailabityStatusRequest the bib item availabity status request
      * @return the response entity
@@ -127,8 +120,7 @@ public class SharedCollectionRestController {
     }
 
     /**
-     * De accession response entity.
-     * This method will call circ project to make soft delete the  given items in the database
+     * This method will call scsb-circ microservice to soft delete the given items from the scsb database and scsb solr and mark isDeletedItem field as true.
      *
      * @param deAccessionRequest the de accession request
      * @return the response entity
@@ -148,10 +140,7 @@ public class SharedCollectionRestController {
         }
     }
 
-    /**
-     * Accession batch response entity.
-     *
-     *
+    /**This method will call scsb-solr-client microservice to add multiple new items in the scsb database and scsb solr.
      * @param accessionRequestList the accession request list
      * @return the response entity
      */
@@ -176,8 +165,7 @@ public class SharedCollectionRestController {
     }
 
     /**
-     * Accession response entity.
-     * This method will call solr client project to add new item in the database
+     * This method will call scsb-solr-client microservice to add a new item in the scsb database and scsb solr.
      * @param accessionRequestList the accession request list
      * @return the response entity
      */
@@ -207,8 +195,7 @@ public class SharedCollectionRestController {
     }
 
     /**
-     * Submit collection response entity.
-     * This method will call circ project to update the items which is already present in the database
+     * This method will call scsb-circ microservice to update the items which is already present in the scsb database and scsb solr.
      * @param inputRecords the input records
      * @return the response entity
      */
@@ -241,5 +228,4 @@ public class SharedCollectionRestController {
         responseHeaders.add(ReCAPConstants.RESPONSE_DATE, new Date().toString());
         return responseHeaders;
     }
-
 }

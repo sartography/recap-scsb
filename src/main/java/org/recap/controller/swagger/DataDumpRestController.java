@@ -27,7 +27,7 @@ public class DataDumpRestController {
     private String scsbEtlUrl;
 
     /**
-     * Export data dump response entity.
+     * This method is the entry point to start data export process and passes to request to the scsb-etl microservice.
      *
      * @param institutionCodes          the institution codes
      * @param requestingInstitutionCode the requesting institution code

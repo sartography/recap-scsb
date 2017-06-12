@@ -18,7 +18,7 @@ import javax.jms.JMSException;
 public class ActivemqRegistrar {
 
     /**
-     * Instantiates a new Activemq registrar.
+     *  Instantiates a new Activemq registrar to use Activemq instead of Camel's in-memory queue.
      *
      * @param camelContext     the camel context
      * @param defaultBrokerURL the default broker url

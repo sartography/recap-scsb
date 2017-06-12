@@ -23,11 +23,8 @@ public class PurgeRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(PurgeRestController.class);
 
-    /**
-     * The Scsb circ url.
-     */
     @Value("${scsb.circ.url}")
-    String scsbCircUrl;
+    private String scsbCircUrl;
 
     /**
      * Gets scsb circ url.
@@ -66,8 +63,8 @@ public class PurgeRestController {
     }
 
     /**
-     * Purge patron's email address response entity.
-     * This method will call circ project to remove patron's email address after 60/90 days
+     *This method will call scsb-circ microservice to remove patron's email address from scsb database after
+     *configured day in the external properties
      * @return the response entity
      */
     @RequestMapping(value = "/purgeEmailAddress", method = RequestMethod.GET)
@@ -86,8 +83,7 @@ public class PurgeRestController {
     }
 
     /**
-     * Purge exception requests response entity.
-     * This method will call circ project to remove exception request in the database
+     * This method will call scsb-circ microservice to remove exception request in the scsb database.
      *
      * @return the response entity
      */

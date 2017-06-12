@@ -48,6 +48,9 @@ public class SearchRecordsRequest implements Serializable {
     @ApiModelProperty(name= "pageSize", value= "Total records to show is page",position = 10)
     private Integer pageSize = 10;
 
+    /**
+     * Instantiates a new Search records request.
+     */
     public SearchRecordsRequest() {
         this.setFieldName("");
         this.setFieldValue("");
@@ -77,22 +80,47 @@ public class SearchRecordsRequest implements Serializable {
         this.setPageSize(10);
     }
 
+    /**
+     * Gets field value.
+     *
+     * @return the field value
+     */
     public String getFieldValue() {
         return fieldValue;
     }
 
+    /**
+     * Sets field value.
+     *
+     * @param fieldValue the field value
+     */
     public void setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue;
     }
 
+    /**
+     * Gets field name.
+     *
+     * @return the field name
+     */
     public String getFieldName() {
         return fieldName;
     }
 
+    /**
+     * Sets field name.
+     *
+     * @param fieldName the field name
+     */
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
+    /**
+     * Gets owning institutions.
+     *
+     * @return the owning institutions
+     */
     public List<String> getOwningInstitutions() {
         if (null == owningInstitutions) {
             owningInstitutions = new ArrayList<>();
@@ -100,10 +128,20 @@ public class SearchRecordsRequest implements Serializable {
         return owningInstitutions;
     }
 
+    /**
+     * Sets owning institutions.
+     *
+     * @param owningInstitutions the owning institutions
+     */
     public void setOwningInstitutions(List<String> owningInstitutions) {
         this.owningInstitutions = owningInstitutions;
     }
 
+    /**
+     * Gets collection group designations.
+     *
+     * @return the collection group designations
+     */
     public List<String> getCollectionGroupDesignations() {
         if (null == collectionGroupDesignations) {
             collectionGroupDesignations = new ArrayList<>();
@@ -111,10 +149,20 @@ public class SearchRecordsRequest implements Serializable {
         return collectionGroupDesignations;
     }
 
+    /**
+     * Sets collection group designations.
+     *
+     * @param collectionGroupDesignations the collection group designations
+     */
     public void setCollectionGroupDesignations(List<String> collectionGroupDesignations) {
         this.collectionGroupDesignations = collectionGroupDesignations;
     }
 
+    /**
+     * Gets availability.
+     *
+     * @return the availability
+     */
     public List<String> getAvailability() {
         if (null == availability) {
             availability = new ArrayList<>();
@@ -122,10 +170,20 @@ public class SearchRecordsRequest implements Serializable {
         return availability;
     }
 
+    /**
+     * Sets availability.
+     *
+     * @param availability the availability
+     */
     public void setAvailability(List<String> availability) {
         this.availability = availability;
     }
 
+    /**
+     * Gets material types.
+     *
+     * @return the material types
+     */
     public List<String> getMaterialTypes() {
         if (null == materialTypes) {
             materialTypes = new ArrayList<>();
@@ -133,10 +191,20 @@ public class SearchRecordsRequest implements Serializable {
         return materialTypes;
     }
 
+    /**
+     * Sets material types.
+     *
+     * @param materialTypes the material types
+     */
     public void setMaterialTypes(List<String> materialTypes) {
         this.materialTypes = materialTypes;
     }
 
+    /**
+     * Gets use restrictions.
+     *
+     * @return the use restrictions
+     */
     public List<String> getUseRestrictions() {
         if(null == useRestrictions) {
             useRestrictions = new ArrayList<>();
@@ -144,38 +212,83 @@ public class SearchRecordsRequest implements Serializable {
         return useRestrictions;
     }
 
+    /**
+     * Sets use restrictions.
+     *
+     * @param useRestrictions the use restrictions
+     */
     public void setUseRestrictions(List<String> useRestrictions) {
         this.useRestrictions = useRestrictions;
     }
 
+    /**
+     * Is deleted boolean.
+     *
+     * @return the boolean
+     */
     public boolean isDeleted() {
         return isDeleted;
     }
 
+    /**
+     * Sets deleted.
+     *
+     * @param deleted the deleted
+     */
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
 
+    /**
+     * Gets cataloging status.
+     *
+     * @return the cataloging status
+     */
     public String getCatalogingStatus() {
         return catalogingStatus;
     }
 
+    /**
+     * Sets cataloging status.
+     *
+     * @param catalogingStatus the cataloging status
+     */
     public void setCatalogingStatus(String catalogingStatus) {
         this.catalogingStatus = catalogingStatus;
     }
 
+    /**
+     * Gets page number.
+     *
+     * @return the page number
+     */
     public Integer getPageNumber() {
         return pageNumber;
     }
 
+    /**
+     * Sets page number.
+     *
+     * @param pageNumber the page number
+     */
     public void setPageNumber(Integer pageNumber) {
         this.pageNumber = pageNumber;
     }
 
+    /**
+     * Gets page size.
+     *
+     * @return the page size
+     */
     public Integer getPageSize() {
         return pageSize;
     }
 
+    /**
+     * Sets page size.
+     *
+     * @param pageSize the page size
+     */
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
