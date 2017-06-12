@@ -30,11 +30,8 @@ public class RequestItemRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestItemRestController.class);
 
-    /**
-     * The Scsb circ url.
-     */
     @Value("${scsb.circ.url}")
-    String scsbCircUrl;
+    private String scsbCircUrl;
 
     @Autowired
     private ProducerTemplate producer;
@@ -121,8 +118,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Item request item response information.
-     * This method will call circ project to place a request
+     * This method will call scsb-circ microservice to place a item request in scsb.
      * @param itemRequestInfo the item request info
      * @return the item response information
      */
@@ -182,8 +178,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Validate item request response entity.
-     * This method will call circ project to validate item request
+     * This method will call scsb-circ microservice to validate item request information.
      * @param itemRequestInfo the item request info
      * @return the response entity
      */
@@ -214,8 +209,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Checkout item request item checkout response.
-     * This method will call circ project to checkout an item and returns the response
+     * This method will call scsb-circ microservice to checkout an item request from ILS.
      * @param itemCheckOutRequest the item check out request
      * @return the item checkout response
      */
@@ -250,8 +244,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Checkin item request abstract response item.
-     * This metgod will call circ project to checkin an item
+     * This method will call scsb-circ microservice to send a checkin an item into ILS.
      * @param itemCheckInRequest the item check in request
      * @return the abstract response item
      */
@@ -283,8 +276,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Hold item request abstract response item.
-     * This method will be placing a hold on the item in the ILS
+     * This method will call scsb-circ microservice to place a hold on the item in ILS.
      * @param itemHoldRequest the item hold request
      * @return the abstract response item
      */
@@ -326,8 +318,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Cancel hold item request abstract response item.
-     * This method will be canceling a hold on the Item
+     * This method will call scsb-circ microservice to cancel a hold on the item in ILS.
      * @param itemHoldCancelRequest the item hold cancel request
      * @return the abstract response item
      */
@@ -368,7 +359,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Create bib request abstract response item.
+     * This method will call scsb-circ microservice to create a bibliographic record in ILS.
      *
      * @param itemCreateBibRequest the item create bib request
      * @return the abstract response item
@@ -407,7 +398,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Item information abstract response item.
+     * This method will call scsb-circ microservice retrieve item information and circulation status from ILS.
      *
      * @param itemRequestInfo the item request info
      * @return the abstract response item
@@ -439,7 +430,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Recall item abstract response item.
+     * This method will call scsb-circ microservice to recall an already retrieved item in ILS.
      *
      * @param itemRecalRequest the item recal request
      * @return the abstract response item
@@ -478,7 +469,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Patron information patron information response.
+     * This method will call scsb-circ microservice to retrieve patron information from ILS.
      *
      * @param patronInformationRequest the patron information request
      * @return the patron information response
@@ -511,7 +502,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Refile item item refile response.
+     *This method will call scsb-circ microservice to refile an item back into scsb database and mark the item as available.
      *
      * @param itemRefileRequest the item refile request
      * @return the item refile response
@@ -530,7 +521,7 @@ public class RequestItemRestController {
     }
 
     /**
-     * Cancel request cancel request response.
+     * This method will call scsb-circ microservice to cancel the request from scsb.
      *
      * @param requestId the request id
      * @return the cancel request response

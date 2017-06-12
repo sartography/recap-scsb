@@ -22,12 +22,8 @@ public class ScheduleJobsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
 
-
-    /**
-     * The Scsb schedule url.
-     */
     @Value("${scsb.batch.schedule.url}")
-    String scsbScheduleUrl;
+    private String scsbScheduleUrl;
 
     /**
      * Gets scsb schedule url.
@@ -57,7 +53,7 @@ public class ScheduleJobsController {
     }
 
     /**
-     * Schedule job schedule job response.
+     *  This method is exposed as scheduler service for other microservices to schedule or reschedule or unschedule a job.
      *
      * @param scheduleJobRequest the schedule job request
      * @return the schedule job response

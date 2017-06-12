@@ -26,11 +26,8 @@ public class SearchRecordsRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchRecordsRestController.class);
 
-    /**
-     * The Scsb solr client.
-     */
     @Value("${scsb.solr.client.url}")
-    String scsbSolrClient;
+    private String scsbSolrClient;
 
     /**
      * Gets rest template.
@@ -60,7 +57,7 @@ public class SearchRecordsRestController {
     }
 
     /**
-     * Search records service get param search records response.
+     * This method will call scsb-solr-client microservice to search books based on the given search records request parameter and returns a list of search result row.
      *
      * @param searchRecordsRequest the search records request
      * @return the search records response
@@ -84,7 +81,7 @@ public class SearchRecordsRestController {
     }
 
     /**
-     * Search records service get list.
+     *This method will call scsb-solr-client microservice to search books based on the given search parameters and returns a list of search result row.
      *
      * @param fieldValue                  the field value
      * @param fieldName                   the field name

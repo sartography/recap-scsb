@@ -22,11 +22,8 @@ public class ReportsRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
-    /**
-     * The Scsb solr client.
-     */
     @Value("${scsb.solr.client.url}")
-    String scsbSolrClient;
+    private String scsbSolrClient;
 
     /**
      * Gets rest template.
@@ -48,8 +45,7 @@ public class ReportsRestController {
 
 
     /**
-     * Accession deaccession counts reports response.
-     * This method will call solr client project to get totsl counts of accessioned and deaccessioned items.
+     * This method will call scsb-solr-client microservice to get total counts of accessioned and deaccessioned items in scsb.
      * @param reportsRequest the reports request
      * @return the reports response
      */
@@ -69,8 +65,7 @@ public class ReportsRestController {
     }
 
     /**
-     * Cgd item counts reports response.
-     * This method will call solr client project to get updated cgd items counts
+     * This method will call scsb-solr-client microservice to get items counts based on the collection group designation.
      * @param reportsRequest the reports request
      * @return the reports response
      */
@@ -90,7 +85,7 @@ public class ReportsRestController {
     }
 
     /**
-     * Deaccession results reports response.
+     * This method will call scsb-solr-client microservice to get the items which are deaccessioned in scsb.
      *
      * @param reportsRequest the reports request
      * @return the reports response
@@ -111,7 +106,7 @@ public class ReportsRestController {
     }
 
     /**
-     * Incomplete records reports response.
+     * This method will call scsb-solr-client microservice to get the item incomplete records results.
      *
      * @param reportsRequest the reports request
      * @return the reports response

@@ -21,11 +21,8 @@ public class UpdateCgdRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
 
-    /**
-     * The Scsb solr client.
-     */
     @Value("${scsb.solr.client.url}")
-    String scsbSolrClient;
+    private String scsbSolrClient;
 
     /**
      * Gets rest template.
@@ -55,8 +52,7 @@ public class UpdateCgdRestController {
     }
 
     /**
-     * Update cgd for item string.
-     * This method will make rest call to solr client project to update CGD for an item in database and returns response message
+     * This method will call scsb-solr-client microservice to update CGD for an item in scsb database and scsb solr.
      *
      * @param itemBarcode                   the item barcode
      * @param owningInstitution             the owning institution
