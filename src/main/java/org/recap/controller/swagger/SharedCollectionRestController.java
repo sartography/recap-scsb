@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
@@ -188,6 +189,9 @@ public class SharedCollectionRestController {
             stopWatch.stop();
             logger.info("Total time taken for accession-->{}sec",stopWatch.getTotalTimeSeconds());
             return responseEntity;
+        } catch (ResourceAccessException resourceAccessException){
+            logger.error(ReCAPConstants.LOG_ERROR, resourceAccessException);
+            return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
             return new ResponseEntity(ReCAPConstants.ACCESSION_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
