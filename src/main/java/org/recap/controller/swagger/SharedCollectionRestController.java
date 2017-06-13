@@ -190,7 +190,7 @@ public class SharedCollectionRestController {
             return responseEntity;
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
-            return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity(ReCAPConstants.ACCESSION_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
