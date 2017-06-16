@@ -173,7 +173,7 @@ public class SharedCollectionRestController {
             notes = "Accession", nickname = "accession")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionResponse> accessionRequestList) {
+    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
         try {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
