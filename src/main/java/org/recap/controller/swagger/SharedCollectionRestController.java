@@ -7,6 +7,7 @@ import org.recap.model.AccessionRequest;
 import org.recap.model.BibItemAvailabityStatusRequest;
 import org.recap.model.DeAccessionRequest;
 import org.recap.model.ItemAvailabityStatusRequest;
+import org.recap.model.acession.AccessionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +22,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by chenchulakshmig on 6/10/16.
@@ -175,7 +173,7 @@ public class SharedCollectionRestController {
             notes = "Accession", nickname = "accession")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
+    public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionResponse> accessionRequestList) {
         try {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
@@ -191,10 +189,18 @@ public class SharedCollectionRestController {
             return responseEntity;
         } catch (ResourceAccessException resourceAccessException){
             logger.error(ReCAPConstants.LOG_ERROR, resourceAccessException);
-            return new ResponseEntity(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            List<AccessionResponse> accessionResponseList=new ArrayList<>();
+            AccessionResponse accessionResponse=new AccessionResponse();
+            accessionResponse.setMessage(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE);
+            accessionResponseList.add(accessionResponse);
+            return new ResponseEntity(accessionResponseList, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
-            return new ResponseEntity(ReCAPConstants.ACCESSION_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            List<AccessionResponse> accessionResponseList = new ArrayList<>();
+            AccessionResponse accessionResponse=new AccessionResponse();
+            accessionResponse.setMessage(ReCAPConstants.ACCESSION_INTERNAL_ERROR);
+            accessionResponseList.add(accessionResponse);
+            return new ResponseEntity(accessionResponseList, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
