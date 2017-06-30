@@ -123,7 +123,7 @@ public class RequestItemRestController {
      * @return the item response information
      */
     @RequestMapping(value = ReCAPConstants.REST_URL_REQUEST_ITEM, method = RequestMethod.POST)
-    @ApiOperation(value = "Request Item", notes = "Item Request from Owning institution", nickname = "requestItem")
+    @ApiOperation(value = "Request Item", notes = "The Request item API allows the user to raise a request (retrieve / recall / EDD) in SCSB for a valid item.", nickname = "requestItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ItemResponseInformation itemRequest(@ApiParam(value = "Parameters to place a request on an Item", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
@@ -184,7 +184,7 @@ public class RequestItemRestController {
      */
     @RequestMapping(value = ReCAPConstants.REST_URL_VALIDATE_REQUEST_ITEM, method = RequestMethod.POST)
     @ApiOperation(value = "validateItemRequestInformations",
-            notes = "Validate item request information", nickname = "validateItemRequestInformation")
+            notes = "The Validate item request API is an internal API call made by SCSB to validate the various parameters of the request item API call. This is to ensure only valid data is allowed to be processed even when the request comes through the request item API.", nickname = "validateItemRequestInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity validateItemRequest(@ApiParam(value = "Parameters to validate information prior to request", required = true, name = "requestItemJson") @RequestBody ItemRequestInformation itemRequestInfo) {
@@ -215,7 +215,7 @@ public class RequestItemRestController {
      */
     @RequestMapping(value = "/checkoutItem", method = RequestMethod.POST)
     @ApiOperation(value = "checkoutItem",
-            notes = "Checkout Item Request from Owning institution", nickname = "checkoutItem")
+            notes = "The Check-out item API call is an internal call made by SCSB as part of the request API call.", nickname = "checkoutItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ItemCheckoutResponse checkoutItemRequest(@ApiParam(value = "Parameters for checking out an item", required = true, name = "requestItemJson") @RequestBody ItemCheckOutRequest itemCheckOutRequest) {
@@ -250,7 +250,7 @@ public class RequestItemRestController {
      */
     @RequestMapping(value = "/checkinItem", method = RequestMethod.POST)
     @ApiOperation(value = "checkinItem",
-            notes = "Send a checkin request to the owning institution", nickname = "checkinItem")
+            notes = "The Check-in item API is an internal call made by SCSB as part of the refile and accession API calls.", nickname = "checkinItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public AbstractResponseItem checkinItemRequest(@ApiParam(value = "Parameters for checking in an item", required = true, name = "requestItemJson") @RequestBody ItemCheckInRequest itemCheckInRequest) {
@@ -282,7 +282,7 @@ public class RequestItemRestController {
      */
     @RequestMapping(value = "/holdItem", method = RequestMethod.POST)
     @ApiOperation(value = "holdItem",
-            notes = "Place a hold on the item in the requestor's ILS", nickname = "holdItem")
+            notes = "The Hold item API call is an internal call made by SCSB to the partner's ILS to place a hold request as part of the request API workflow.", nickname = "holdItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public AbstractResponseItem holdItemRequest(@ApiParam(value = "Parameters for placing a hold on the item in the ILS", required = true, name = "requestItemJson") @RequestBody ItemHoldRequest itemHoldRequest) {
@@ -324,7 +324,7 @@ public class RequestItemRestController {
      */
     @RequestMapping(value = "/cancelHoldItem", method = RequestMethod.POST)
     @ApiOperation(value = "cancelHoldItem",
-            notes = "Cancel hold Item Request from Owning institution", nickname = "cancelHoldItem")
+            notes = "This internal call cancels a hold request in the partner ILS as part of the Cancel Request API.", nickname = "cancelHoldItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public AbstractResponseItem cancelHoldItemRequest(@ApiParam(value = "Parameters for canceling a hold on the Item", required = true, name = "requestItemJson") @RequestBody ItemHoldCancelRequest itemHoldCancelRequest) {
@@ -366,7 +366,7 @@ public class RequestItemRestController {
      */
     @RequestMapping(value = "/createBib", method = RequestMethod.POST)
     @ApiOperation(value = "createBib",
-            notes = "Create a bibliographic record in the requestor's ILS", nickname = "createBib")
+            notes = "The Create bibliographic record API is an internal call made by SCSB to partner ILS as part of the request API for cross partner borrowing. Usually when an item owned by another partner is requesting, the requesting institution will not have the metadata of the item that is being requested. In order to place the hold for the patron against the item, the Create bib record API creates a temporary record against which the hold can be placed and subsequent charge and discharge processes can be done.", nickname = "createBib")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public AbstractResponseItem createBibRequest(@ApiParam(value = "Parameters for creating a temporary bibliographic record in the ILS", required = true, name = "requestItemJson") @RequestBody ItemCreateBibRequest itemCreateBibRequest) {
@@ -404,7 +404,7 @@ public class RequestItemRestController {
      * @return the abstract response item
      */
     @RequestMapping(value = "/itemInformation", method = RequestMethod.POST)
-    @ApiOperation(value = "itemInformation", notes = "Retrieve Item and Circ Status from ILS", nickname = "itemInformation")
+    @ApiOperation(value = "itemInformation", notes = "The Item information API call is made internally by SCSB as part of the request API call.", nickname = "itemInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public AbstractResponseItem itemInformation(@ApiParam(value = "Parameters to retrieve the item information from the ILS", required = true, name = "requestItemJson") @RequestBody ItemInformationRequest itemRequestInfo) {
@@ -437,7 +437,7 @@ public class RequestItemRestController {
      */
     @RequestMapping(value = "/recall", method = RequestMethod.POST)
     @ApiOperation(value = "recall",
-            notes = "Recall Item Request from Owning institution", nickname = "RecallItem")
+            notes = "The Recall API is used internally by SCSB during request API calls with request type RECALL.", nickname = "RecallItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public AbstractResponseItem recallItem(@ApiParam(value = "Parameters to recall an item", required = true, name = "requestItemJson") @RequestBody ItemRecalRequest itemRecalRequest) {
@@ -475,7 +475,7 @@ public class RequestItemRestController {
      * @return the patron information response
      */
     @RequestMapping(value = "/patronInformation", method = RequestMethod.POST)
-    @ApiOperation(value = "patronInformation", notes = "Patron Information", nickname = "patronInformation")
+    @ApiOperation(value = "patronInformation", notes = "The Patron information API is used internally by SCSB as part of the request API.", nickname = "patronInformation")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public PatronInformationResponse patronInformation(@ApiParam(value = "Parameters to retrieve the patron information from the ILS", required = true, name = "requestpatron") @RequestBody PatronInformationRequest patronInformationRequest) {
@@ -508,7 +508,7 @@ public class RequestItemRestController {
      * @return the item refile response
      */
     @RequestMapping(value = "/refile", method = RequestMethod.POST)
-    @ApiOperation(value = "refile", notes = "Refile item", nickname = "Re-File")
+    @ApiOperation(value = "refile", notes = "The Refile item API is called when ReCAP staff refile the iitem into LAS, and LAS will call SCSB with the details of the refile.", nickname = "Re-File")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ItemRefileResponse refileItem(@ApiParam(value = "Parameters to refile an Item", required = true, name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest) {
@@ -527,7 +527,7 @@ public class RequestItemRestController {
      * @return the cancel request response
      */
     @RequestMapping(value = "/cancelRequest", method = RequestMethod.POST)
-    @ApiOperation(value = "cancelRequest", notes = "Cancel an existing request", nickname = "cancelRequest")
+    @ApiOperation(value = "cancelRequest", notes = "The Cancel Request API will be used by both partners and ReCAP users to cancel a request placed through SCSB. Partners will incorporate the API into their discovery systems to provide the patrons a way to cancel requests that have been raised by them. ReCAP users would use it through the SCSB UI to cancel requests that are difficult to process.", nickname = "cancelRequest")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public CancelRequestResponse cancelRequest(@ApiParam(value = "Parameters for canceling a request on the Item", required = true, name = "requestId") @RequestParam Integer requestId) {
