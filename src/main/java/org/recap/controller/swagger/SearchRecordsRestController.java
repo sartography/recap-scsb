@@ -63,8 +63,8 @@ public class SearchRecordsRestController {
      * @return the search records response
      */
     @RequestMapping(value="/search", method = RequestMethod.POST)
-    //@ApiOperation(value = "search",notes = "Search Books in ReCAP - Using Method Post, Request data is String", nickname = "search", position = 0, consumes="application/json")
-    //@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
+    @ApiOperation(value = "search",notes = "The Search API allows the end user to search the SCSB database for bibliographic records using different fields. It takes in a JSON formatted request as input and allows pagination.", nickname = "search", position = 0, consumes="application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
     public SearchRecordsResponse searchRecordsServiceGetParam(@ApiParam(value = "Parameters to search a record in SCSB", required = true, name = "searchRecordsRequest")@RequestBody SearchRecordsRequest searchRecordsRequest) {
         SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
         try {
@@ -94,7 +94,7 @@ public class SearchRecordsRestController {
      * @return the list
      */
     @RequestMapping(value="/searchByParam", method = RequestMethod.GET)
-    @ApiOperation(value = "searchParam",notes = "Search Books in ReCAP - Using Method GET, Request data as parameter", nickname = "search", position = 0)
+    @ApiOperation(value = "searchParam",notes = "The Search by param API allows the end user to search the SCSB database for bibliographic records using the parameters listed.", nickname = "search", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
     public List<SearchResultRow> searchRecordsServiceGet(
             @RequestParam(name="fieldValue", required = false)  String fieldValue,

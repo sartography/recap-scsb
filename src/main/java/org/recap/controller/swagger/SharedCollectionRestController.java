@@ -78,7 +78,7 @@ public class SharedCollectionRestController {
      */
     @RequestMapping(value = "/itemAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "itemAvailabilityStatus",
-            notes = "Item Availability Status", nickname = "itemAvailabilityStatus")
+            notes = "The Item availability status API returns the availability status of the item in SCSB. It is likely to be used in partner ILS' Discovery systems to retrieve and display item statuses.", nickname = "itemAvailabilityStatus")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity itemAvailabilityStatus(@ApiParam(value = "Item Barcodes with ',' separated", required = true, name = "itemBarcodes") @RequestBody ItemAvailabityStatusRequest itemAvailabityStatus) {
@@ -104,7 +104,7 @@ public class SharedCollectionRestController {
      */
     @RequestMapping(value = "/bibAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "bibAvailabilityStatus",
-            notes = "Bibliography Availability Status", nickname = "bibAvailabilityStatus")
+            notes = "Bib availability status API returns the availability statuses of items associated with the bibliographic record. Since it returns availability statuses of all items associated with a bib, it is likely to be used in partner ILS' Discovery systems to retrieve and display multiple items and their statuses in case of serials and multi volume monographs.", nickname = "bibAvailabilityStatus")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),@ApiResponse(code = 503, message = "Service Not Available")})
     @ResponseBody
     public ResponseEntity bibAvailabilityStatus(@ApiParam(value = "Owning Inst BibID, or SCSB BibId", required = true, name = "") @RequestBody BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest) {
@@ -126,7 +126,7 @@ public class SharedCollectionRestController {
      */
     @RequestMapping(value = "/deaccession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "deaccession",
-            notes = "Deaccession", nickname = "deaccession")
+            notes = "The Deaccession API is an internal call made by SCSB to remove a record. Deaccession will only be done through the UI by users who are authorized to perform the operation. Deaccessioning an item would mark the record as removed (deleted) in the SCSB database.", nickname = "deaccession")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity deAccession(@ApiParam(value = "Provide item barcodes to be deaccessioned, separated by comma", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
@@ -145,7 +145,7 @@ public class SharedCollectionRestController {
      */
     @RequestMapping(value = "/accessionBatch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "accessionBatch",
-            notes = "Accession Batch", nickname = "accessionBatch")
+            notes = "Accession batch is similar to the accession API except that accession batch API accepts multiple item barcodes in a single request call. The Accession batch process is a deferred process to reduce performance bottlenecks. The barcodes and customer codes are stored in SCSB DB and is processed as per schedule of the Accession job (usually, nightly). After processing, a report on the barcodes that were processed is prepared and stored at the FTP location.", nickname = "accessionBatch")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity accessionBatch(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
@@ -170,7 +170,7 @@ public class SharedCollectionRestController {
      */
     @RequestMapping(value = "/accession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "accession",
-            notes = "Accession", nickname = "accession")
+            notes = "The Accession API (also known as Ongoing Accession) is used to add item records to SCSB whenever there is a new item added to the ReCAP facility. GFA LAS calls this API as part of the accession workflow with the customer code and item barcode.", nickname = "accession")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity accession(@ApiParam(value = "Item Barcode and Customer Code", required = true, name = "Item Barcode And Customer Code") @RequestBody List<AccessionRequest> accessionRequestList) {
@@ -211,7 +211,7 @@ public class SharedCollectionRestController {
      */
     @RequestMapping(value = "/submitCollection", method = RequestMethod.POST)
     @ApiOperation(value = "submitCollection",
-            notes = "Submit Collection", nickname = "submitCollection")
+            notes = "Submit collection API is a REST service where users can provide MARC content in either SCSB XML or MARC XML formats and update the underlying record in SCSB. After the successful completion of the API, a report is sent.", nickname = "submitCollection")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity submitCollection(@ApiParam(value = "Provide marc xml or scsb xml format to update the records", required = true, name = "inputRecords") @RequestBody String inputRecords) {

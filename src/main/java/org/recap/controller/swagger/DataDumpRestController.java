@@ -41,7 +41,7 @@ public class DataDumpRestController {
      */
     @RequestMapping(value="/exportDataDump", method = RequestMethod.GET)
     @ApiOperation(value = "exportDataDump",
-            notes = "Export datadumps to institutions", nickname = "exportDataDump", position = 0)
+            notes = "The Export Data Dump API allows export of bibliographic records in SCSB database into MARCXML or SCSBXML format. This is used by partners to export records in preferred format and update their respective discovery systems. These jobs are scheduled to run by HTC support.", nickname = "exportDataDump", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = ReCAPConstants.DATADUMP_PROCESS_STARTED)})
     @ResponseBody
     public ResponseEntity exportDataDump(@ApiParam(value = "Institution code(s) for requesting shared/open updates from partners: PUL = Princeton, CUL = Columbia, NYPL = New York Public Library" , required = true, name = "institutionCodes") @RequestParam String institutionCodes,
