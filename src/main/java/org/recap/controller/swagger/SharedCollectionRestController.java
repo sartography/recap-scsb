@@ -11,11 +11,10 @@ import org.recap.model.acession.AccessionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResourceAccessException;
@@ -214,10 +213,16 @@ public class SharedCollectionRestController {
             notes = "Submit collection API is a REST service where users can provide MARC content in either SCSB XML or MARC XML formats and update the underlying record in SCSB. After the successful completion of the API, a report is sent.", nickname = "submitCollection")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public ResponseEntity submitCollection(@ApiParam(value = "Provide marc xml or scsb xml format to update the records", required = true, name = "inputRecords") @RequestBody String inputRecords) {
+    public ResponseEntity submitCollection(@ApiParam(value = "Provide marc xml or scsb xml format to update the records", required = true, name = "inputRecords") @RequestBody String inputRecords,
+                                           @ApiParam(value = "Provide institution code", required = true, name = "institution") @RequestParam String institution,
+    @ApiParam(value = "Provide boolean value is cgd protected (true or false)", required = true, name = "isCGDProtected") @RequestParam Boolean isCGDProtected) {
         ResponseEntity responseEntity;
         try {
-            List<LinkedHashMap> linkedHashMapList =getRestTemplate().postForObject(getScsbCircUrl() + "sharedCollection/submitCollection", inputRecords, List.class);
+            MultiValueMap<String,Object> requestParameter = new LinkedMultiValueMap<>();
+            requestParameter.add(ReCAPConstants.INPUT_RECORDS,inputRecords);
+            requestParameter.add(ReCAPConstants.INSTITUTION,institution);
+            requestParameter.add(ReCAPConstants.IS_CGD_PROTECTED,isCGDProtected);
+            List<LinkedHashMap> linkedHashMapList =getRestTemplate().postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",requestParameter, List.class);
             String message = linkedHashMapList != null ? linkedHashMapList.get(0).get("message").toString():ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR;
             if (message.equalsIgnoreCase(ReCAPConstants.INVALID_MARC_XML_FORMAT_MESSAGE) || message.equalsIgnoreCase(ReCAPConstants.INVALID_SCSB_XML_FORMAT_MESSAGE)
                     || message.equalsIgnoreCase(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR)) {
