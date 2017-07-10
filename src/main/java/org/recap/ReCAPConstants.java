@@ -57,6 +57,9 @@ public final class ReCAPConstants {
     public static final String URL_REPORTS_INCOMPLETE_RESULTS = "reportsService/incompleteRecords";
     public static final String URL_SCHEDULE_JOBS= "scheduleService/scheduleJob";
 
+    public static final String INPUT_RECORDS = "inputRecords";
+    public static final String INSTITUTION = "institution";
+    public static final String IS_CGD_PROTECTED = "isCGDProtected";
     public static final String INVALID_SCSB_XML_FORMAT_MESSAGE = "Please provide valid SCSB xml format";
     public static final String INVALID_MARC_XML_FORMAT_MESSAGE = "Please provide valid Marc xml format";
     public static final String SUBMIT_COLLECTION_INTERNAL_ERROR = "Internal error occured during submit collection";
