@@ -1,5 +1,6 @@
 package org.recap.controller.swagger;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -281,11 +282,15 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         linkedHashMap.put("itemBarcode","32101068878931");
         linkedHashMap.put("message","SuccessRecord");
         linkedHashMapList.add(linkedHashMap);
-        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",inputRecords, List.class)).thenReturn(linkedHashMapList);
+        Map<String,Object> requestParameters = new HashedMap();
+        requestParameters.put(ReCAPConstants.INPUT_RECORDS,inputRecords);
+        requestParameters.put(ReCAPConstants.INSTITUTION,"PUL");
+        requestParameters.put(ReCAPConstants.IS_CGD_PROTECTED,false);
+        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",requestParameters, List.class)).thenReturn(linkedHashMapList);
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
-        Mockito.when(sharedCollectionRestController.submitCollection(inputRecords)).thenCallRealMethod();
-        ResponseEntity responseEntity = sharedCollectionRestController.submitCollection(inputRecords);
+        Mockito.when(sharedCollectionRestController.submitCollection(inputRecords,"PUL",false)).thenCallRealMethod();
+        ResponseEntity responseEntity = sharedCollectionRestController.submitCollection(inputRecords,"PUL",false);
         assertNotNull(responseEntity);
         assertEquals("[{itemBarcode=32101068878931, message=SuccessRecord}]",responseEntity.getBody().toString());
 
