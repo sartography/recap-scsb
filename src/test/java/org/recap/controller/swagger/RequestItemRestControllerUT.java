@@ -52,6 +52,9 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     @Autowired
     private ProducerTemplate producer;
 
+    @Mock
+    private ProducerTemplate producerTemplate;
+
     @Value("${scsb.circ.url}")
     String scsbCircUrl;
 
@@ -469,15 +472,23 @@ public class RequestItemRestControllerUT extends BaseTestCase{
     @Test
     public void testRequestItem() {
         ItemResponseInformation itemResponseInformation = null;
+        ResponseEntity responseEntity = new ResponseEntity("Success",HttpStatus.OK);
         try {
-            ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
-            itemRequestInformation.setPatronBarcode("32101077423406");
-            itemRequestInformation.setItemBarcodes(Arrays.asList("3652147896532455"));
-            itemRequestInformation.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
-            itemRequestInformation.setRequestingInstitution(ReCAPConstants.PRINCETON);
-            itemRequestInformation.setEmailAddress("ksudhish@gmail.com");
+            ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
+            itemRequestInfo.setPatronBarcode("32101077423406");
+            itemRequestInfo.setItemBarcodes(Arrays.asList("3652147896532455"));
+            itemRequestInfo.setRequestType(ReCAPConstants.REQUEST_TYPE_RETRIEVAL);
+            itemRequestInfo.setRequestingInstitution(ReCAPConstants.PRINCETON);
+            itemRequestInfo.setEmailAddress("ksudhish@gmail.com");
 
-            itemResponseInformation = getRequestItemRestController.itemRequest(itemRequestInformation);
+            HttpEntity request = new HttpEntity(itemRequestInfo);
+
+            Mockito.when(requestItemRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+            Mockito.when(requestItemRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
+            Mockito.when(requestItemRestController.getProducer()).thenReturn(producerTemplate);
+            Mockito.when(requestItemRestController.getRestTemplate().postForEntity(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST, itemRequestInfo, String.class)).thenReturn(responseEntity);
+            Mockito.when(requestItemRestController.itemRequest(itemRequestInfo)).thenCallRealMethod();
+            itemResponseInformation = requestItemRestController.itemRequest(itemRequestInfo);
             assertNotNull(itemResponseInformation);
             assertTrue(itemResponseInformation.isSuccess());
             assertEquals(itemResponseInformation.getScreenMessage(),"Message recevied, your request will be processed");

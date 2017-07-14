@@ -69,6 +69,11 @@ public class SharedCollectionRestController {
         return scsbSolrClientUrl;
     }
 
+    public LinkedMultiValueMap getLinkedMultiValueMap(){
+        return new LinkedMultiValueMap<>();
+    }
+
+
     /**
      * This method will call scsb-solr-client microservice to get item availability status in scsb.
      *
@@ -218,7 +223,7 @@ public class SharedCollectionRestController {
     @ApiParam(value = "Provide boolean value is cgd protected (true or false)", required = true, name = "isCGDProtected") @RequestParam Boolean isCGDProtected) {
         ResponseEntity responseEntity;
         try {
-            MultiValueMap<String,Object> requestParameter = new LinkedMultiValueMap<>();
+            MultiValueMap<String,Object> requestParameter = getLinkedMultiValueMap();
             requestParameter.add(ReCAPConstants.INPUT_RECORDS,inputRecords);
             requestParameter.add(ReCAPConstants.INSTITUTION,institution);
             requestParameter.add(ReCAPConstants.IS_CGD_PROTECTED,isCGDProtected);
