@@ -72,14 +72,6 @@ public class RequestItemRestController {
         return producer;
     }
 
-    /**
-     * Sets producer.
-     *
-     * @param producer the producer
-     */
-    public void setProducer(ProducerTemplate producer) {
-        this.producer = producer;
-    }
 
     /**
      * Gets item request information.
@@ -153,7 +145,7 @@ public class RequestItemRestController {
                 for (int i = 0; i < itemBarcodes.size(); i++) {
                     itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(i).toString().trim()));
                     String json = objectMapper.writeValueAsString(itemRequestInfo);
-                    producer.sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
+                    getProducer().sendBodyAndHeader(ReCAPConstants.REQUEST_ITEM_QUEUE, json, ReCAPConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInfo.getRequestType());
                 }
                 bSuccess = true;
                 screenMessage = ReCAPConstants.REQUEST_MESSAGE_RECEVIED;

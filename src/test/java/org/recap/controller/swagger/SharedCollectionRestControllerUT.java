@@ -12,6 +12,8 @@ import org.recap.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
@@ -282,13 +284,12 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         linkedHashMap.put("itemBarcode","32101068878931");
         linkedHashMap.put("message","SuccessRecord");
         linkedHashMapList.add(linkedHashMap);
-        Map<String,Object> requestParameters = new HashedMap();
-        requestParameters.put(ReCAPConstants.INPUT_RECORDS,inputRecords);
-        requestParameters.put(ReCAPConstants.INSTITUTION,"PUL");
-        requestParameters.put(ReCAPConstants.IS_CGD_PROTECTED,false);
-        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",requestParameters, List.class)).thenReturn(linkedHashMapList);
+        MultiValueMap<String,Object> requestParameter = new LinkedMultiValueMap();
+
         Mockito.when(sharedCollectionRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
+        Mockito.when(sharedCollectionRestController.getLinkedMultiValueMap()).thenReturn((LinkedMultiValueMap) requestParameter);
+        Mockito.when(mockRestTemplate.postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",requestParameter, List.class)).thenReturn(linkedHashMapList);
         Mockito.when(sharedCollectionRestController.submitCollection(inputRecords,"PUL",false)).thenCallRealMethod();
         ResponseEntity responseEntity = sharedCollectionRestController.submitCollection(inputRecords,"PUL",false);
         assertNotNull(responseEntity);
