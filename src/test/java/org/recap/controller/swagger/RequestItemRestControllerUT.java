@@ -30,9 +30,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by hemalathas on 4/11/16.
@@ -464,8 +462,26 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         PatronInformationResponse informationResponse = requestItemRestController.patronInformation(patronInformationRequest);
         assertNotNull(informationResponse);
         assertEquals(informationResponse.getScreenMessage(),"Patron validated successfully.");
-
     }
+
+    @Test
+    public void testGetterServices(){
+        ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
+        ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
+        Mockito.when(requestItemRestController.getRestTemplate()).thenCallRealMethod();
+        Mockito.when(requestItemRestController.getScsbCircUrl()).thenCallRealMethod();
+        Mockito.when(requestItemRestController.getItemRequestInformation()).thenCallRealMethod();
+        Mockito.when(requestItemRestController.getItemInformationRequest()).thenCallRealMethod();
+        Mockito.when(requestItemRestController.getObjectMapper()).thenCallRealMethod();
+        Mockito.when(requestItemRestController.getProducer()).thenCallRealMethod();
+        assertNotEquals(requestItemRestController.getRestTemplate(),mockRestTemplate);
+        assertNotEquals(requestItemRestController.getScsbCircUrl(),scsbCircUrl);
+        assertNotEquals(requestItemRestController.getItemRequestInformation(),itemRequestInfo);
+        assertNotEquals(requestItemRestController.getItemInformationRequest(),itemInformationResponse);
+        assertNotEquals(requestItemRestController.getObjectMapper(),objectMapper);
+        assertNotEquals(requestItemRestController.getProducer(),producerTemplate);
+    }
+
 
 
 

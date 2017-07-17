@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -294,6 +295,19 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
         ResponseEntity responseEntity = sharedCollectionRestController.submitCollection(inputRecords,"PUL",false);
         assertNotNull(responseEntity);
         assertEquals("[{itemBarcode=32101068878931, message=SuccessRecord}]",responseEntity.getBody().toString());
+
+    }
+
+    @Test
+    public void checkGetterServices(){
+        LinkedHashMap linkedHashMap = new LinkedHashMap();
+        Mockito.when(sharedCollectionRestController.getRestTemplate()).thenCallRealMethod();
+        Mockito.when(sharedCollectionRestController.getScsbSolrClientUrl()).thenCallRealMethod();
+        Mockito.when(sharedCollectionRestController.getScsbCircUrl()).thenCallRealMethod();
+        Mockito.when(sharedCollectionRestController.getLinkedMultiValueMap()).thenCallRealMethod();
+        assertNotEquals(sharedCollectionRestController.getRestTemplate(),mockRestTemplate);
+        assertNotEquals(sharedCollectionRestController.getScsbSolrClientUrl(),scsbSolrClientUrl);
+        assertNotEquals(sharedCollectionRestController.getScsbCircUrl(),scsbCircUrl);
 
     }
 

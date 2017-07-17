@@ -39,6 +39,9 @@ public class PurgeRestControllerUT extends BaseTestCase{
     }
 
     @Mock
+    HttpEntity mockedHttpEntity;
+
+    @Mock
     RestTemplate restTemplate;
 
     @Test
@@ -73,6 +76,18 @@ public class PurgeRestControllerUT extends BaseTestCase{
         ResponseEntity responseEntity = purgeRestController.purgeExceptionRequests();
         assertNotNull(responseEntity);
     }
+
+    @Test
+    public void testGetterServices(){
+        Mockito.when(purgeRestController.getRestTemplate()).thenCallRealMethod();
+        Mockito.when(purgeRestController.getScsbCircUrl()).thenCallRealMethod();
+        Mockito.when(purgeRestController.getLogger()).thenCallRealMethod();
+        Mockito.when(purgeRestController.getHttpEntity()).thenCallRealMethod();
+        assertNotEquals(purgeRestController.getRestTemplate(),restTemplate);
+        assertNotEquals(purgeRestController.getScsbCircUrl(),scsbCircUrl);
+        assertNotEquals(purgeRestController.getHttpEntity(),mockedHttpEntity);
+    }
+
 
     private HttpHeaders getHttpHeaders() {
         HttpHeaders responseHeaders = new HttpHeaders();
