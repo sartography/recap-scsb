@@ -46,15 +46,6 @@ public class RequestItemRestController {
     }
 
     /**
-     * Sets scsb circ url.
-     *
-     * @param scsbCircUrl the scsb circ url
-     */
-    public void setScsbCircUrl(String scsbCircUrl) {
-        this.scsbCircUrl = scsbCircUrl;
-    }
-
-    /**
      * Gets rest template.
      *
      * @return the rest template

@@ -84,6 +84,14 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
     }
 
     @Test
+    public void checkGetterServices(){
+        Mockito.when(searchRecordsRestController.getRestTemplate()).thenCallRealMethod();
+        Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenCallRealMethod();
+        assertNotEquals(searchRecordsRestController.getRestTemplate(),mockRestTemplate);
+        assertNotEquals(searchRecordsRestController.getScsbSolrClientUrl(),scsbSolrClient);
+    }
+
+    @Test
     public void testSearchRecordServiceGet(){
         HttpEntity request = new HttpEntity(getHttpHeaders());
         List<SearchResultRow> searchResultRowList = new ArrayList<>();

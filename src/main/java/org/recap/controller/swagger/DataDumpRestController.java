@@ -26,6 +26,14 @@ public class DataDumpRestController {
     @Value("${scsb.etl.url}")
     private String scsbEtlUrl;
 
+    public String getScsbEtlUrl() {
+        return scsbEtlUrl;
+    }
+
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
+
     /**
      * This method is the entry point to start data export process and passes to request to the scsb-etl microservice.
      *
@@ -53,7 +61,7 @@ public class DataDumpRestController {
                                          @ApiParam(value = "Type of transmission - for FTP use 0, for HTTP response use 1. Default is FTP.", name = "transmissionType")@RequestParam(required=false) String transmissionType,
                                          @ApiParam(value = "Email address to whom email will be sent upon completion" , name = "emailToAddress")@RequestParam(required=false) String emailToAddress
     ){
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = getRestTemplate();
         Map<String,String> inputMap = new HashMap<>();
         inputMap.put("institutionCodes",institutionCodes);
         inputMap.put("requestingInstitutionCode",requestingInstitutionCode);
@@ -67,7 +75,7 @@ public class DataDumpRestController {
             HttpHeaders headers = new HttpHeaders();
             headers.set("api_key","recap");
             HttpEntity requestEntity = new HttpEntity(headers);
-            ResponseEntity<String> response = restTemplate.exchange(scsbEtlUrl + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
+            ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
             return new ResponseEntity(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
             logger.error("error-->",exception);

@@ -49,15 +49,6 @@ public class SearchRecordsRestController {
     }
 
     /**
-     * Sets scsb solr client url.
-     *
-     * @param scsbSolrClientUrl the scsb solr client url
-     */
-    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
-        this.scsbSolrClient = scsbSolrClientUrl;
-    }
-
-    /**
      * This method will call scsb-solr-client microservice to search books based on the given search records request parameter and returns a list of search result row.
      *
      * @param searchRecordsRequest the search records request
