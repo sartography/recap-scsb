@@ -8,6 +8,8 @@ import org.recap.model.BibItemAvailabityStatusRequest;
 import org.recap.model.DeAccessionRequest;
 import org.recap.model.ItemAvailabityStatusRequest;
 import org.recap.model.acession.AccessionResponse;
+import org.recap.model.transfer.TransferRequest;
+import org.recap.model.transfer.TransferResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -241,6 +243,31 @@ public class SharedCollectionRestController {
             responseEntity = new ResponseEntity(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
         }
+    }
+
+    /**
+     * This method will call scsb-solr-client microservice to transfer the holdings/items which is already present in the scsb database and scsb solr.
+     * @param transferRequest the input records
+     * @return the response entity
+     */
+    @RequestMapping(value = "/transferHoldingsAndItems", method = RequestMethod.POST)
+    @ApiOperation(value = "transferHoldingsAndItems",
+            notes = "TransferHoldingsAndItems API is a REST service where users can provide source and destination of " +
+                    "the holdings and item for transfer", nickname = "transferHoldingsAndItems")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ResponseEntity transferHoldingsAndItems(
+            @ApiParam(value = "Source and destination of holdings and items in JSON format", required = true, name = "")
+            @RequestBody TransferRequest transferRequest) {
+        ResponseEntity responseEntity;
+        try {
+            TransferResponse transferResponse = getRestTemplate().postForObject(getScsbSolrClientUrl() + "transfer/processTransfer", transferRequest, TransferResponse.class);
+            responseEntity = new ResponseEntity(transferResponse, getHttpHeaders(), HttpStatus.OK);
+        } catch (Exception exception) {
+            logger.error(ReCAPConstants.LOG_ERROR, exception);
+            responseEntity = new ResponseEntity(ReCAPConstants.TRANSFER_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        return responseEntity;
     }
 
     private HttpHeaders getHttpHeaders() {
