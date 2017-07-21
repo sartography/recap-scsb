@@ -6,9 +6,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.recap.model.DeaccessionItemResultsRow;
 import org.recap.model.ReportsRequest;
 import org.recap.model.ReportsResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -31,6 +33,9 @@ public class ReportsRestControllerUT extends BaseControllerUT {
 
     @Mock
     private ReportsRestController reportsRestController;
+
+    @Autowired
+    private RestHeaderService restHeaderService;
 
     @Before
     public void setUp() throws Exception {
@@ -65,9 +70,10 @@ public class ReportsRestControllerUT extends BaseControllerUT {
         reportsResponse.setDeaccessionItemResultsRows(Arrays.asList(deaccessionItemResultsRow));
         ResponseEntity<ReportsResponse> responseEntity = new ResponseEntity<ReportsResponse>(reportsResponse,HttpStatus.OK);
 
-        HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
+        HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, restHeaderService.getHttpHeaders());
         Mockito.when(mockRestTemplate.exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS, HttpMethod.POST,httpEntity, ReportsResponse.class)).thenReturn(responseEntity);
         Mockito.when(reportsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(reportsRestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(reportsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(reportsRestController.accessionDeaccessionCounts(reportsRequest)).thenCallRealMethod();
         ReportsResponse reportsResponse1 = reportsRestController.accessionDeaccessionCounts(reportsRequest);
@@ -112,9 +118,10 @@ public class ReportsRestControllerUT extends BaseControllerUT {
         ReportsResponse reportsResponse = new ReportsResponse();
         reportsResponse.setMessage(ReCAPConstants.SUCCESS);
         ResponseEntity<ReportsResponse> responseEntity = new ResponseEntity<ReportsResponse>(reportsResponse,HttpStatus.OK);
-        HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
+        HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, restHeaderService.getHttpHeaders());
         Mockito.when(mockRestTemplate.exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST,httpEntity, ReportsResponse.class)).thenReturn(responseEntity);
         Mockito.when(reportsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(reportsRestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(reportsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
         Mockito.when(reportsRestController.cgdItemCounts(reportsRequest)).thenCallRealMethod();
         ReportsResponse reportsResponse1 = reportsRestController.cgdItemCounts(reportsRequest);
@@ -130,19 +137,14 @@ public class ReportsRestControllerUT extends BaseControllerUT {
         ReportsResponse reportsResponse = new ReportsResponse();
         reportsResponse.setMessage(ReCAPConstants.SUCCESS);
         ResponseEntity<ReportsResponse> responseEntity = new ResponseEntity<ReportsResponse>(reportsResponse,HttpStatus.OK);
-        HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getHttpHeaders());
+        HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, restHeaderService.getHttpHeaders());
         Mockito.when(mockRestTemplate.exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST,httpEntity, ReportsResponse.class)).thenReturn(responseEntity);
         Mockito.when(reportsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(reportsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClientUrl);
+        Mockito.when(reportsRestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(reportsRestController.deaccessionResults(reportsRequest)).thenCallRealMethod();
         ReportsResponse reportsResponse1 = reportsRestController.deaccessionResults(reportsRequest);
         assertNotNull(reportsResponse1);
     }
 
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
-    }
 }

@@ -1,8 +1,10 @@
 package org.recap.controller;
 
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,14 @@ public class UpdateCgdRestController {
 
     @Value("${scsb.solr.client.url}")
     private String scsbSolrClient;
+
+
+    @Autowired
+    RestHeaderService restHeaderService;
+
+    public RestHeaderService getRestHeaderService(){
+        return restHeaderService;
+    }
 
     /**
      * Gets rest template.
@@ -65,7 +75,7 @@ public class UpdateCgdRestController {
     public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
         String statusResponse = null;
         try {
-            HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
+            HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbSolrClientUrl() + ReCAPConstants.URL_UPDATE_CGD)
                     .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
@@ -81,12 +91,5 @@ public class UpdateCgdRestController {
             statusResponse = ReCAPConstants.FAILURE + "-" + e.getMessage();
         }
         return statusResponse;
-    }
-
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
     }
 }

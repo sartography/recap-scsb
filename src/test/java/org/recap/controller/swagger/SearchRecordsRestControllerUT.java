@@ -5,9 +5,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.recap.model.SearchRecordsRequest;
 import org.recap.model.SearchRecordsResponse;
 import org.recap.model.SearchResultRow;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -33,6 +35,9 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
     @Mock
     SearchRecordsRestController searchRecordsRestController;
 
+    @Autowired
+    RestHeaderService restHeaderService;
+
     public String getScsbSolrClient() {
         return scsbSolrClient;
     }
@@ -55,11 +60,12 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         searchRecordsRequest.setDeleted(false);
         searchRecordsRequest.setPageSize(10);
         searchRecordsRequest.setPageNumber(10);
-        HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
+        HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, restHeaderService.getHttpHeaders());
         SearchRecordsResponse searchRecordsResponse = getSearchRecordsResponse();
         ResponseEntity<SearchRecordsResponse> responseEntity = new ResponseEntity<SearchRecordsResponse>(searchRecordsResponse,HttpStatus.OK);
         Mockito.when(mockRestTemplate.exchange(scsbSolrClient+ ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
         Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+        Mockito.when(searchRecordsRestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
         Mockito.when(searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest)).thenCallRealMethod();
         SearchRecordsResponse recordsResponse = searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest);
@@ -93,7 +99,7 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
 
     @Test
     public void testSearchRecordServiceGet(){
-        HttpEntity request = new HttpEntity(getHttpHeaders());
+        HttpEntity request = new HttpEntity(restHeaderService.getHttpHeaders());
         List<SearchResultRow> searchResultRowList = new ArrayList<>();
         ResponseEntity<List> httpEntity = new ResponseEntity<List>(searchResultRowList,HttpStatus.OK);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_PARAM)
@@ -108,17 +114,11 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
         Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class)).thenReturn(httpEntity);
         Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
+        Mockito.when(searchRecordsRestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(searchRecordsRestController.searchRecordsServiceGet("test","test","PUL","Shared","Available","Monograph","NoRestrictions",10)).thenCallRealMethod();
         List<SearchResultRow> searchResultRows= searchRecordsRestController.searchRecordsServiceGet("test","test","PUL","Shared","Available","Monograph","NoRestrictions",10);
         assertNotNull(searchResultRows);
 
-    }
-
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
     }
 
     public SearchRecordsResponse getSearchRecordsResponse(){

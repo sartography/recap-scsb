@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -33,6 +34,9 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
     @Mock
     private UriComponentsBuilder builder;
 
+    @Autowired
+    RestHeaderService restHeaderService;
+
 
     @Before
     public void setUp() throws Exception {
@@ -56,7 +60,7 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         String cgdChangeNotes = "Notes";
         ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.SUCCESS,HttpStatus.OK);
         updateCgdRestController.setScsbSolrClientUrl(getScsbSolrClientUrl());
-        HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
+        HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
                 .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
                 .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
@@ -66,16 +70,11 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class)).thenReturn(responseEntity);
         Mockito.when(updateCgdRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(updateCgdRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
+        Mockito.when(updateCgdRestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes)).thenCallRealMethod();
         String response = updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes);
         assertNotNull(response);
         assertEquals(response,ReCAPConstants.SUCCESS);
     }
 
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
-    }
 }

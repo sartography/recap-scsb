@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.apache.camel.ProducerTemplate;
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.recap.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,14 @@ public class RequestItemRestController {
     private String scsbCircUrl;
 
     @Autowired
+    RestHeaderService restHeaderService;
+
+    @Autowired
     private ProducerTemplate producer;
+
+    public RestHeaderService getRestHeaderService(){
+        return restHeaderService;
+    }
 
     /**
      * Gets scsb circ url.
@@ -515,7 +523,7 @@ public class RequestItemRestController {
     @ResponseBody
     public CancelRequestResponse cancelRequest(@ApiParam(value = "Parameters for canceling a request on the Item", required = true, name = "requestId") @RequestParam Integer requestId) {
         CancelRequestResponse cancelRequestResponse;
-        HttpEntity request = new HttpEntity<>(getHttpHeadersAuth());
+        HttpEntity request = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_CANCEL).queryParam("requestId", requestId);
         HttpEntity<CancelRequestResponse> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, request, CancelRequestResponse.class);
         cancelRequestResponse = responseEntity.getBody();
@@ -528,10 +536,4 @@ public class RequestItemRestController {
         return responseHeaders;
     }
 
-    private HttpHeaders getHttpHeadersAuth() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
-    }
 }
