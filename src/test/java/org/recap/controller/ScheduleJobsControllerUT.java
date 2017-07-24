@@ -6,8 +6,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.recap.model.ScheduleJobRequest;
 import org.recap.model.ScheduleJobResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +29,9 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
 
     @Mock
     private ScheduleJobsController scheduleJobsController;
+
+    @Autowired
+    RestHeaderService restHeaderService;
 
     public String getScsbScheduleUrl() {
         return scsbScheduleUrl;
@@ -50,19 +55,14 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
         ScheduleJobResponse scheduleJobResponse = new ScheduleJobResponse();
         scheduleJobResponse.setMessage("Scheduled");
         ResponseEntity<ScheduleJobResponse> responseEntity = new ResponseEntity<>(scheduleJobResponse, HttpStatus.OK);
-        HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getHttpHeaders());
+        HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, restHeaderService.getHttpHeaders());
         Mockito.when(mockRestTemplate.exchange(getScsbScheduleUrl() + ReCAPConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class)).thenReturn(responseEntity);
         Mockito.when(scheduleJobsController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(scheduleJobsController.getScsbScheduleUrl()).thenReturn(scsbScheduleUrl);
+        Mockito.when(scheduleJobsController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(scheduleJobsController.scheduleJob(scheduleJobRequest)).thenCallRealMethod();
         ScheduleJobResponse scheduleJobResponse1 = scheduleJobsController.scheduleJob(scheduleJobRequest);
         assertNotNull(scheduleJobResponse1);
     }
 
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
-    }
 }

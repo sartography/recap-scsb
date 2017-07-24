@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.recap.model.*;
 import org.springframework.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,9 @@ public class RequestItemRestControllerUT extends BaseTestCase{
 
     @Mock
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private RestHeaderService restHeaderService;
 
     @Before
     public void setUp() throws Exception {
@@ -162,7 +166,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
 
     @Test
     public void testCancelRequest(){
-        HttpEntity request = new HttpEntity<>(getHttpHeadersAuth());
+        HttpEntity request = new HttpEntity<>(restHeaderService.getHttpHeaders());
         CancelRequestResponse cancelRequestResponse = new CancelRequestResponse();
         cancelRequestResponse.setScreenMessage("Request cancelled.");
         cancelRequestResponse.setSuccess(true);
@@ -170,6 +174,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_CANCEL).queryParam("requestId", 129);
         Mockito.when(requestItemRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(requestItemRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
+        Mockito.when(requestItemRestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(requestItemRestController.getRestTemplate().exchange(builder.build().encode().toUri(), org.springframework.http.HttpMethod.POST, request, CancelRequestResponse.class)).thenReturn(responseEntity);
         Mockito.when(requestItemRestController.cancelRequest(129)).thenCallRealMethod();
         cancelRequestResponse = requestItemRestController.cancelRequest(129);
@@ -582,13 +587,6 @@ public class RequestItemRestControllerUT extends BaseTestCase{
         }catch(Exception e){
             logger.error(e.getMessage());
         }
-    }
-
-    private HttpHeaders getHttpHeadersAuth() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
     }
 
     private ItemCheckinResponse getItemCheckInResponse(){

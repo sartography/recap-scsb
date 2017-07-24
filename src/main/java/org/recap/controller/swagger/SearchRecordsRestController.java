@@ -2,11 +2,13 @@ package org.recap.controller.swagger;
 
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.recap.model.SearchRecordsRequest;
 import org.recap.model.SearchRecordsResponse;
 import org.recap.model.SearchResultRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,14 @@ public class SearchRecordsRestController {
 
     @Value("${scsb.solr.client.url}")
     private String scsbSolrClient;
+
+
+    @Autowired
+    RestHeaderService restHeaderService;
+
+    public RestHeaderService getRestHeaderService(){
+        return restHeaderService;
+    }
 
     /**
      * Gets rest template.
@@ -60,7 +70,7 @@ public class SearchRecordsRestController {
     public SearchRecordsResponse searchRecordsServiceGetParam(@ApiParam(value = "Parameters to search a record in SCSB", required = true, name = "searchRecordsRequest")@RequestBody SearchRecordsRequest searchRecordsRequest) {
         SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
         try {
-            HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getHttpHeaders());
+            HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getRestHeaderService().getHttpHeaders());
 
             ResponseEntity<SearchRecordsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
@@ -100,7 +110,7 @@ public class SearchRecordsRestController {
             @ApiParam(name="pageSize", value = "Page Size in Numers - 10, 20 30...") @RequestParam(name="pageSize", required = false) Integer pageSize
     ) {
         HttpEntity<List> responseEntity = null;
-        HttpEntity request = new HttpEntity(getHttpHeaders());
+        HttpEntity request = new HttpEntity(getRestHeaderService().getHttpHeaders());
         List<SearchResultRow> searchResultRows = null;
         try {
 
@@ -123,10 +133,4 @@ public class SearchRecordsRestController {
         return searchResultRows;
     }
 
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
-    }
 }

@@ -1,10 +1,12 @@
 package org.recap.controller;
 
 import org.recap.ReCAPConstants;
+import org.recap.Service.RestHeaderService;
 import org.recap.model.ScheduleJobRequest;
 import org.recap.model.ScheduleJobResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,14 @@ public class ScheduleJobsController {
 
     @Value("${scsb.batch.schedule.url}")
     private String scsbScheduleUrl;
+
+
+    @Autowired
+    RestHeaderService restHeaderService;
+
+    public RestHeaderService getRestHeaderService(){
+        return restHeaderService;
+    }
 
     /**
      * Gets scsb schedule url.
@@ -62,7 +72,7 @@ public class ScheduleJobsController {
     public ScheduleJobResponse scheduleJob(@RequestBody ScheduleJobRequest scheduleJobRequest) {
         ScheduleJobResponse scheduleJobResponse = new ScheduleJobResponse();
         try {
-            HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getHttpHeaders());
+            HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getRestHeaderService().getHttpHeaders());
 
             ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(getScsbScheduleUrl() + ReCAPConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
             scheduleJobResponse = responseEntity.getBody();
@@ -71,12 +81,5 @@ public class ScheduleJobsController {
             scheduleJobResponse.setMessage(e.getMessage());
         }
         return scheduleJobResponse;
-    }
-
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(ReCAPConstants.API_KEY, ReCAPConstants.RECAP);
-        return headers;
     }
 }
