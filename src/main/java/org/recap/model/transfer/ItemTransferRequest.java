@@ -4,17 +4,8 @@ package org.recap.model.transfer;
  * Created by sheiks on 13/07/17.
  */
 public class ItemTransferRequest {
-    private String barcode;
     private ItemSource source;
     private ItemDestination destination;
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
 
     public ItemSource getSource() {
         return source;
