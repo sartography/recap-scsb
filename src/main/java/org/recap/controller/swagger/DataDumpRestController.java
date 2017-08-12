@@ -2,6 +2,7 @@ package org.recap.controller.swagger;
 
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
+import org.recap.spring.SwaggerAPIProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,7 +74,7 @@ public class DataDumpRestController {
         inputMap.put("emailToAddress",emailToAddress);
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.set("api_key","recap");
+            headers.set("api_key", SwaggerAPIProvider.getInstance().getSwaggerApiKey());
             HttpEntity requestEntity = new HttpEntity(headers);
             ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
             return new ResponseEntity(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
