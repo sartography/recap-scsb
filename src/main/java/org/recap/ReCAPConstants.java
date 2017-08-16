@@ -62,9 +62,9 @@ public final class ReCAPConstants {
     public static final String IS_CGD_PROTECTED = "isCGDProtected";
     public static final String INVALID_SCSB_XML_FORMAT_MESSAGE = "Please provide valid SCSB xml format";
     public static final String INVALID_MARC_XML_FORMAT_MESSAGE = "Please provide valid Marc xml format";
-    public static final String SUBMIT_COLLECTION_INTERNAL_ERROR = "Internal error occured during submit collection";
-    public static final String TRANSFER_INTERNAL_ERROR = "Internal error occured during transfer";
-    public static final String ACCESSION_INTERNAL_ERROR = "Internal error occured during accession";
+    public static final String SUBMIT_COLLECTION_INTERNAL_ERROR = "Internal error occurred during submit collection";
+    public static final String TRANSFER_INTERNAL_ERROR = "Internal error occurred during transfer";
+    public static final String ACCESSION_INTERNAL_ERROR = "Internal error occurred during accession";
 
     public static final String API_KEY = "api_key";
     public static final String RECAP = "recap";
@@ -89,7 +89,7 @@ public final class ReCAPConstants {
     public static final String LOG_ERROR_REST_CLIENT = "RestClient : ";
 
     public static final String COMPLETE_STATUS = "Complete";
-    public static final String REQUEST_MESSAGE_RECEVIED = "Message recevied, your request will be processed";
+    public static final String REQUEST_MESSAGE_RECEVIED = "Message received, your request will be processed";
 
     public static final String PURGE_EXCEPTION_REQUESTS = "PurgeExceptionRequests";
     public static final String SCHEDULE = "Schedule";
