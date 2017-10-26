@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -528,6 +529,35 @@ public class RequestItemRestController {
         HttpEntity<CancelRequestResponse> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, request, CancelRequestResponse.class);
         cancelRequestResponse = responseEntity.getBody();
         return cancelRequestResponse;
+    }
+
+    /**
+     * This method will place bulk request message in to the queue to initiate the process.
+     * @param bulkRequestId
+     * @return
+     */
+    @RequestMapping(value = "/bulkRequest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "bulkRequest", notes = "The Bulk Request API is internally called by SCSB UI which will be probably initiated by LAS users.", nickname = "bulkRequest")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public BulkRequestResponse bulkRequest(@ApiParam(value = "Parameters for initiating bulk request", required = true, name = "bulkRequestId") @RequestParam Integer bulkRequestId) {
+        getProducer().sendBody(ReCAPConstants.BULK_REQUEST_ITEM_QUEUE, bulkRequestId);
+        BulkRequestResponse bulkRequestResponse = new BulkRequestResponse();
+        bulkRequestResponse.setBulkRequestId(bulkRequestId);
+        bulkRequestResponse.setSuccess(true);
+        bulkRequestResponse.setScreenMessage(ReCAPConstants.BULK_REQUEST_MESSAGE_RECEIVED);
+        return bulkRequestResponse;
+    }
+
+    /**
+     * This method validates the patron information by calling an api in scsb-circ micro service.
+     * @param bulkRequestInformation
+     * @return
+     */
+    @ApiIgnore
+    @RequestMapping(value = "/patronValidationBulkRequest", method = RequestMethod.POST)
+    public Boolean patronValidation(@RequestBody BulkRequestInformation bulkRequestInformation){
+        return new RestTemplate().postForEntity(scsbCircUrl + "/requestItem/patronValidationBulkRequest", bulkRequestInformation, Boolean.class).getBody();
     }
 
     private HttpHeaders getHttpHeaders() {

@@ -29,6 +29,7 @@ public final class ReCAPConstants {
     // MQ URI
     public static final String REQUEST_ITEM_QUEUE = "scsbactivemq:queue:RequestItemQ";
     public static final String REQUEST_TYPE_QUEUE_HEADER = "RequestType";
+    public static final String BULK_REQUEST_ITEM_QUEUE = "scsbactivemq:queue:BulkRequestItemQ";
 
     public static final String URL_REQUEST_ITEM_INFORMATION = "requestItem/itemInformation";
     public static final String URL_REQUEST_ITEM_HOLD = "requestItem/holdItem";
@@ -94,6 +95,8 @@ public final class ReCAPConstants {
     public static final String PURGE_EXCEPTION_REQUESTS = "PurgeExceptionRequests";
     public static final String SCHEDULE = "Schedule";
     public static final String STATUS = "Status";
+
+    public static final String BULK_REQUEST_MESSAGE_RECEIVED = "Bulk request process initiated.";
 
     private ReCAPConstants() {
     }
