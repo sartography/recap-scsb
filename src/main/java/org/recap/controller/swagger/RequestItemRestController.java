@@ -531,6 +531,11 @@ public class RequestItemRestController {
         return cancelRequestResponse;
     }
 
+    /**
+     * This method will place bulk request message in to the queue to initiate the process.
+     * @param bulkRequestId
+     * @return
+     */
     @RequestMapping(value = "/bulkRequest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "bulkRequest", notes = "The Bulk Request API is internally called by SCSB UI which will be probably initiated by LAS users.", nickname = "bulkRequest")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -544,6 +549,11 @@ public class RequestItemRestController {
         return bulkRequestResponse;
     }
 
+    /**
+     * This method validates the patron information by calling an api in scsb-circ micro service.
+     * @param bulkRequestInformation
+     * @return
+     */
     @ApiIgnore
     @RequestMapping(value = "/patronValidationBulkRequest", method = RequestMethod.POST)
     public Boolean patronValidation(@RequestBody BulkRequestInformation bulkRequestInformation){
