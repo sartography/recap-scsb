@@ -512,7 +512,7 @@ public class RequestItemRestControllerUT extends BaseTestCase{
             itemResponseInformation = requestItemRestController.itemRequest(itemRequestInfo);
             assertNotNull(itemResponseInformation);
             assertTrue(itemResponseInformation.isSuccess());
-            assertEquals(itemResponseInformation.getScreenMessage(),"Message recevied, your request will be processed");
+            assertEquals(itemResponseInformation.getScreenMessage(),"Message received, your request will be processed");
 
         } catch (Exception e) {
             e.printStackTrace();
