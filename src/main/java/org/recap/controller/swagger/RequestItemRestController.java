@@ -255,7 +255,7 @@ public class RequestItemRestController {
             itemRequestInfo.setItemBarcodes(itemCheckInRequest.getItemBarcodes());
             itemRequestInfo.setItemOwningInstitution(itemCheckInRequest.getItemOwningInstitution());
             itemRequestInfo.setRequestingInstitution(itemCheckInRequest.getItemOwningInstitution());
-            responseEntity = getRestTemplate().postForEntity(getScsbCircUrl() + "requestItem/checkinItem", itemRequestInfo, null, String.class);
+            responseEntity = getRestTemplate().postForEntity(getScsbCircUrl() + "requestItem/checkinItem", itemRequestInfo, String.class);
             response = (String) responseEntity.getBody();
             ObjectMapper om = getObjectMapper();
             itemCheckinResponse = om.readValue(response, ItemCheckinResponse.class);
@@ -558,6 +558,35 @@ public class RequestItemRestController {
     @RequestMapping(value = "/patronValidationBulkRequest", method = RequestMethod.POST)
     public Boolean patronValidation(@RequestBody BulkRequestInformation bulkRequestInformation){
         return new RestTemplate().postForEntity(scsbCircUrl + "/requestItem/patronValidationBulkRequest", bulkRequestInformation, Boolean.class).getBody();
+    }
+
+    /**
+     * This method refiles the item in ILS. Currently only NYPL has the refile endpoint.
+     * @param itemBarcode
+     * @param owningInstitution
+     * @return
+     */
+    @ApiIgnore
+    @RequestMapping(value = "/refileItemInILS", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "refileItemInILS",
+            notes = "The Refile item API is an internal call made by SCSB as part of the refile and accession API calls.", nickname = "refileItemInILS")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public AbstractResponseItem refileItemInILS(@ApiParam(value = "Parameters for refiling an item", required = true, name = "itemBarcode") @RequestParam String itemBarcode,
+                                                @ApiParam(value = "Parameters for refiling an item", required = true, name = "owningInstitution") @RequestParam String owningInstitution) {
+        ItemRefileResponse itemRefileResponse = null;
+        ItemRequestInformation itemRequestInfo = getItemRequestInformation();
+        try {
+            itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcode));
+            itemRequestInfo.setItemOwningInstitution(owningInstitution);
+            ResponseEntity<ItemRefileResponse> responseEntity = getRestTemplate().postForEntity(getScsbCircUrl() + "requestItem/refileItemInILS", itemRequestInfo, ItemRefileResponse.class);
+            itemRefileResponse = responseEntity.getBody();
+        } catch (RestClientException ex) {
+            getLogger().error(ReCAPConstants.REQUEST_EXCEPTION_REST, ex);
+        } catch (Exception ex) {
+            getLogger().error(ReCAPConstants.REQUEST_EXCEPTION, ex);
+        }
+        return itemRefileResponse;
     }
 
     private HttpHeaders getHttpHeaders() {
