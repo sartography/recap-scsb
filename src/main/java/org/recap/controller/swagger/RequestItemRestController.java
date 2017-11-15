@@ -125,9 +125,9 @@ public class RequestItemRestController {
         boolean bSuccess;
         String screenMessage;
         ObjectMapper objectMapper;
-
         ResponseEntity responseEntity = null;
         try {
+            itemRequestInfo.setPatronBarcode(itemRequestInfo.getPatronBarcode() != null ? itemRequestInfo.getPatronBarcode().trim() : null);
             responseEntity = getRestTemplate().postForEntity(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST, itemRequestInfo, String.class);
             statusCode = responseEntity.getStatusCode();
             screenMessage = responseEntity.getBody().toString();
