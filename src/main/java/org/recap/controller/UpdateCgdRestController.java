@@ -72,7 +72,7 @@ public class UpdateCgdRestController {
      * @return the string
      */
     @RequestMapping(value="/updateCgd", method = RequestMethod.GET)
-    public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes) {
+    public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes, @RequestParam String userName) {
         String statusResponse = null;
         try {
             HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
@@ -82,7 +82,8 @@ public class UpdateCgdRestController {
                     .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
                     .queryParam(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)
                     .queryParam(ReCAPConstants.NEW_CGD, newCollectionGroupDesignation)
-                    .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes);
+                    .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes)
+                    .queryParam(ReCAPConstants.USER_NAME, userName);
 
             ResponseEntity<String> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             statusResponse = responseEntity.getBody();

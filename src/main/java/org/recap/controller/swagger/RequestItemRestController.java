@@ -21,6 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hemalathas on 1/11/16.
@@ -587,6 +588,27 @@ public class RequestItemRestController {
             getLogger().error(ReCAPConstants.REQUEST_EXCEPTION, ex);
         }
         return itemRefileResponse;
+    }
+
+    /**
+     * This method will replace the requests to LAS queue.
+     *
+     * @param replaceRequest the replace request body
+     * @return the string response
+     */
+    @ApiIgnore
+    @RequestMapping(value = "/replaceRequest", method = RequestMethod.POST)
+    @ApiOperation(value = "replaceRequest", notes = "Resubmit the failed requests to LAS", nickname = "Replace Request")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+    @ResponseBody
+    public ResponseEntity replaceRequestToLAS(@ApiParam(value = "Parameters to replace the request", required = true, name = "replaceRequest") @RequestBody ReplaceRequest replaceRequest) {
+        try {
+            Map<String, String> resultMap = getRestTemplate().postForObject(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_REPLACE, replaceRequest, Map.class);
+            return new ResponseEntity(resultMap, getHttpHeaders(), HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error(ReCAPConstants.LOG_ERROR, ex);
+            return new ResponseEntity(ReCAPConstants.SCSB_CIRC_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
     private HttpHeaders getHttpHeaders() {

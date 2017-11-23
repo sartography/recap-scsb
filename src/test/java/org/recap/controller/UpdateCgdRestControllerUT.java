@@ -58,6 +58,7 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         String oldCollectionGroupDesignation = "Shared";
         String newCollectionGroupDesignation = "Private";
         String cgdChangeNotes = "Notes";
+        String username = "guest";
         ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.SUCCESS,HttpStatus.OK);
         updateCgdRestController.setScsbSolrClientUrl(getScsbSolrClientUrl());
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
@@ -66,13 +67,14 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
                 .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)
                 .queryParam(ReCAPConstants.OLD_CGD, oldCollectionGroupDesignation)
                 .queryParam(ReCAPConstants.NEW_CGD, newCollectionGroupDesignation)
-                .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes);
+                .queryParam(ReCAPConstants.CGD_CHANGE_NOTES, cgdChangeNotes)
+                .queryParam(ReCAPConstants.USER_NAME, username);
         Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class)).thenReturn(responseEntity);
         Mockito.when(updateCgdRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(updateCgdRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
         Mockito.when(updateCgdRestController.getRestHeaderService()).thenReturn(restHeaderService);
-        Mockito.when(updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes)).thenCallRealMethod();
-        String response = updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes);
+        Mockito.when(updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes, username)).thenCallRealMethod();
+        String response = updateCgdRestController.updateCgdForItem(itemBarcode,owningInstitution,oldCollectionGroupDesignation,newCollectionGroupDesignation,cgdChangeNotes, username);
         assertNotNull(response);
         assertEquals(response,ReCAPConstants.SUCCESS);
     }

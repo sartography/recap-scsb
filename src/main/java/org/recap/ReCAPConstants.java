@@ -39,6 +39,7 @@ public final class ReCAPConstants {
     public static final String URL_REQUEST_RE_FILE = "requestItem/refile";
     public static final String URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST = "requestItem/validateItemRequest";
     public static final String URL_REQUEST_CANCEL = "cancelRequest/cancel";
+    public static final String URL_REQUEST_REPLACE = "requestItem/replaceRequest";
 
     public static final String REST_URL_REQUEST_ITEM = "/requestItem";
     public static final String REST_URL_VALIDATE_REQUEST_ITEM = "/validateItemRequestInformations";
@@ -75,6 +76,7 @@ public final class ReCAPConstants {
     public static final String OLD_CGD = "oldCollectionGroupDesignation";
     public static final String NEW_CGD = "newCollectionGroupDesignation";
     public static final String CGD_CHANGE_NOTES = "cgdChangeNotes";
+    public static final String USER_NAME = "userName";
 
     public static final String REQUEST_EXCEPTION_REST = "RestClient : ";
     public static final String REQUEST_EXCEPTION = "Exception : ";
