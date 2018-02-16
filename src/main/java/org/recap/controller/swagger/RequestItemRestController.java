@@ -3,6 +3,7 @@ package org.recap.controller.swagger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.apache.camel.ProducerTemplate;
+import org.apache.commons.lang3.StringUtils;
 import org.recap.ReCAPConstants;
 import org.recap.Service.RestHeaderService;
 import org.recap.model.*;
@@ -128,6 +129,7 @@ public class RequestItemRestController {
         ObjectMapper objectMapper;
         ResponseEntity responseEntity = null;
         try {
+            logger.info("Item Request Information : {}",itemRequestInfo.toString());
             itemRequestInfo.setPatronBarcode(itemRequestInfo.getPatronBarcode() != null ? itemRequestInfo.getPatronBarcode().trim() : null);
             responseEntity = getRestTemplate().postForEntity(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST, itemRequestInfo, String.class);
             statusCode = responseEntity.getStatusCode();
@@ -138,11 +140,11 @@ public class RequestItemRestController {
             screenMessage = httpEx.getResponseBodyAsString();
         }
         try {
-
             if (statusCode != null && statusCode == HttpStatus.OK) {
                 objectMapper = new ObjectMapper();
                 itemBarcodes = itemRequestInfo.getItemBarcodes();
                 itemRequestInfo.setItemBarcodes(null);
+                itemRequestInfo.setRequestNotes(StringUtils.left(itemRequestInfo.getRequestNotes(),1000));
                 for (int i = 0; i < itemBarcodes.size(); i++) {
                     itemRequestInfo.setItemBarcodes(Arrays.asList(itemBarcodes.get(i).toString().trim()));
                     String json = objectMapper.writeValueAsString(itemRequestInfo);

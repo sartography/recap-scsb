@@ -391,4 +391,29 @@ public class ItemRequestInformation {
         }
         return bSuccess;
     }
+
+    @Override
+    public String toString() {
+        return "ItemRequestInformation{" +
+                "itemBarcodes=" + itemBarcodes +
+                ", titleIdentifier='" + titleIdentifier + '\'' +
+                ", itemOwningInstitution='" + itemOwningInstitution + '\'' +
+                ", patronBarcode='" + patronBarcode + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", requestingInstitution='" + requestingInstitution + '\'' +
+                ", requestType='" + requestType + '\'' +
+                ", deliveryLocation='" + deliveryLocation + '\'' +
+                ", requestNotes='" + requestNotes + '\'' +
+                ", trackingId='" + trackingId + '\'' +
+                ", author='" + author + '\'' +
+                ", callNumber='" + callNumber + '\'' +
+                ", startPage='" + startPage + '\'' +
+                ", endPage='" + endPage + '\'' +
+                ", chapterTitle='" + chapterTitle + '\'' +
+                ", bibId='" + bibId + '\'' +
+                ", username='" + username + '\'' +
+                ", issue='" + issue + '\'' +
+                ", volume='" + volume + '\'' +
+                '}';
+    }
 }
