@@ -129,7 +129,7 @@ public class RequestItemRestController {
         ObjectMapper objectMapper;
         ResponseEntity responseEntity = null;
         try {
-            logger.info(itemRequestInfo.toString());
+            logger.info("Item Request Information : {}",itemRequestInfo.toString());
             itemRequestInfo.setPatronBarcode(itemRequestInfo.getPatronBarcode() != null ? itemRequestInfo.getPatronBarcode().trim() : null);
             responseEntity = getRestTemplate().postForEntity(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_VALIDATE_ITEM_REQUEST, itemRequestInfo, String.class);
             statusCode = responseEntity.getStatusCode();
