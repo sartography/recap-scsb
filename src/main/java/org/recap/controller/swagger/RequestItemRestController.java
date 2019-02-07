@@ -507,11 +507,14 @@ public class RequestItemRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ItemRefileResponse refileItem(@ApiParam(value = "Parameters to refile an Item", required = true, name = "itemBarcode") @RequestBody ItemRefileRequest itemRefileRequest) {
+        logger.info("Refile Request Received");
         ItemRefileResponse itemRefileResponse;
         HttpEntity<ItemRefileResponse> responseEntity;
         HttpEntity request = new HttpEntity(itemRefileRequest);
+        logger.info("Refile request received for the barcodes : {} where request id's are : {}",itemRefileRequest.getItemBarcodes(),itemRefileRequest.getRequestIds());
         responseEntity = getRestTemplate().exchange(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_RE_FILE, HttpMethod.POST, request, ItemRefileResponse.class);
         itemRefileResponse = responseEntity.getBody();
+        logger.info("Item Refile Response : {}",itemRefileResponse.getScreenMessage());
         return itemRefileResponse;
     }
 
