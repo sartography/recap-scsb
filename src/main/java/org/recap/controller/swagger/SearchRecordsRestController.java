@@ -95,7 +95,8 @@ public class SearchRecordsRestController {
      * @param pageSize                    the page size
      * @return the list
      */
-    @ApiIgnore
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@ApiIgnore
     @RequestMapping(value="/searchByParam", method = RequestMethod.GET)
     @ApiOperation(value = "searchParam",notes = "The Search by param API allows the end user to search the SCSB database for bibliographic records using the parameters listed.", nickname = "search", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})

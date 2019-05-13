@@ -53,7 +53,7 @@ public class DataDumpRestController {
             notes = "The Export Data Dump API allows export of bibliographic records in SCSB database into MARCXML or SCSBXML format. This is used by partners to export records in preferred format and update their respective discovery systems. These jobs are scheduled to run by HTC support.", nickname = "exportDataDump", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = ReCAPConstants.DATADUMP_PROCESS_STARTED)})
     @ResponseBody
-    public ResponseEntity exportDataDump(@ApiParam(value = "Institution code(s) for requesting shared/open updates from partners: PUL = Princeton, CUL = Columbia, NYPL = New York Public Library" , required = true, name = "institutionCodes") @RequestParam String institutionCodes,
+    public ResponseEntity<String> exportDataDump(@ApiParam(value = "Institution code(s) for requesting shared/open updates from partners: PUL = Princeton, CUL = Columbia, NYPL = New York Public Library" , required = true, name = "institutionCodes") @RequestParam String institutionCodes,
                                          @ApiParam(value = "Institution codes of the requesting institution. PUL = Princeton, CUL = Columbia, NYPL = New York Public Library",required=true, name = "requestingInstitutionCode") @RequestParam String requestingInstitutionCode,
                                          @ApiParam(value = "Type of export - Incremental (use 1) or Deleted (use 2)" , required = true , name = "fetchType") @RequestParam String fetchType,
                                          @ApiParam(value = "Type of format - Marc xml (use 0) or SCSB xml (use 1), for deleted records only json format (use 2)",required=true, name = "outputFormat") @RequestParam String outputFormat,
@@ -75,12 +75,12 @@ public class DataDumpRestController {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("api_key", SwaggerAPIProvider.getInstance().getSwaggerApiKey());
-            HttpEntity requestEntity = new HttpEntity(headers);
+            HttpEntity<?> requestEntity = new HttpEntity<Object>(headers);
             ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
-            return new ResponseEntity(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
+            return new ResponseEntity<String>(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
             logger.error("error-->",exception);
-            return new ResponseEntity("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<String>("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
@@ -103,7 +103,7 @@ public class DataDumpRestController {
             notes = "The Export Data Dump API allows export of bibliographic records in SCSB database into MARCXML or SCSBXML format. This is used by partners to export records in preferred format and update their respective discovery systems. These jobs are scheduled to run by HTC support.", nickname = "exportDataDump", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = ReCAPConstants.DATADUMP_PROCESS_STARTED)})
     @ResponseBody
-    public ResponseEntity exportDataDumpWithToDate(@ApiParam(value = "Institution code(s) for requesting shared/open updates from partners: PUL = Princeton, CUL = Columbia, NYPL = New York Public Library" , required = true, name = "institutionCodes") @RequestParam String institutionCodes,
+    public ResponseEntity<String> exportDataDumpWithToDate(@ApiParam(value = "Institution code(s) for requesting shared/open updates from partners: PUL = Princeton, CUL = Columbia, NYPL = New York Public Library" , required = true, name = "institutionCodes") @RequestParam String institutionCodes,
                                          @ApiParam(value = "Institution codes of the requesting institution. PUL = Princeton, CUL = Columbia, NYPL = New York Public Library",required=true, name = "requestingInstitutionCode") @RequestParam String requestingInstitutionCode,
                                          @ApiParam(value = "Type of export - Incremental (use 1) or Deleted (use 2)" , required = true , name = "fetchType") @RequestParam String fetchType,
                                          @ApiParam(value = "Type of format - Marc xml (use 0) or SCSB xml (use 1), for deleted records only json format (use 2)",required=true, name = "outputFormat") @RequestParam String outputFormat,
@@ -127,12 +127,12 @@ public class DataDumpRestController {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("api_key", SwaggerAPIProvider.getInstance().getSwaggerApiKey());
-            HttpEntity requestEntity = new HttpEntity(headers);
+            HttpEntity<?> requestEntity = new HttpEntity<Object>(headers);
             ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&toDate={toDate}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
-            return new ResponseEntity(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
+            return new ResponseEntity<String>(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
             logger.error("error-->",exception);
-            return new ResponseEntity("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<String>("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 

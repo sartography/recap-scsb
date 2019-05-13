@@ -64,12 +64,18 @@ public class DeAccessionRestController {
      * @param deAccessionRequest the de accession request
      * @return the map
      */
-    @RequestMapping(value = "/deaccession", method = RequestMethod.POST)
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/deaccession", method = RequestMethod.POST)
     public Map<String, String> deAccession(@RequestBody String deAccessionRequest) {
         Map<String, String> resultMap = new HashMap<>();
         try {
             HttpEntity<String> requestEntity = new HttpEntity<>(deAccessionRequest, getRestHeaderService().getHttpHeaders());
-            resultMap = getRestTemplate().postForObject(getScsbCircUrl() + "/sharedCollection/deAccession", requestEntity, Map.class);
+            resultMap = getRestTemplate()
+            				.postForObject(
+        						getScsbCircUrl() + "/sharedCollection/deAccession",
+        						requestEntity,
+        						Map.class
+    						);
         } catch (Exception ex) {
             logger.error(ReCAPConstants.LOG_ERROR,ex);
         }

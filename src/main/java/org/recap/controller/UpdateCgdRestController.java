@@ -75,7 +75,7 @@ public class UpdateCgdRestController {
     public String updateCgdForItem(@RequestParam String itemBarcode, @RequestParam String owningInstitution, @RequestParam String oldCollectionGroupDesignation, @RequestParam String newCollectionGroupDesignation, @RequestParam String cgdChangeNotes, @RequestParam String userName) {
         String statusResponse = null;
         try {
-            HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
+            HttpEntity<Object> requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbSolrClientUrl() + ReCAPConstants.URL_UPDATE_CGD)
                     .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)

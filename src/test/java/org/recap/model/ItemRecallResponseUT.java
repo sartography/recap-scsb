@@ -14,30 +14,22 @@ public class ItemRecallResponseUT extends BaseTestCase{
 
     @Test
     public void testItemRecallResponse(){
-        ItemRecallResponse itemRecallResponse = new ItemRecallResponse();
-        itemRecallResponse.setAvailable(true);
-        itemRecallResponse.setTransactionDate(new Date().toString());
-        itemRecallResponse.setInstitutionID("1");
-        itemRecallResponse.setPatronIdentifier("463556464");
-        itemRecallResponse.setTitleIdentifier("test");
-        itemRecallResponse.setExpirationDate(new Date().toString());
-        itemRecallResponse.setPickupLocation("PB");
-        itemRecallResponse.setQueuePosition("1");
-        itemRecallResponse.setBibId("1");
-        itemRecallResponse.setISBN("25464");
-        itemRecallResponse.setLCCN("424242");
+        ItemRecallResponse itemRecallResponse = ItemRecallResponse
+    		.builder()
+	        .available(true)
+	        .transactionDate(new Date().toString())
+	        .institutionID("1")
+	        .patronIdentifier("463556464")
+	        .titleIdentifier("test")
+	        .expirationDate(new Date().toString())
+	        .pickupLocation("PB")
+	        .queuePosition("1")
+	        .bibId("1")
+	        .ISBN("25464")
+	        .LCCN("424242")
+	        .build();
 
-        assertNotNull(itemRecallResponse.getAvailable());
-        assertNotNull(itemRecallResponse.getTransactionDate());
-        assertNotNull(itemRecallResponse.getInstitutionID());
-        assertNotNull(itemRecallResponse.getPatronIdentifier());
-        assertNotNull(itemRecallResponse.getTitleIdentifier());
-        assertNotNull(itemRecallResponse.getExpirationDate());
-        assertNotNull(itemRecallResponse.getPickupLocation());
-        assertNotNull(itemRecallResponse.getQueuePosition());
-        assertNotNull(itemRecallResponse.getBibId());
-        assertNotNull(itemRecallResponse.getISBN());
-        assertNotNull(itemRecallResponse.getLCCN());
+        assertNotNull(itemRecallResponse);
     }
 
 }

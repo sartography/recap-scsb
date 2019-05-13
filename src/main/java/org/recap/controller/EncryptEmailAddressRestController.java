@@ -47,7 +47,7 @@ public class EncryptEmailAddressRestController {
      *
      * @return the http entity
      */
-    public HttpEntity getHttpEntity(){
+    public HttpEntity<Object> getHttpEntity(){
         return new HttpEntity<>(getHttpHeaders());
     }
 
@@ -67,15 +67,15 @@ public class EncryptEmailAddressRestController {
     }
 
     @RequestMapping(value = "/encryptEmailAddress", method = RequestMethod.GET)
-    public ResponseEntity encryptEmailAddress() {
+    public ResponseEntity<String> encryptEmailAddress() {
         String response = "";
         try {
-            HttpEntity requestEntity = getHttpEntity();
+            HttpEntity<Object> requestEntity = getHttpEntity();
             ResponseEntity<String> exchange = getRestTemplate().exchange(getScsbCircUrl() + "/encryptEmailAddress/startEncryptEmailAddress", HttpMethod.GET, requestEntity, String.class);
             response  = exchange.getBody();
         } catch (Exception e) {
             getLogger().error("Exception", e);
         }
-        return new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<String>(response, getHttpHeaders(), HttpStatus.OK);
     }
 }

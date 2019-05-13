@@ -39,25 +39,26 @@ public class PurgeRestControllerUT extends BaseTestCase{
     }
 
     @Mock
-    HttpEntity mockedHttpEntity;
+    HttpEntity<?> mockedHttpEntity;
 
     @Mock
     RestTemplate restTemplate;
 
-    @Test
+    @SuppressWarnings("rawtypes")
+	@Test
     public void testPurgeEmailAddress(){
         Mockito.when(purgeRestController.getRestTemplate()).thenReturn(restTemplate);
         Mockito.when(purgeRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(purgeRestController.getLogger()).thenReturn(logger);
-        HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
+        HttpEntity<Object> requestEntity = new HttpEntity<>(getHttpHeaders());
         Mockito.when(purgeRestController.getHttpEntity()).thenReturn(requestEntity);
         Map<String,Integer> map = new HashMap<>();
         map.put("physicalRequest",1);
         map.put("eddRequest",1);
-        ResponseEntity responseEntity1 = new ResponseEntity(map, HttpStatus.OK);
+        ResponseEntity<Map> responseEntity1 = new ResponseEntity<Map>(map, HttpStatus.OK);
         Mockito.when(purgeRestController.getRestTemplate().exchange(getScsbCircUrl()+ ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET,requestEntity,Map.class)).thenReturn(responseEntity1);
         Mockito.when(purgeRestController.purgeEmailAddress()).thenCallRealMethod();
-        ResponseEntity responseEntity = purgeRestController.purgeEmailAddress();
+        ResponseEntity<?> responseEntity = purgeRestController.purgeEmailAddress();
         assertNotNull(responseEntity);
     }
 
@@ -66,14 +67,14 @@ public class PurgeRestControllerUT extends BaseTestCase{
         Mockito.when(purgeRestController.getRestTemplate()).thenReturn(restTemplate);
         Mockito.when(purgeRestController.getScsbCircUrl()).thenReturn(scsbCircUrl);
         Mockito.when(purgeRestController.getLogger()).thenReturn(logger);
-        HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
+        HttpEntity<Object> requestEntity = new HttpEntity<>(getHttpHeaders());
         Mockito.when(purgeRestController.getHttpEntity()).thenReturn(requestEntity);
-        Map responseMap = new HashMap();
+        Map<String, String> responseMap = new HashMap<String, String>();
         responseMap.put(ReCAPConstants.STATUS, ReCAPConstants.SUCCESS);
-        ResponseEntity<Map> responseEntity1 = new ResponseEntity(responseMap, HttpStatus.OK);
+        ResponseEntity<Map> responseEntity1 = new ResponseEntity<Map>(responseMap, HttpStatus.OK);
         Mockito.when(purgeRestController.getRestTemplate().exchange(getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET, requestEntity, Map.class)).thenReturn(responseEntity1);
         Mockito.when(purgeRestController.purgeExceptionRequests()).thenCallRealMethod();
-        ResponseEntity responseEntity = purgeRestController.purgeExceptionRequests();
+        ResponseEntity<?> responseEntity = purgeRestController.purgeExceptionRequests();
         assertNotNull(responseEntity);
     }
 

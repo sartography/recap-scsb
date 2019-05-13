@@ -52,7 +52,7 @@ public class PurgeRestController {
      *
      * @return the http entity
      */
-    public HttpEntity getHttpEntity(){
+    public HttpEntity<Object> getHttpEntity(){
         return new HttpEntity<>(getHttpHeaders());
     }
 
@@ -70,21 +70,22 @@ public class PurgeRestController {
      *configured day in the external properties
      * @return the response entity
      */
-    @RequestMapping(value = "/purgeEmailAddress", method = RequestMethod.GET)
+    @SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/purgeEmailAddress", method = RequestMethod.GET)
     @ApiOperation(value = "purgeEmailAddress",notes = "The Purge email address API as the name suggests purges all email addresses of patrons stored in SCSB database as part of request information. This API is internally used to purge emails through a scheduled job at regular intervals to remove Patron identifying information from SCSB.", nickname = "purgeEmailAddress", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
-    public ResponseEntity purgeEmailAddress(){
+    public ResponseEntity<Map<?, ?>> purgeEmailAddress(){
         ResponseEntity<Map> responseEntity = null;
-        Map response = null;
+        Map<?, ?> response = null;
         try{
-            HttpEntity requestEntity = getHttpEntity();
+            HttpEntity<Object> requestEntity = getHttpEntity();
             responseEntity = getRestTemplate().exchange(getScsbCircUrl()+ ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET,requestEntity,Map.class);
             response = responseEntity.getBody();
         }catch(Exception e){
             getLogger().error("Exception",e);
         }
 
-        return new ResponseEntity(response,getHttpHeaders(),HttpStatus.OK);
+        return new ResponseEntity<Map<?, ?>>(response,getHttpHeaders(),HttpStatus.OK);
     }
 
     /**
@@ -92,19 +93,20 @@ public class PurgeRestController {
      *
      * @return the response entity
      */
-    @RequestMapping(value = "/purgeExceptionRequests", method = RequestMethod.GET)
+    @SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/purgeExceptionRequests", method = RequestMethod.GET)
     @ApiOperation(value = "purgeExceptionRequests",notes = "The Purge exception requests API as the name suggests purges all requests that have gone to an exception status in SCSB database. This API is internally used by SCSB to purge requests with status as exception through a scheduled job at regular intervals.", nickname = "purgeExceptionRequests", position = 0)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
-    public ResponseEntity purgeExceptionRequests() {
-        Map response = null;
+    public ResponseEntity<Map> purgeExceptionRequests() {
+        Map<?, ?> response = null;
         try {
-            HttpEntity requestEntity = getHttpEntity();
+            HttpEntity<Object> requestEntity = getHttpEntity();
             ResponseEntity<Map> responseEntity = getRestTemplate().exchange(getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EXCEPTION_REQUESTS, HttpMethod.GET, requestEntity, Map.class);
             response = responseEntity.getBody();
         } catch (Exception e) {
             getLogger().error("Exception", e);
         }
-        return new ResponseEntity(response, getHttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<Map>(response, getHttpHeaders(), HttpStatus.OK);
     }
 
     private HttpHeaders getHttpHeaders() {

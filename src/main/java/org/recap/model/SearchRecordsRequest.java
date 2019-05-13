@@ -15,7 +15,12 @@ import java.util.List;
 public class SearchRecordsRequest implements Serializable {
 
 
-    @ApiModelProperty(name= "fieldValue", value= "Search Value",  position = 0)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2589164457324829225L;
+
+	@ApiModelProperty(name= "fieldValue", value= "Search Value",  position = 0)
     private String fieldValue = "";
 
     @ApiModelProperty(name ="fieldName", value= "Select a field name",position = 1)

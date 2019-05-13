@@ -1,8 +1,12 @@
 package org.recap.model;
 
-/**
- * Created by sudhishk on 16/12/16.
- */
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 public class ItemHoldResponse extends AbstractResponseItem {
 
     private boolean available;

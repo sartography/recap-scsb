@@ -33,7 +33,7 @@ public class DataDumpRestControllerUT extends BaseTestCase{
     public void testDataDumpRestController(){
         HttpHeaders headers = new HttpHeaders();
         headers.set("api_key","recap");
-        HttpEntity requestEntity = new HttpEntity(headers);
+        HttpEntity<?> requestEntity = new HttpEntity<Object>(headers);
         String institutionCodes = "PUL";
         String requestingInstitutionCode = "CUL";
         String fetchType = "1";
@@ -53,12 +53,12 @@ public class DataDumpRestControllerUT extends BaseTestCase{
         inputMap.put("transmissionType",transmissionType);
         inputMap.put("emailToAddress",emailToAddress);
 
-        ResponseEntity responseEntity = new ResponseEntity(ReCAPConstants.DATADUMP_PROCESS_STARTED, HttpStatus.OK);
+        ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.DATADUMP_PROCESS_STARTED, HttpStatus.OK);
         Mockito.when(dataDumpRestController.getRestTemplate()).thenReturn(restTemplate);
         Mockito.when(dataDumpRestController.getScsbEtlUrl()).thenReturn(scsbEtlUrl);
         Mockito.when(restTemplate.exchange(scsbEtlUrl + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap)).thenReturn(responseEntity);
         Mockito.when(dataDumpRestController.exportDataDump(institutionCodes,requestingInstitutionCode,fetchType,outputFormat,date,collectionGroupIds,transmissionType,emailToAddress)).thenCallRealMethod();
-        ResponseEntity responseEntity1 = dataDumpRestController.exportDataDump(institutionCodes,requestingInstitutionCode,fetchType,outputFormat,date,collectionGroupIds,transmissionType,emailToAddress);
+        ResponseEntity<?> responseEntity1 = dataDumpRestController.exportDataDump(institutionCodes,requestingInstitutionCode,fetchType,outputFormat,date,collectionGroupIds,transmissionType,emailToAddress);
         assertNotNull(responseEntity1);
         assertEquals(responseEntity1.getBody(),"Export process has started and we will send an email notification upon completion");
     }

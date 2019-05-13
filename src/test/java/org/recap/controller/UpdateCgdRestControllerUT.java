@@ -48,7 +48,7 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
     }
 
     public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
-        this.scsbSolrClient = scsbSolrClient;
+        this.scsbSolrClient = scsbSolrClientUrl;
     }
 
     @Test
@@ -61,7 +61,7 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         String username = "guest";
         ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.SUCCESS,HttpStatus.OK);
         updateCgdRestController.setScsbSolrClientUrl(getScsbSolrClientUrl());
-        HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
+        HttpEntity<Object> requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
                 .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)
                 .queryParam(ReCAPConstants.OWNING_INSTITUTION, owningInstitution)

@@ -16,59 +16,37 @@ public class ItemInformationResponseUT extends BaseTestCase{
 
     @Test
     public void testItemInformationResponse(){
-        ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
-        itemInformationResponse.setExpirationDate(new Date().toString());
-        itemInformationResponse.setTitleIdentifier("test");
-        itemInformationResponse.setDueDate(new Date().toString());
-        itemInformationResponse.setCirculationStatus("test");
-        itemInformationResponse.setSecurityMarker("test");
-        itemInformationResponse.setFeeType("test");
-        itemInformationResponse.setTransactionDate(new Date().toString());
-        itemInformationResponse.setHoldQueueLength("1");
-        itemInformationResponse.setHoldPickupDate(new Date().toString());
-        itemInformationResponse.setRecallDate(new Date().toString());
-        itemInformationResponse.setOwner("PUL");
-        itemInformationResponse.setMediaType("test");
-        itemInformationResponse.setPermanentLocation("test");
-        itemInformationResponse.setCurrentLocation("test");
-        itemInformationResponse.setBibID("1");
-        itemInformationResponse.setISBN("254564");
-        itemInformationResponse.setLCCN("524545578");
-        itemInformationResponse.setCurrencyType("test");
-        itemInformationResponse.setCallNumber("56465");
-        itemInformationResponse.setItemType("test");
-        itemInformationResponse.setBibIds(Arrays.asList("254"));
-        itemInformationResponse.setSource("test");
-        itemInformationResponse.setCreatedDate(new Date().toString());
-        itemInformationResponse.setUpdatedDate(new Date().toString());
-        itemInformationResponse.setDeletedDate(new Date().toString());
-        itemInformationResponse.setDeleted(false);
-        assertNotNull(itemInformationResponse.getExpirationDate());
-        assertNotNull(itemInformationResponse.getTitleIdentifier());
-        assertNotNull(itemInformationResponse.getDueDate());
-        assertNotNull(itemInformationResponse.getCirculationStatus());
-        assertNotNull(itemInformationResponse.getSecurityMarker());
-        assertNotNull(itemInformationResponse.getFeeType());
-        assertNotNull(itemInformationResponse.getTransactionDate());
-        assertNotNull(itemInformationResponse.getHoldQueueLength());
-        assertNotNull(itemInformationResponse.getRecallDate());
-        assertNotNull(itemInformationResponse.getOwner());
-        assertNotNull(itemInformationResponse.getMediaType());
-        assertNotNull(itemInformationResponse.getPermanentLocation());
-        assertNotNull(itemInformationResponse.getCurrentLocation());
-        assertNotNull(itemInformationResponse.getBibID());
-        assertNotNull(itemInformationResponse.getISBN());
-        assertNotNull(itemInformationResponse.getLCCN());
-        assertNotNull(itemInformationResponse.getHoldPickupDate());
-        assertNotNull(itemInformationResponse.getCurrencyType());
-        assertNotNull(itemInformationResponse.getCallNumber());
-        assertNotNull(itemInformationResponse.getItemType());
-        assertNotNull(itemInformationResponse.getBibIds());
-        assertNotNull(itemInformationResponse.getSource());
-        assertNotNull(itemInformationResponse.getCreatedDate());
-        assertNotNull(itemInformationResponse.getUpdatedDate());
-        assertNotNull(itemInformationResponse.getDeletedDate());
-        assertNotNull(itemInformationResponse.isDeleted());
+        ItemInformationResponse itemInformationResponse = ItemInformationResponse
+    		.builder()
+	        .expirationDate(new Date().toString())
+	        .titleIdentifier("test")
+	        .dueDate(new Date().toString())
+	        .circulationStatus("test")
+	        .securityMarker("test")
+	        .feeType("test")
+	        .transactionDate(new Date().toString())
+	        .holdQueueLength("1")
+	        .holdPickupDate(new Date().toString())
+	        .recallDate(new Date().toString())
+	        .owner("PUL")
+	        .mediaType("test")
+	        .permanentLocation("test")
+	        .currentLocation("test")
+	        .bibID("1")
+	        .ISBN("254564")
+	        .LCCN("524545578")
+	        .currencyType("test")
+	        .callNumber("56465")
+	        .itemType("test")
+	        .bibIds(Arrays.asList("254"))
+	        .source("test")
+	        .createdDate(new Date().toString())
+	        .updatedDate(new Date().toString())
+	        .deletedDate(new Date().toString())
+	        .isDeleted(false)
+	        .build();
+        
+        assertNotNull(itemInformationResponse);
     }
 
 }

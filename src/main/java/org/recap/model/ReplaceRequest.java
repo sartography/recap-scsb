@@ -1,7 +1,5 @@
 package org.recap.model;
 
-import io.swagger.annotations.ApiModelProperty;
-
 /**
  * Created by rajeshbabuk on 15/11/17.
  */

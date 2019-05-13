@@ -1,8 +1,12 @@
 package org.recap.model;
 
-/**
- * Created by sudhishk on 15/12/16.
- */
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 public class ItemRefileResponse extends AbstractResponseItem {
     private String screenMessage;
     private boolean success;
