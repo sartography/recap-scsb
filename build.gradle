@@ -1,87 +1,56 @@
-buildscript {
-	ext {
-		springBootVersion = '2.1.4.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
-}
-
 plugins {
-	id "org.sonarqube" version "2.0.1"
-	id "io.freefair.lombok" version "3.5.1"
+  id 'eclipse'
+  id 'idea'
+  id 'java'
+  id 'maven'
+  id 'jacoco'
+  id 'org.springframework.boot' version '2.1.4.RELEASE'
+  id 'org.sonarqube' version '2.7.1'
+  id 'io.freefair.lombok' version '3.5.1'
+  id 'io.spring.dependency-management' version '1.0.7.RELEASE'
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'spring-boot'
-apply plugin: 'jacoco'
+repositories {
+  mavenLocal()
+  mavenCentral()
+  jcenter()
+  maven { url "http://repo1.maven.org/maven2/" }
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+version = '1.2.1'
+
 
 //added to accept systemproperties while executing gradlew test cmd
 test {
-	systemProperties = System.properties
+  systemProperties = System.properties
+  systemProperties['user.dir'] = workingDir
+  useJUnitPlatform()
 }
 
 jar {
-	baseName = 'scsb'
-	version = '0.0.1-SNAPSHOT'
+  archiveBaseName = 'scsb'
+  archiveVersion = '0.0.1-SNAPSHOT'
 }
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-	mavenCentral()
-}
-
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web-services')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('commons-beanutils:commons-beanutils:1.9.2')
-	compile('io.springfox:springfox-swagger-ui:2.5.0')
-	compile('io.springfox:springfox-swagger2:2.5.0')
-	compile('org.apache.commons:commons-lang3:3.4')
-	compile('org.codehaus.jettison:jettison:1.3.7')
-	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-	compile('org.apache.camel:camel-bindy:2.18.0')
-	compile('org.apache.camel:camel-spring-boot-starter:2.18.0')
-	compile('org.apache.camel:camel-ftp:2.18.0')
-	compile('org.apache.camel:camel-csv:2.18.0')
-	compile('info.freelibrary:freelib-marc4j:2.6.12')
-	compile('org.apache.solr:solr-solrj:6.0.1')
-	compile('org.apache.activemq:activemq-camel:5.14.1')
-	compile('org.apache.activemq:activemq-pool:5.14.1')
-	compile('org.apache.activemq:activemq-broker:5.14.1')
-	compile('org.apache.activemq:activemq-client:5.14.1')
-	runtime('mysql:mysql-connector-java:6.0.3')
-	testCompile('com.h2database:h2:1.4.197')
-	testCompile('org.springframework.boot:spring-boot-starter-test:2.1.3.RELEASE')
-	compileOnly 'org.projectlombok:lombok:1.18.8'
-}
- 
-test {
-    useJUnitPlatform()
-}
-
-jacocoTestReport {
-	group = "Reporting"
-	reports {
-		xml.enabled true
-		csv.enabled false
-		html.enabled = true
-		html.destination "${buildDir}/jacocoHtml"
-	}
+  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+  compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+  compile group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'  
+  compile group: 'org.apache.activemq', name: 'activemq-camel', version: '5.15.9'
+  compile group: 'org.apache.camel', name: 'camel-spring', version: '2.24.0'
+  compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: '2.24.0'
+  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+  compile group: 'org.codehaus.jettison', name: 'jettison', version: '1.4.0'
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.4.RELEASE'
+  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.4.RELEASE'
 }
 
 task scsbJavadocs(type: Javadoc) {
-	source = sourceSets.main.java
-	classpath = configurations.compile
-	options.addStringOption('Xdoclint:none', '-quiet')
-	String home = System.getProperty("user.home");
-	destinationDir =  new File(home+"/scsb-javadocs/scsb");
-
+  source = sourceSets.main.java
+  classpath = configurations.compile
+  options.addStringOption('Xdoclint:none', '-quiet')
+  String home = System.getProperty('user.home');
+  destinationDir =  new File(home+'/scsb-javadocs/scsb');
 }
