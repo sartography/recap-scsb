@@ -18,7 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
-import org.recap.Service.RestHeaderService;
+import org.recap.service.RestHeaderService;
 import org.recap.model.*;
 import org.springframework.http.*;
 import org.springframework.beans.factory.annotation.Autowired;

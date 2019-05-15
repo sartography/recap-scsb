@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.ReCAPConstants;
-import org.recap.Service.RestHeaderService;
+import org.recap.service.RestHeaderService;
 import org.recap.model.DeaccessionItemResultsRow;
 import org.recap.model.ReportsRequest;
 import org.recap.model.ReportsResponse;

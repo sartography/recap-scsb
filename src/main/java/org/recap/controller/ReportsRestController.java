@@ -1,7 +1,7 @@
 package org.recap.controller;
 
 import org.recap.ReCAPConstants;
-import org.recap.Service.RestHeaderService;
+import org.recap.service.RestHeaderService;
 import org.recap.model.ReportsRequest;
 import org.recap.model.ReportsResponse;
 import org.slf4j.Logger;

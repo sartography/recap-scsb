@@ -1,7 +1,7 @@
 package org.recap.controller;
 
 import org.recap.ReCAPConstants;
-import org.recap.Service.RestHeaderService;
+import org.recap.service.RestHeaderService;
 import org.recap.model.ScheduleJobRequest;
 import org.recap.model.ScheduleJobResponse;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package org.recap.Service;
+package org.recap.service;
 
 import org.recap.ReCAPConstants;
 import org.recap.spring.SwaggerAPIProvider;
