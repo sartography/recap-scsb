@@ -3,30 +3,16 @@ package org.recap.model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-/**
- * Created by sudhishk on 15/12/16.
- */
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @ApiModel(value = "ItemCheckInRequest", description = "Model for Requesting Checkin request")
 public class ItemCheckInRequest extends AbstractRequestItem {
 
     @ApiModelProperty(name = "patronIdentifier", position = 2, required = true)
     private String patronIdentifier;
-
-    /**
-     * Gets patron identifier.
-     *
-     * @return the patron identifier
-     */
-    public String getPatronIdentifier() {
-        return patronIdentifier;
-    }
-
-    /**
-     * Sets patron identifier.
-     *
-     * @param patronIdentifier the patron identifier
-     */
-    public void setPatronIdentifier(String patronIdentifier) {
-        this.patronIdentifier = patronIdentifier;
-    }
 }

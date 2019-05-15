@@ -99,9 +99,9 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
 
     @Test
     public void testSearchRecordServiceGet(){
-        HttpEntity request = new HttpEntity(restHeaderService.getHttpHeaders());
+        HttpEntity<RestHeaderService> request = new HttpEntity<RestHeaderService>(restHeaderService.getHttpHeaders());
         List<SearchResultRow> searchResultRowList = new ArrayList<>();
-        ResponseEntity<List> httpEntity = new ResponseEntity<List>(searchResultRowList,HttpStatus.OK);
+        ResponseEntity<List<SearchResultRow>> httpEntity = new ResponseEntity<List<SearchResultRow>>(searchResultRowList,HttpStatus.OK);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_PARAM)
                 .queryParam("fieldValue", "test")
                 .queryParam("fieldName", "test")
@@ -111,7 +111,7 @@ public class SearchRecordsRestControllerUT extends BaseTestCase{
                 .queryParam("materialTypes","Monograph")
                 .queryParam("useRestrictions","NoRestrictions")
                 .queryParam("pageSize", 10);
-        Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class)).thenReturn(httpEntity);
+        Mockito.doReturn(httpEntity).when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class));
         Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
         Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
         Mockito.when(searchRecordsRestController.getRestHeaderService()).thenReturn(restHeaderService);

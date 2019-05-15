@@ -5,7 +5,6 @@ import org.recap.BaseTestCase;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -16,32 +15,21 @@ public class ItemResponseInformationUT extends BaseTestCase{
 
     @Test
     public void testItemResponseInformation(){
-        ItemResponseInformation itemResponseInformation = new ItemResponseInformation();
-        itemResponseInformation.setPatronBarcode("453454564");
-        itemResponseInformation.setItemBarcodes(Arrays.asList("4534"));
-        itemResponseInformation.setRequestType("Recall");
-        itemResponseInformation.setDeliveryLocation("PB");
-        itemResponseInformation.setRequestingInstitution("CUL");
-        itemResponseInformation.setBibliographicId("1");
-        itemResponseInformation.setExpirationDate(new Date().toString());
-        itemResponseInformation.setScreenMessage("test");
-        itemResponseInformation.setSuccess(true);
-        itemResponseInformation.setEmailAddress("hemalatha.s@htcindia.com");
-        itemResponseInformation.setTitleIdentifier("test");
+        ItemResponseInformation itemResponseInformation = ItemResponseInformation
+    		.builder()
+	        .patronBarcode("453454564")
+	        .itemBarcodes(Arrays.asList("4534"))
+	        .requestType("Recall")
+	        .deliveryLocation("PB")
+	        .requestingInstitution("CUL")
+	        .bibliographicId("1")
+	        .expirationDate(new Date().toString())
+	        .screenMessage("test")
+	        .success(true)
+	        .emailAddress("hemalatha.s@htcindia.com")
+	        .titleIdentifier("test")
+	        .build();
 
-        assertNotNull(itemResponseInformation.getPatronBarcode());
-        assertNotNull(itemResponseInformation.getBibliographicId());
-        assertNotNull(itemResponseInformation.getItemBarcodes());
-        assertNotNull(itemResponseInformation.getRequestType());
-        assertNotNull(itemResponseInformation.getDeliveryLocation());
-        assertNotNull(itemResponseInformation.getRequestingInstitution());
-        assertNotNull(itemResponseInformation.getExpirationDate());
-        assertNotNull(itemResponseInformation.getScreenMessage());
-        assertNotNull(itemResponseInformation.isSuccess());
-        assertNotNull(itemResponseInformation.getEmailAddress());
-        assertNotNull(itemResponseInformation.getTitleIdentifier());
+        assertNotNull(itemResponseInformation);
     }
-
-
-
 }
