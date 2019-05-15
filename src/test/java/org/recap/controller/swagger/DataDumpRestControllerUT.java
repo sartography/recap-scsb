@@ -56,11 +56,36 @@ public class DataDumpRestControllerUT extends BaseTestCase{
         ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.DATADUMP_PROCESS_STARTED, HttpStatus.OK);
         Mockito.when(dataDumpRestController.getRestTemplate()).thenReturn(restTemplate);
         Mockito.when(dataDumpRestController.getScsbEtlUrl()).thenReturn(scsbEtlUrl);
-        Mockito.when(restTemplate.exchange(scsbEtlUrl + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap)).thenReturn(responseEntity);
-        Mockito.when(dataDumpRestController.exportDataDump(institutionCodes,requestingInstitutionCode,fetchType,outputFormat,date,collectionGroupIds,transmissionType,emailToAddress)).thenCallRealMethod();
+        
+        Mockito.when(
+    		restTemplate
+    			.exchange(
+					scsbEtlUrl +
+					"dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}",
+					HttpMethod.GET,
+					requestEntity,
+					String.class,
+					inputMap
+				)
+		).thenReturn(responseEntity);
+        
+        Mockito.when(
+    		dataDumpRestController
+    			.exportDataDump(
+					institutionCodes,
+					requestingInstitutionCode,
+					fetchType,
+					outputFormat,
+					date,
+					collectionGroupIds,
+					transmissionType,
+					emailToAddress
+				)
+		).thenReturn(responseEntity);
+        
         ResponseEntity<?> responseEntity1 = dataDumpRestController.exportDataDump(institutionCodes,requestingInstitutionCode,fetchType,outputFormat,date,collectionGroupIds,transmissionType,emailToAddress);
         assertNotNull(responseEntity1);
-        assertEquals(responseEntity1.getBody(),"Export process has started and we will send an email notification upon completion");
+        assertEquals(responseEntity1.getBody(), ReCAPConstants.DATADUMP_PROCESS_STARTED);
     }
 
     @Test

@@ -71,8 +71,11 @@ public class PurgeRestControllerUT extends BaseTestCase{
         Mockito.when(purgeRestController.getHttpEntity()).thenReturn(requestEntity);
         Map<String, String> responseMap = new HashMap<String, String>();
         responseMap.put(ReCAPConstants.STATUS, ReCAPConstants.SUCCESS);
-        ResponseEntity<Map<String, String>> responseEntity1 = new ResponseEntity<Map<String, String>>(responseMap, HttpStatus.OK);
-        Mockito.doReturn(responseEntity1).when(purgeRestController.getRestTemplate().exchange(getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET, requestEntity, Map.class));
+        
+        @SuppressWarnings("rawtypes")
+		ResponseEntity<Map> responseEntity1 = new ResponseEntity<Map>(responseMap, HttpStatus.OK);
+        
+        Mockito.when(purgeRestController.getRestTemplate().exchange(getScsbCircUrl() + ReCAPConstants.REST_URL_PURGE_EMAIL_ADDRESS, HttpMethod.GET, requestEntity, Map.class)).thenReturn(responseEntity1);
         Mockito.when(purgeRestController.purgeExceptionRequests()).thenCallRealMethod();
         ResponseEntity<?> responseEntity = purgeRestController.purgeExceptionRequests();
         assertNotNull(responseEntity);

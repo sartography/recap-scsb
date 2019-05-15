@@ -2,15 +2,12 @@ package org.recap.controller.swagger;
 
 import io.swagger.annotations.*;
 import org.recap.ReCAPConstants;
+import org.recap.controller.ReCAPController;
 import org.recap.spring.SwaggerAPIProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,20 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/dataDump")
 @Api(value="dataDump", description="Export data dump", position = 1)
-public class DataDumpRestController {
-
-    private static final Logger logger = LoggerFactory.getLogger(DataDumpRestController.class);
-
-    @Value("${scsb.etl.url}")
-    private String scsbEtlUrl;
-
-    public String getScsbEtlUrl() {
-        return scsbEtlUrl;
-    }
-
-    public RestTemplate getRestTemplate(){
-        return new RestTemplate();
-    }
+public class DataDumpRestController extends ReCAPController {
 
     /**
      * This method is the entry point to start data export process and passes to request to the scsb-etl microservice.
@@ -79,7 +63,7 @@ public class DataDumpRestController {
             ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
             return new ResponseEntity<String>(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
-            logger.error("error-->",exception);
+            getLogger().error("error-->",exception);
             return new ResponseEntity<String>("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
@@ -131,22 +115,9 @@ public class DataDumpRestController {
             ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&toDate={toDate}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
             return new ResponseEntity<String>(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
-            logger.error("error-->",exception);
+        	getLogger().error("error-->",exception);
             return new ResponseEntity<String>("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add(ReCAPConstants.RESPONSE_DATE, new Date().toString());
-        return responseHeaders;
-    }
-
-    private HttpStatus getHttpStatus(String message){
-        if(message.equals(ReCAPConstants.DATADUMP_PROCESS_STARTED) || message.equals(ReCAPConstants.DATADUMP_NO_RECORD) || message.contains(ReCAPConstants.XML)){
-            return HttpStatus.OK;
-        }else{
-            return HttpStatus.BAD_REQUEST;
-        }
-    }
 }
