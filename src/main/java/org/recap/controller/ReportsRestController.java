@@ -23,17 +23,7 @@ public class ReportsRestController extends ReCAPController {
      */
     @RequestMapping(value="/accessionDeaccessionCounts", method = RequestMethod.POST)
     public ReportsResponse accessionDeaccessionCounts(@RequestBody ReportsRequest reportsRequest) {
-        ReportsResponse reportsResponse = new ReportsResponse();
-        try {
-            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getRestHeaderService().getHttpHeaders());
-
-            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
-            reportsResponse = responseEntity.getBody();
-        } catch (Exception e) {
-            getLogger().error(ReCAPConstants.LOG_ERROR,e);
-            reportsResponse.setMessage(e.getMessage());
-        }
-        return reportsResponse;
+        return this._getResponse(reportsRequest, ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS);
     }
 
     /**
@@ -43,17 +33,7 @@ public class ReportsRestController extends ReCAPController {
      */
     @RequestMapping(value="/cgdItemCounts", method = RequestMethod.POST)
     public ReportsResponse cgdItemCounts(@RequestBody ReportsRequest reportsRequest) {
-        ReportsResponse reportsResponse = new ReportsResponse();
-        try {
-            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getRestHeaderService().getHttpHeaders());
-
-            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
-            reportsResponse = responseEntity.getBody();
-        } catch (Exception e) {
-            getLogger().error(ReCAPConstants.LOG_ERROR,e);
-            reportsResponse.setMessage(e.getMessage());
-        }
-        return reportsResponse;
+        return this._getResponse(reportsRequest, ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS);
     }
 
     /**
@@ -64,17 +44,7 @@ public class ReportsRestController extends ReCAPController {
      */
     @RequestMapping(value="/deaccessionResults", method = RequestMethod.POST)
     public ReportsResponse deaccessionResults(@RequestBody ReportsRequest reportsRequest) {
-        ReportsResponse reportsResponse = new ReportsResponse();
-        try {
-            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getRestHeaderService().getHttpHeaders());
-
-            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
-            reportsResponse = responseEntity.getBody();
-        } catch (Exception e) {
-            getLogger().error(ReCAPConstants.LOG_ERROR,e);
-            reportsResponse.setMessage(e.getMessage());
-        }
-        return reportsResponse;
+        return this._getResponse(reportsRequest, ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS);
     }
 
     /**
@@ -85,14 +55,18 @@ public class ReportsRestController extends ReCAPController {
      */
     @RequestMapping(value="/incompleteRecords", method = RequestMethod.POST)
     public ReportsResponse incompleteRecords(@RequestBody ReportsRequest reportsRequest) {
-        ReportsResponse reportsResponse = new ReportsResponse();
+        return this._getResponse(reportsRequest, ReCAPConstants.URL_REPORTS_INCOMPLETE_RESULTS);
+    }
+    
+    private ReportsResponse _getResponse(ReportsRequest reportsRequest, String field) {
+        ReportsResponse reportsResponse = null;
         try {
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getRestHeaderService().getHttpHeaders());
-            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_INCOMPLETE_RESULTS, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + field, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
             getLogger().error(ReCAPConstants.LOG_ERROR,e);
-            reportsResponse.setMessage(e.getMessage());
+            reportsResponse = ReportsResponse.builder().message(e.getMessage()).build();
         }
         return reportsResponse;
     }

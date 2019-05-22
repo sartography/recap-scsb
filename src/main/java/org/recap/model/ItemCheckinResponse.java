@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 public class ItemCheckinResponse extends AbstractResponseItem {
-
     private boolean alert;
     private boolean magneticMedia;
     private boolean resensitize;

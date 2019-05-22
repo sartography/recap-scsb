@@ -24,115 +24,108 @@ import static org.junit.Assert.*;
 /**
  * Created by hemalathas on 3/2/17.
  */
-public class SearchRecordsRestControllerUT extends BaseTestCase{
+public class SearchRecordsRestControllerUT extends BaseTestCase {
 
-    @Value("${scsb.solr.client.url}")
-    String scsbSolrClient;
+	@Value("${scsb.solr.client.url}")
+	String scsbSolrClient;
 
-    @Mock
-    RestTemplate mockRestTemplate;
+	@Mock
+	RestTemplate mockRestTemplate;
 
-    @Mock
-    SearchRecordsRestController searchRecordsRestController;
+	@Mock
+	SearchRecordsRestController searchRecordsRestController;
 
-    @Autowired
-    RestHeaderService restHeaderService;
+	@Autowired
+	RestHeaderService restHeaderService;
 
-    public String getScsbSolrClient() {
-        return scsbSolrClient;
-    }
+	public String getScsbSolrClient() {
+		return scsbSolrClient;
+	}
 
-    public void setScsbSolrClient(String scsbSolrClient) {
-        this.scsbSolrClient = scsbSolrClient;
-    }
+	public void setScsbSolrClient(String scsbSolrClient) {
+		this.scsbSolrClient = scsbSolrClient;
+	}
 
-    @Test
-    public void testSearchRecordService(){
-        SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
-        searchRecordsRequest.setFieldValue("test");
-        searchRecordsRequest.setFieldName("test");
-        searchRecordsRequest.setAvailability(Arrays.asList("Available"));
-        searchRecordsRequest.setOwningInstitutions(Arrays.asList("PUL"));
-        searchRecordsRequest.setCollectionGroupDesignations(Arrays.asList("Open"));
-        searchRecordsRequest.setUseRestrictions(Arrays.asList("Others"));
-        searchRecordsRequest.setMaterialTypes(Arrays.asList("Monograph"));
-        searchRecordsRequest.setCatalogingStatus("Complete");
-        searchRecordsRequest.setDeleted(false);
-        searchRecordsRequest.setPageSize(10);
-        searchRecordsRequest.setPageNumber(10);
-        HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, restHeaderService.getHttpHeaders());
-        SearchRecordsResponse searchRecordsResponse = getSearchRecordsResponse();
-        ResponseEntity<SearchRecordsResponse> responseEntity = new ResponseEntity<SearchRecordsResponse>(searchRecordsResponse,HttpStatus.OK);
-        Mockito.when(mockRestTemplate.exchange(scsbSolrClient+ ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST, httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
-        Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(searchRecordsRestController.getRestHeaderService()).thenReturn(restHeaderService);
-        Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
-        Mockito.when(searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest)).thenCallRealMethod();
-        SearchRecordsResponse recordsResponse = searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest);
-        assertNotNull(recordsResponse);
-        assertNotNull(recordsResponse.getErrorMessage());
-        assertNotNull(recordsResponse.getSearchResultRows());
-        assertNotNull(recordsResponse.getTotalBibRecordsCount());
-        assertNotNull(recordsResponse.getTotalItemRecordsCount());
-        assertNotNull(recordsResponse.getTotalPageCount());
-        assertNotNull(recordsResponse.getTotalRecordsCount());
-        assertNotNull(searchRecordsRequest.getFieldValue());
-        assertNotNull(searchRecordsRequest.getFieldName());
-        assertNotNull(searchRecordsRequest.getOwningInstitutions());
-        assertNotNull(searchRecordsRequest.getCollectionGroupDesignations());
-        assertNotNull(searchRecordsRequest.getAvailability());
-        assertNotNull(searchRecordsRequest.getMaterialTypes());
-        assertNotNull(searchRecordsRequest.getUseRestrictions());
-        assertNotNull(searchRecordsRequest.isDeleted());
-        assertNotNull(searchRecordsRequest.getCatalogingStatus());
-        assertNotNull(searchRecordsRequest.getPageNumber());
-        assertNotNull(searchRecordsRequest.getPageSize());
-    }
+	@Test
+	public void testSearchRecordService() {
+		SearchRecordsRequest searchRecordsRequest = SearchRecordsRequest.builder().fieldValue("test").fieldName("test")
+				.availability(Arrays.asList("Available")).owningInstitutions(Arrays.asList("PUL"))
+				.collectionGroupDesignations(Arrays.asList("Open")).useRestrictions(Arrays.asList("Others"))
+				.materialTypes(Arrays.asList("Monograph")).catalogingStatus("Complete").isDeleted(false).pageSize(10)
+				.pageNumber(10).build();
+		HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest,
+				restHeaderService.getHttpHeaders());
+		SearchRecordsResponse searchRecordsResponse = getSearchRecordsResponse();
+		ResponseEntity<SearchRecordsResponse> responseEntity = new ResponseEntity<SearchRecordsResponse>(
+				searchRecordsResponse, HttpStatus.OK);
+		Mockito.when(mockRestTemplate.exchange(scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_JSON, HttpMethod.POST,
+				httpEntity, SearchRecordsResponse.class)).thenReturn(responseEntity);
+		Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+		Mockito.when(searchRecordsRestController.getRestHeaderService()).thenReturn(restHeaderService);
+		Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
+		Mockito.when(searchRecordsRestController.searchRecordsServiceGetParam(searchRecordsRequest))
+				.thenReturn(searchRecordsResponse);
+		SearchRecordsResponse recordsResponse = searchRecordsRestController
+				.searchRecordsServiceGetParam(searchRecordsRequest);
+		assertNotNull(recordsResponse);
+		assertNotNull(recordsResponse.getErrorMessage());
+		assertNotNull(recordsResponse.getSearchResultRows());
+		assertNotNull(recordsResponse.getTotalBibRecordsCount());
+		assertNotNull(recordsResponse.getTotalItemRecordsCount());
+		assertNotNull(recordsResponse.getTotalPageCount());
+		assertNotNull(recordsResponse.getTotalRecordsCount());
+		assertNotNull(searchRecordsRequest.getFieldValue());
+		assertNotNull(searchRecordsRequest.getFieldName());
+		assertNotNull(searchRecordsRequest.getOwningInstitutions());
+		assertNotNull(searchRecordsRequest.getCollectionGroupDesignations());
+		assertNotNull(searchRecordsRequest.getAvailability());
+		assertNotNull(searchRecordsRequest.getMaterialTypes());
+		assertNotNull(searchRecordsRequest.getUseRestrictions());
+		assertNotNull(searchRecordsRequest.isDeleted());
+		assertNotNull(searchRecordsRequest.getCatalogingStatus());
+		assertNotNull(searchRecordsRequest.getPageNumber());
+		assertNotNull(searchRecordsRequest.getPageSize());
+	}
 
-    @Test
-    public void checkGetterServices(){
-        Mockito.when(searchRecordsRestController.getRestTemplate()).thenCallRealMethod();
-        Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenCallRealMethod();
-        assertNotEquals(searchRecordsRestController.getRestTemplate(),mockRestTemplate);
-        assertNotEquals(searchRecordsRestController.getScsbSolrClientUrl(),scsbSolrClient);
-    }
+	@Test
+	public void checkGetterServices() {
+		Mockito.when(searchRecordsRestController.getRestTemplate()).thenCallRealMethod();
+		Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenCallRealMethod();
+		assertNotEquals(searchRecordsRestController.getRestTemplate(), mockRestTemplate);
+		assertNotEquals(searchRecordsRestController.getScsbSolrClientUrl(), scsbSolrClient);
+	}
 
-    @Test
-    public void testSearchRecordServiceGet(){
-        HttpEntity<RestHeaderService> request = new HttpEntity<RestHeaderService>(restHeaderService.getHttpHeaders());
-        List<SearchResultRow> searchResultRowList = new ArrayList<>();
-        
-        @SuppressWarnings("rawtypes")
-		ResponseEntity<List> httpEntity = new ResponseEntity<List>(searchResultRowList,HttpStatus.OK);
-        
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_PARAM)
-                .queryParam("fieldValue", "test")
-                .queryParam("fieldName", "test")
-                .queryParam("owningInstitutions", "PUL")
-                .queryParam("collectionGroupDesignations","Shared")
-                .queryParam("availability","Available")
-                .queryParam("materialTypes","Monograph")
-                .queryParam("useRestrictions","NoRestrictions")
-                .queryParam("pageSize", 10);
-        Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class)).thenReturn(httpEntity);
-        Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
-        Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
-        Mockito.when(searchRecordsRestController.getRestHeaderService()).thenReturn(restHeaderService);
-        Mockito.when(searchRecordsRestController.searchRecordsServiceGet("test","test","PUL","Shared","Available","Monograph","NoRestrictions",10)).thenCallRealMethod();
-        List<SearchResultRow> searchResultRows= searchRecordsRestController.searchRecordsServiceGet("test","test","PUL","Shared","Available","Monograph","NoRestrictions",10);
-        assertNotNull(searchResultRows);
+	@Test
+	public void testSearchRecordServiceGet() {
+		HttpEntity<RestHeaderService> request = new HttpEntity<RestHeaderService>(restHeaderService.getHttpHeaders());
+		List<SearchResultRow> searchResultRowList = new ArrayList<>();
 
-    }
+		@SuppressWarnings("rawtypes")
+		ResponseEntity<List> httpEntity = new ResponseEntity<List>(searchResultRowList, HttpStatus.OK);
 
-    public SearchRecordsResponse getSearchRecordsResponse(){
-        SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
-        searchRecordsResponse.setTotalPageCount(3);
-        searchRecordsResponse.setTotalRecordsCount("1");
-        searchRecordsResponse.setShowTotalCount(true);
-        searchRecordsResponse.setTotalBibRecordsCount("1");
-        searchRecordsResponse.setTotalItemRecordsCount("1");
-        searchRecordsResponse.setErrorMessage("message");
-        searchRecordsResponse.setSearchResultRows(Arrays.asList(new SearchResultRow()));
-        return searchRecordsResponse;
-    }
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_SEARCH_BY_PARAM).queryParam("fieldValue", "test")
+				.queryParam("fieldName", "test").queryParam("owningInstitutions", "PUL")
+				.queryParam("collectionGroupDesignations", "Shared").queryParam("availability", "Available")
+				.queryParam("materialTypes", "Monograph").queryParam("useRestrictions", "NoRestrictions")
+				.queryParam("pageSize", 10);
+		Mockito.when(mockRestTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, List.class))
+				.thenReturn(httpEntity);
+		Mockito.when(searchRecordsRestController.getRestTemplate()).thenReturn(mockRestTemplate);
+		Mockito.when(searchRecordsRestController.getScsbSolrClientUrl()).thenReturn(scsbSolrClient);
+		Mockito.when(searchRecordsRestController.getRestHeaderService()).thenReturn(restHeaderService);
+		Mockito.when(searchRecordsRestController.searchRecordsServiceGet("test", "test", "PUL", "Shared", "Available",
+				"Monograph", "NoRestrictions", 10)).thenCallRealMethod();
+		List<SearchResultRow> searchResultRows = searchRecordsRestController.searchRecordsServiceGet("test", "test",
+				"PUL", "Shared", "Available", "Monograph", "NoRestrictions", 10);
+		assertNotNull(searchResultRows);
+
+	}
+
+	public SearchRecordsResponse getSearchRecordsResponse() {
+		SearchRecordsResponse searchRecordsResponse = SearchRecordsResponse.builder().totalPageCount(3)
+				.totalRecordsCount("1").showTotalCount(true).totalBibRecordsCount("1").totalItemRecordsCount("1")
+				.errorMessage("message").searchResultRow(SearchResultRow.builder().build()).build();
+		return searchRecordsResponse;
+	}
 }

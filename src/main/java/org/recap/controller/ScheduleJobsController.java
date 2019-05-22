@@ -70,7 +70,7 @@ public class ScheduleJobsController {
      */
     @RequestMapping(value="/scheduleJob", method = RequestMethod.POST)
     public ScheduleJobResponse scheduleJob(@RequestBody ScheduleJobRequest scheduleJobRequest) {
-        ScheduleJobResponse scheduleJobResponse = new ScheduleJobResponse();
+        ScheduleJobResponse scheduleJobResponse = null;
         try {
             HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getRestHeaderService().getHttpHeaders());
 
@@ -78,7 +78,7 @@ public class ScheduleJobsController {
             scheduleJobResponse = responseEntity.getBody();
         } catch (Exception e) {
             logger.error(ReCAPConstants.LOG_ERROR,e);
-            scheduleJobResponse.setMessage(e.getMessage());
+            ScheduleJobResponse.builder().message(e.getMessage()).build();
         }
         return scheduleJobResponse;
     }

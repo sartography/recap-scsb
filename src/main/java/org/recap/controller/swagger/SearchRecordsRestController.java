@@ -68,7 +68,7 @@ public class SearchRecordsRestController {
     @ApiOperation(value = "search",notes = "The Search API allows the end user to search the SCSB database for bibliographic records using different fields. It takes in a JSON formatted request as input and allows pagination.", nickname = "search", position = 0, consumes="application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful Search")})
     public SearchRecordsResponse searchRecordsServiceGetParam(@ApiParam(value = "Parameters to search a record in SCSB", required = true, name = "searchRecordsRequest")@RequestBody SearchRecordsRequest searchRecordsRequest) {
-        SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
+        SearchRecordsResponse searchRecordsResponse = null;
         try {
             HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, getRestHeaderService().getHttpHeaders());
 
@@ -77,7 +77,7 @@ public class SearchRecordsRestController {
         } catch (Exception e) {
             logger.error("error--.",e);
             logger.error(e.getMessage());
-            searchRecordsResponse.setErrorMessage(e.getMessage());
+            searchRecordsResponse = SearchRecordsResponse.builder().errorMessage(e.getMessage()).build();
         }
         return searchRecordsResponse;
     }

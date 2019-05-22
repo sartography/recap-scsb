@@ -2,16 +2,14 @@ package org.recap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
+import lombok.Singular;
+import lombok.Builder;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode
-@SuperBuilder
+@Builder
 public class ItemRequestInformation {
-
-    private List<String> itemBarcodes;
+    @Singular private List<String> itemBarcodes;
     private String titleIdentifier;
     private String itemOwningInstitution; // PUL, CUL, NYPL
     private String patronBarcode;
@@ -49,30 +47,5 @@ public class ItemRequestInformation {
             bSuccess = false;
         }
         return bSuccess;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemRequestInformation{" +
-                "itemBarcodes=" + itemBarcodes +
-                ", titleIdentifier='" + titleIdentifier + '\'' +
-                ", itemOwningInstitution='" + itemOwningInstitution + '\'' +
-                ", patronBarcode='" + patronBarcode + '\'' +
-                ", emailAddress='" + emailAddress + '\'' +
-                ", requestingInstitution='" + requestingInstitution + '\'' +
-                ", requestType='" + requestType + '\'' +
-                ", deliveryLocation='" + deliveryLocation + '\'' +
-                ", requestNotes='" + requestNotes + '\'' +
-                ", trackingId='" + trackingId + '\'' +
-                ", author='" + author + '\'' +
-                ", callNumber='" + callNumber + '\'' +
-                ", startPage='" + startPage + '\'' +
-                ", endPage='" + endPage + '\'' +
-                ", chapterTitle='" + chapterTitle + '\'' +
-                ", bibId='" + bibId + '\'' +
-                ", username='" + username + '\'' +
-                ", issue='" + issue + '\'' +
-                ", volume='" + volume + '\'' +
-                '}';
     }
 }

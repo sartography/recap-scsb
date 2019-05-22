@@ -3,12 +3,13 @@ package org.recap.model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import lombok.Singular;
+import lombok.Builder;
 
-/**
- * Created by rajeshbabuk on 11/7/16.
- */
+@Data
+@Builder
 @ApiModel(value="SearchResultRow", description="Model for Displaying Search Result")
 public class SearchResultRow {
 
@@ -39,13 +40,13 @@ public class SearchResultRow {
     @ApiModelProperty(name= "leaderMaterialType", value= "Leader Material Type",position = 12)
     private String leaderMaterialType;
     @ApiModelProperty(name= "selected", value= "selected",position = 13)
-    private boolean selected = false;
+    @Builder.Default private boolean selected = false;
     @ApiModelProperty(name= "showItems", value= "Show Items",position = 14)
-    private boolean showItems = false;
+    @Builder.Default private boolean showItems = false;
     @ApiModelProperty(name= "selectAllItems", value= "Select All Items",position = 15)
-    private boolean selectAllItems = false;
+    @Builder.Default private boolean selectAllItems = false;
     @ApiModelProperty(name= "searchItemResultRows", value= "Item Results",position = 16)
-    private List<SearchItemResultRow> searchItemResultRows = new ArrayList<>();
+    @Singular private List<SearchItemResultRow> searchItemResultRows;
     @ApiModelProperty(name= "itemId", value= "Item Id",position = 17)
     private Integer itemId;
     @ApiModelProperty(name= "owningInstitutionBibId", value= "Owning Institution Bib Id",position = 18)

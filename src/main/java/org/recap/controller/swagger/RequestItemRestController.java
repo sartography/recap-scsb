@@ -413,7 +413,7 @@ public class RequestItemRestController {
     /**
      * This method will call scsb-circ microservice to recall an already retrieved item in ILS.
      *
-     * @param itemRecalRequest the item recal request
+     * @param itemRecallRequest the item recall request
      * @return the abstract response item
      */
     @RequestMapping(value = "/recall", method = RequestMethod.POST)
@@ -421,17 +421,17 @@ public class RequestItemRestController {
             notes = "The Recall API is used internally by SCSB during request API calls with request type RECALL.", nickname = "RecallItem")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
-    public AbstractResponseItem recallItem(@ApiParam(value = "Parameters to recall an item", required = true, name = "requestItemJson") @RequestBody ItemRecallRequest itemRecalRequest) {
+    public AbstractResponseItem recallItem(@ApiParam(value = "Parameters to recall an item", required = true, name = "requestItemJson") @RequestBody ItemRecallRequest itemRecallRequest) {
         ItemRecallResponse itemRecallResponse = null;
         try {
             ItemRequestInformation itemRequestInfo = ItemRequestInformation
         		.builder()
-	            .itemBarcodes(itemRecalRequest.getItemBarcodes())
-	            .itemOwningInstitution(itemRecalRequest.getItemOwningInstitution())
-	            .requestingInstitution(itemRecalRequest.getItemOwningInstitution())
-	            .patronBarcode(itemRecalRequest.getPatronIdentifier())
-	            .bibId(itemRecalRequest.getBibId())
-	            .deliveryLocation(itemRecalRequest.getPickupLocation())
+	            .itemBarcodes(itemRecallRequest.getItemBarcodes())
+	            .itemOwningInstitution(itemRecallRequest.getItemOwningInstitution())
+	            .requestingInstitution(itemRecallRequest.getItemOwningInstitution())
+	            .patronBarcode(itemRecallRequest.getPatronIdentifier())
+	            .bibId(itemRecallRequest.getBibId())
+	            .deliveryLocation(itemRecallRequest.getPickupLocation())
 	            .build();
 
             ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(getScsbCircUrl() + ReCAPConstants.URL_REQUEST_ITEM_RECALL, itemRequestInfo, String.class);
@@ -533,10 +533,12 @@ public class RequestItemRestController {
     @ResponseBody
     public BulkRequestResponse bulkRequest(@ApiParam(value = "Parameters for initiating bulk request", required = true, name = "bulkRequestId") @RequestParam Integer bulkRequestId) {
         getProducer().sendBody(ReCAPConstants.BULK_REQUEST_ITEM_QUEUE, bulkRequestId);
-        BulkRequestResponse bulkRequestResponse = new BulkRequestResponse();
-        bulkRequestResponse.setBulkRequestId(bulkRequestId);
-        bulkRequestResponse.setSuccess(true);
-        bulkRequestResponse.setScreenMessage(ReCAPConstants.BULK_REQUEST_MESSAGE_RECEIVED);
+        BulkRequestResponse bulkRequestResponse = BulkRequestResponse
+    		.builder()
+	        .bulkRequestId(bulkRequestId)
+	        .success(true)
+	        .screenMessage(ReCAPConstants.BULK_REQUEST_MESSAGE_RECEIVED)
+	        .build();
         return bulkRequestResponse;
     }
 

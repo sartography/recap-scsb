@@ -52,21 +52,22 @@ public class ReportsRestControllerUT extends BaseControllerUT {
 
     @Test
     public void accessionDeaccessionCounts() throws Exception {
-        ReportsRequest reportsRequest = new ReportsRequest();
-        reportsRequest.setAccessionDeaccessionFromDate("09/27/2016");
-        reportsRequest.setAccessionDeaccessionToDate("01/27/2017");
-        reportsRequest.setOwningInstitutions(Arrays.asList("CUL", "PUL", "NYPL"));
-        reportsRequest.setCollectionGroupDesignations(Arrays.asList("Private", "Open", "Shared"));
-        reportsRequest.setPageNumber(1);
-        reportsRequest.setPageSize(10);
-        reportsRequest.setDeaccessionOwningInstitution("CUL");
-        reportsRequest.setIncompleteRequestingInstitution("PUL");
-        reportsRequest.setIncompletePageNumber(10);
-        reportsRequest.setIncompletePageSize(10);
-        reportsRequest.setExport(true);
+        ReportsRequest reportsRequest = ReportsRequest
+    		.builder()
+	        .accessionDeaccessionFromDate("09/27/2016")
+	        .accessionDeaccessionToDate("01/27/2017")
+	        .owningInstitutions(Arrays.asList("CUL", "PUL", "NYPL"))
+	        .collectionGroupDesignations(Arrays.asList("Private", "Open", "Shared"))
+	        .pageNumber(1)
+	        .pageSize(10)
+	        .deaccessionOwningInstitution("CUL")
+	        .incompleteRequestingInstitution("PUL")
+	        .incompletePageNumber(10)
+	        .incompletePageSize(10)
+	        .export(true)
+	        .build();
         DeaccessionItemResultsRow deaccessionItemResultsRow = getDeaccessionItemResultsRow();
-        ReportsResponse reportsResponse = new ReportsResponse();
-        reportsResponse.setMessage(ReCAPConstants.SUCCESS);
+        ReportsResponse reportsResponse = ReportsResponse.builder().message(ReCAPConstants.SUCCESS).build();
         reportsResponse.setDeaccessionItemResultsRows(Arrays.asList(deaccessionItemResultsRow));
         ResponseEntity<ReportsResponse> responseEntity = new ResponseEntity<ReportsResponse>(reportsResponse,HttpStatus.OK);
 
@@ -99,24 +100,27 @@ public class ReportsRestControllerUT extends BaseControllerUT {
     }
 
     public DeaccessionItemResultsRow getDeaccessionItemResultsRow(){
-        DeaccessionItemResultsRow deaccessionItemResultsRow = new DeaccessionItemResultsRow();
-        deaccessionItemResultsRow.setItemId(123);
-        deaccessionItemResultsRow.setCgd("Open");
-        deaccessionItemResultsRow.setDeaccessionDate(new Date().toString());
-        deaccessionItemResultsRow.setDeaccessionNotes("test");
-        deaccessionItemResultsRow.setTitle("test");
-        deaccessionItemResultsRow.setDeaccessionOwnInst("PUL");
-        deaccessionItemResultsRow.setItemBarcode("326598741256985");
+        DeaccessionItemResultsRow deaccessionItemResultsRow = DeaccessionItemResultsRow
+    		.builder()
+	        .itemId(123)
+	        .cgd("Open")
+	        .deaccessionDate(new Date().toString())
+	        .deaccessionNotes("test")
+	        .title("test")
+	        .deaccessionOwnInst("PUL")
+	        .itemBarcode("326598741256985")
+	        .build();
         return deaccessionItemResultsRow;
     }
 
     @Test
     public void cgdItemCounts() throws Exception {
-        ReportsRequest reportsRequest = new ReportsRequest();
-        reportsRequest.setOwningInstitutions(Arrays.asList("CUL", "PUL", "NYPL"));
-        reportsRequest.setCollectionGroupDesignations(Arrays.asList("Private", "Open", "Shared"));
-        ReportsResponse reportsResponse = new ReportsResponse();
-        reportsResponse.setMessage(ReCAPConstants.SUCCESS);
+        ReportsRequest reportsRequest = ReportsRequest
+    		.builder()
+	        .owningInstitutions(Arrays.asList("CUL", "PUL", "NYPL"))
+	        .collectionGroupDesignations(Arrays.asList("Private", "Open", "Shared"))
+	        .build();
+        ReportsResponse reportsResponse = ReportsResponse.builder().message(ReCAPConstants.SUCCESS).build();
         ResponseEntity<ReportsResponse> responseEntity = new ResponseEntity<ReportsResponse>(reportsResponse,HttpStatus.OK);
         HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, restHeaderService.getHttpHeaders());
         Mockito.when(mockRestTemplate.exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_CGD_ITEM_COUNTS, HttpMethod.POST,httpEntity, ReportsResponse.class)).thenReturn(responseEntity);
@@ -130,12 +134,13 @@ public class ReportsRestControllerUT extends BaseControllerUT {
 
     @Test
     public void deaccessionResults() throws Exception {
-        ReportsRequest reportsRequest = new ReportsRequest();
-        reportsRequest.setAccessionDeaccessionFromDate("09/27/2016");
-        reportsRequest.setAccessionDeaccessionToDate("01/27/2017");
-        reportsRequest.setDeaccessionOwningInstitution("PUL");
-        ReportsResponse reportsResponse = new ReportsResponse();
-        reportsResponse.setMessage(ReCAPConstants.SUCCESS);
+        ReportsRequest reportsRequest = ReportsRequest
+    		.builder()
+    		.accessionDeaccessionFromDate("09/27/2016")
+	        .accessionDeaccessionToDate("01/27/2017")
+	        .deaccessionOwningInstitution("PUL")
+	        .build();
+        ReportsResponse reportsResponse = ReportsResponse.builder().message(ReCAPConstants.SUCCESS).build();
         ResponseEntity<ReportsResponse> responseEntity = new ResponseEntity<ReportsResponse>(reportsResponse,HttpStatus.OK);
         HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, restHeaderService.getHttpHeaders());
         Mockito.when(mockRestTemplate.exchange(getScsbSolrClientUrl() + ReCAPConstants.URL_REPORTS_DEACCESSION_RESULTS, HttpMethod.POST,httpEntity, ReportsResponse.class)).thenReturn(responseEntity);

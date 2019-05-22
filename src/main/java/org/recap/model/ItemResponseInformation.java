@@ -4,16 +4,14 @@ package org.recap.model;
 import java.util.List;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
+import lombok.Singular;
+import lombok.Builder;
 
 @Data
-@EqualsAndHashCode
-@SuperBuilder
+@Builder
 public class ItemResponseInformation {
-
     private String patronBarcode;
-    private List<String> itemBarcodes;
+    @Singular private List<String> itemBarcodes;
     private String requestType;
     private String deliveryLocation;
     private String requestingInstitution;
@@ -23,5 +21,4 @@ public class ItemResponseInformation {
     private boolean success;
     private String emailAddress;
     private String titleIdentifier;
-
 }
