@@ -6,13 +6,18 @@
 
 ### STS ###
 .classpath
+!/.project
 .factorypath
 .project
 .settings
+target/
 .springBeans
+.idea/
+.DS_Store
 
 ### IntelliJ IDEA ###
 .idea
+overlays/
 *.iws
 *.iml
 *.ipr
@@ -24,3 +29,5 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+*.log
