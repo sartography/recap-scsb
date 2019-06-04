@@ -1,25 +1,11 @@
 package org.recap.model.transfer;
 
-/**
- * Created by sheiks on 13/07/17.
- */
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class ItemTransferRequest {
     private ItemSource source;
     private ItemDestination destination;
-
-    public ItemSource getSource() {
-        return source;
-    }
-
-    public void setSource(ItemSource source) {
-        this.source = source;
-    }
-
-    public ItemDestination getDestination() {
-        return destination;
-    }
-
-    public void setDestination(ItemDestination destination) {
-        this.destination = destination;
-    }
 }

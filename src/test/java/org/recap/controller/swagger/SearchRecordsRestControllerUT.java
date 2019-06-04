@@ -5,12 +5,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
+import org.recap.controller.BaseControllerUT;
 import org.recap.service.RestHeaderService;
 import org.recap.model.SearchRecordsRequest;
 import org.recap.model.SearchRecordsResponse;
 import org.recap.model.SearchResultRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,7 +26,7 @@ import static org.junit.Assert.*;
 /**
  * Created by hemalathas on 3/2/17.
  */
-public class SearchRecordsRestControllerUT extends BaseTestCase {
+public class SearchRecordsRestControllerUT extends BaseControllerUT {
 
 	@Value("${scsb.solr.client.url}")
 	String scsbSolrClient;
@@ -35,7 +37,7 @@ public class SearchRecordsRestControllerUT extends BaseTestCase {
 	@Mock
 	SearchRecordsRestController searchRecordsRestController;
 
-	@Autowired
+	@MockBean
 	RestHeaderService restHeaderService;
 
 	public String getScsbSolrClient() {

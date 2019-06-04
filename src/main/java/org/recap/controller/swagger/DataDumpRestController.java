@@ -1,9 +1,10 @@
 package org.recap.controller.swagger;
 
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ReCAPConstants;
 import org.recap.controller.ReCAPController;
-import org.recap.spring.SwaggerAPIProvider;
+import org.recap.common.spring.SwaggerAPIProvider;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/dataDump")
 @Api(value="dataDump", description="Export data dump", position = 1)
+@Slf4j
 public class DataDumpRestController extends ReCAPController {
 
     /**
@@ -63,7 +65,7 @@ public class DataDumpRestController extends ReCAPController {
             ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
             return new ResponseEntity<String>(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
-            getLogger().error("error-->",exception);
+            log.error("error-->",exception);
             return new ResponseEntity<String>("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
@@ -115,7 +117,7 @@ public class DataDumpRestController extends ReCAPController {
             ResponseEntity<String> response = restTemplate.exchange(getScsbEtlUrl() + "dataDump/exportDataDump/?institutionCodes={institutionCodes}&requestingInstitutionCode={requestingInstitutionCode}&fetchType={fetchType}&outputFormat={outputFormat}&date={date}&toDate={toDate}&collectionGroupIds={collectionGroupIds}&transmissionType={transmissionType}&emailToAddress={emailToAddress}", HttpMethod.GET, requestEntity, String.class, inputMap);
             return new ResponseEntity<String>(response.getBody(), getHttpHeaders(), getHttpStatus(response.getBody()));
         } catch (Exception exception) {
-        	getLogger().error("error-->",exception);
+        	log.error("error-->",exception);
             return new ResponseEntity<String>("Scsb Etl Service is Unavailable.", getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }

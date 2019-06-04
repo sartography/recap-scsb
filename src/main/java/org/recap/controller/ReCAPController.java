@@ -2,10 +2,10 @@ package org.recap.controller;
 
 import java.util.Date;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.recap.ReCAPConstants;
 import org.recap.service.RestHeaderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,18 +13,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
 
+@Getter
 public class ReCAPController {
 
     @Value("${scsb.circ.url}")
     private String scsbCircUrl;
 
     @Value("${scsb.solr.client.url}")
-    private String scsbSolrClient;
+    private String scsbSolrClientUrl;
 
     @Value("${scsb.etl.url}")
     private String scsbEtlUrl;
 
-    private static final Logger logger = LoggerFactory.getLogger(EncryptEmailAddressRestController.class);
+    @Value("${scsb.batch.schedule.url}")
+    private String scsbScheduleUrl;
 
     @Autowired
     private RestHeaderService restHeaderService;
@@ -33,28 +35,8 @@ public class ReCAPController {
 		super();
 	}
 
-    public String getScsbCircUrl() {
-        return scsbCircUrl;
-    }
-
-    public String getScsbSolrClientUrl() {
-        return scsbSolrClient;
-    }
-
-    public String getScsbEtlUrl() {
-        return scsbEtlUrl;
-    }
-
-    public RestHeaderService getRestHeaderService(){
-        return restHeaderService;
-    }
-
     public RestTemplate getRestTemplate(){
         return new RestTemplate();
-    }
-
-    protected Logger getLogger() {
-        return logger;
     }
 
     protected HttpEntity<Object> getHttpEntity(){

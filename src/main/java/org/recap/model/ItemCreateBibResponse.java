@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 public class ItemCreateBibResponse extends AbstractResponseItem {
     private String bibId;
     private String itemId;

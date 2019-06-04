@@ -5,6 +5,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
+import org.recap.controller.BaseControllerUT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +19,7 @@ import static org.junit.Assert.*;
 /**
  * Created by hemalathas on 17/7/17.
  */
-public class DataDumpRestControllerUT extends BaseTestCase{
+public class DataDumpRestControllerUT extends BaseControllerUT {
 
     @Mock
     DataDumpRestController dataDumpRestController;

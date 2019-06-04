@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 public class ItemRefileResponse extends AbstractResponseItem {
     private String screenMessage;
     private boolean success;

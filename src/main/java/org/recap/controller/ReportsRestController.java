@@ -1,5 +1,6 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ReCAPConstants;
 import org.recap.model.ReportsRequest;
 import org.recap.model.ReportsResponse;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Created by rajeshbabuk on 13/1/17.
  */
+@Slf4j
 @RestController
 @RequestMapping("/reportsService")
 public class ReportsRestController extends ReCAPController {
@@ -65,7 +67,7 @@ public class ReportsRestController extends ReCAPController {
             ResponseEntity<ReportsResponse> responseEntity = getRestTemplate().exchange(getScsbSolrClientUrl() + field, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
         } catch (Exception e) {
-            getLogger().error(ReCAPConstants.LOG_ERROR,e);
+            log.error(ReCAPConstants.LOG_ERROR,e);
             reportsResponse = ReportsResponse.builder().message(e.getMessage()).build();
         }
         return reportsResponse;

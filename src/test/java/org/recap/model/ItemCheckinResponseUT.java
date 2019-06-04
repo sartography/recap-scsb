@@ -5,7 +5,7 @@ import org.recap.BaseTestCase;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by hemalathas on 24/3/17.
@@ -13,39 +13,36 @@ import static org.junit.Assert.*;
 public class ItemCheckinResponseUT extends BaseTestCase {
 
     @Test
-    public void testItemCheckinResponse(){
-        ItemCheckinResponse itemCheckinResponse = ItemCheckinResponse
-        	.builder()
-	        .alert(false)
-	        .magneticMedia(true)
-	        .resensitize(true)
-	        .transactionDate(new Date().toString())
-	        .institutionID("1")
-	        .patronIdentifier("45213436588")
-	        .titleIdentifier("test")
-	        .dueDate(new Date().toString())
-	        .feeAmount("156")
-	        .mediaType("test")
-	        .bibId("1")
-	        .ISBN("145345")
-	        .LCCN("454558")
-	        .permanentLocation("test")
-	        .sortBin("test")
-	        .collectionCode("test")
-	        .callNumber("X")
-	        .destinationLocation("CUL")
-	        .alertType("test")
-	        .holdPatronId("1")
-	        .holdPatronName("test")
-	        .jobId("1")
-	        .feeType("test")
-	        .processed(true)
-	        .updatedDate(new Date().toString())
-	        .createdDate(new Date().toString())
-	        .securityInhibit("test")
-	        .currencyType("test")
-	        .build();
-
+    public void testItemCheckinResponse() {
+        ItemCheckinResponse itemCheckinResponse = new ItemCheckinResponse();
+        itemCheckinResponse.setAlert(false);
+        itemCheckinResponse.setMagneticMedia(true);
+        itemCheckinResponse.setResensitize(true);
+        itemCheckinResponse.setTransactionDate(new Date().toString());
+        itemCheckinResponse.setInstitutionID("1");
+        itemCheckinResponse.setPatronIdentifier("45213436588");
+        itemCheckinResponse.setTitleIdentifier("test");
+        itemCheckinResponse.setDueDate(new Date().toString());
+        itemCheckinResponse.setFeeAmount("156");
+        itemCheckinResponse.setMediaType("test");
+        itemCheckinResponse.setBibId("1");
+        itemCheckinResponse.setISBN("145345");
+        itemCheckinResponse.setLCCN("454558");
+        itemCheckinResponse.setPermanentLocation("test");
+        itemCheckinResponse.setSortBin("test");
+        itemCheckinResponse.setCollectionCode("test");
+        itemCheckinResponse.setCallNumber("X");
+        itemCheckinResponse.setDestinationLocation("CUL");
+        itemCheckinResponse.setAlertType("test");
+        itemCheckinResponse.setHoldPatronId("1");
+        itemCheckinResponse.setHoldPatronName("test");
+        itemCheckinResponse.setJobId("1");
+        itemCheckinResponse.setFeeType("test");
+        itemCheckinResponse.setProcessed(true);
+        itemCheckinResponse.setUpdatedDate(new Date().toString());
+        itemCheckinResponse.setCreatedDate(new Date().toString());
+        itemCheckinResponse.setSecurityInhibit("test");
+        itemCheckinResponse.setCurrencyType("test");
         assertNotNull(itemCheckinResponse);
     }
 

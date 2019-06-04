@@ -1,5 +1,6 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ReCAPConstants;
 import org.recap.service.RestHeaderService;
 import org.slf4j.Logger;
@@ -17,50 +18,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * Created by rajeshbabuk on 3/1/17.
  */
+@Slf4j
 @RestController
 @RequestMapping("/updateCgdService")
-public class UpdateCgdRestController {
-
-    private static final Logger logger = LoggerFactory.getLogger(UpdateCgdRestController.class);
-
-    @Value("${scsb.solr.client.url}")
-    private String scsbSolrClient;
-
-
-    @Autowired
-    RestHeaderService restHeaderService;
-
-    public RestHeaderService getRestHeaderService(){
-        return restHeaderService;
-    }
-
-    /**
-     * Gets rest template.
-     *
-     * @return the rest template
-     */
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
-    /**
-     * Gets scsb solr client url.
-     *
-     * @return the scsb solr client url
-     */
-    public String getScsbSolrClientUrl() {
-        return scsbSolrClient;
-    }
-
-    /**
-     * Sets scsb solr client url.
-     *
-     * @param scsbSolrClientUrl the scsb solr client url
-     */
-    public void setScsbSolrClientUrl(String scsbSolrClientUrl) {
-        this.scsbSolrClient = scsbSolrClientUrl;
-    }
-
+public class UpdateCgdRestController extends ReCAPController {
+    
     /**
      * This method will call scsb-solr-client microservice to update CGD for an item in scsb database and scsb solr.
      *
@@ -88,7 +50,7 @@ public class UpdateCgdRestController {
             ResponseEntity<String> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             statusResponse = responseEntity.getBody();
         } catch (Exception e) {
-            logger.error(ReCAPConstants.LOG_ERROR,e);
+            log.error(ReCAPConstants.LOG_ERROR,e);
             statusResponse = ReCAPConstants.FAILURE + "-" + e.getMessage();
         }
         return statusResponse;

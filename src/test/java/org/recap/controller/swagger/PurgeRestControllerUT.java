@@ -5,6 +5,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCase;
 import org.recap.ReCAPConstants;
+import org.recap.controller.BaseControllerUT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,7 @@ import static org.junit.Assert.*;
 /**
  * Created by hemalathas on 10/4/17.
  */
-public class PurgeRestControllerUT extends BaseTestCase{
+public class PurgeRestControllerUT extends BaseControllerUT {
 
     private static final Logger logger = LoggerFactory.getLogger(PurgeRestController.class);
 

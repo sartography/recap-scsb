@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 public class ItemRecallRequest extends AbstractRequestItem {
 	private String patronIdentifier;
     private String bibId;

@@ -5,7 +5,9 @@ package org.recap.controller.swagger;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.config.SwaggerInterceptor;
+import org.recap.controller.BaseControllerUT;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,15 +19,15 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by hemalathas on 25/1/17.
  */
-public class SwaggerInterceptorUT extends BaseTestCase {
+public class SwaggerInterceptorUT extends BaseControllerUT {
 
-    @Autowired
+    @MockBean
     SwaggerInterceptor swaggerInterceptor;
 
-    @Autowired
+    @MockBean
     HttpServletRequest httpServletRequest;
 
-    @Autowired
+    @MockBean
     private HttpServletResponse httpServletResponse;
 
     @Test

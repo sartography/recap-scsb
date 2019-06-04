@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 public class PatronInformationResponse extends AbstractResponseItem {
     private String patronIdentifier;
     private String patronName;

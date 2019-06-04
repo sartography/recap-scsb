@@ -11,6 +11,7 @@ import org.recap.model.ScheduleJobRequest;
 import org.recap.model.ScheduleJobResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,7 +31,7 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
 	@Mock
 	private ScheduleJobsController scheduleJobsController;
 
-	@Autowired
+	@MockBean
 	RestHeaderService restHeaderService;
 
 	public String getScsbScheduleUrl() {
@@ -39,11 +40,6 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
 
 	public void setScsbScheduleUrl(String scsbScheduleUrl) {
 		this.scsbScheduleUrl = scsbScheduleUrl;
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test

@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 public class ItemRecallResponse extends AbstractResponseItem {
     private boolean available;
     private String transactionDate;

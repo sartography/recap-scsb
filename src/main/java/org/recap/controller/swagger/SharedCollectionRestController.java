@@ -13,7 +13,10 @@ import org.recap.model.transfer.TransferResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -40,6 +43,7 @@ public class SharedCollectionRestController {
 
     @Value("${scsb.circ.url}")
     private String scsbCircUrl;
+    private BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest;
 
     /**
      * Gets scsb circ url.
@@ -71,7 +75,7 @@ public class SharedCollectionRestController {
         return scsbSolrClientUrl;
     }
 
-    public MultiValueMap<String, Object> getLinkedMultiValueMap(){
+    public MultiValueMap<String, Object> getLinkedMultiValueMap() {
         return new LinkedMultiValueMap<>();
     }
 
@@ -103,7 +107,7 @@ public class SharedCollectionRestController {
     }
 
     /**
-     *This method will call scsb-solr-client microservice to get the bib availability status in scsb.
+     * This method will call scsb-solr-client microservice to get the bib availability status in scsb.
      *
      * @param bibItemAvailabityStatusRequest the bib item availabity status request
      * @return the response entity
@@ -111,9 +115,10 @@ public class SharedCollectionRestController {
     @RequestMapping(value = "/bibAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "bibAvailabilityStatus",
             notes = "Bib availability status API returns the availability statuses of items associated with the bibliographic record. Since it returns availability statuses of all items associated with a bib, it is likely to be used in partner ILS' Discovery systems to retrieve and display multiple items and their statuses in case of serials and multi volume monographs.", nickname = "bibAvailabilityStatus")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),@ApiResponse(code = 503, message = "Service Not Available")})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 503, message = "Service Not Available")})
     @ResponseBody
-    public ResponseEntity<?> bibAvailabilityStatus(@ApiParam(value = "Owning Inst BibID, or SCSB BibId", required = true, name = "") @RequestBody BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest) {
+    public ResponseEntity<?> bibAvailabilityStatus(@ApiParam(value = "Owning Inst BibID, or SCSB BibId", required = true) @RequestBody BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest) {
+        this.bibItemAvailabityStatusRequest = bibItemAvailabityStatusRequest;
         String response;
         try {
             response = getRestTemplate().postForObject(getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus", bibItemAvailabityStatusRequest, String.class);
@@ -131,7 +136,7 @@ public class SharedCollectionRestController {
      * @return the response entity
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/deaccession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/deaccession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "deaccession",
             notes = "The Deaccession API is an internal call made by SCSB to remove a record. Deaccession will only be done through the UI by users who are authorized to perform the operation. Deaccessioning an item would mark the record as removed (deleted) in the SCSB database.", nickname = "deaccession")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -139,14 +144,16 @@ public class SharedCollectionRestController {
     public ResponseEntity<Object> deAccession(@ApiParam(value = "Provide item barcodes to be deaccessioned, separated by comma", required = true, name = "itemBarcodes") @RequestBody DeAccessionRequest deAccessionRequest) {
         try {
             Map<String, String> resultMap = getRestTemplate().postForObject(getScsbCircUrl() + "/sharedCollection/deAccession", deAccessionRequest, Map.class);
-            return new ResponseEntity<Object>(resultMap, getHttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity<>(resultMap, getHttpHeaders(), HttpStatus.OK);
         } catch (Exception ex) {
             logger.error(ReCAPConstants.LOG_ERROR, ex);
-            return new ResponseEntity<Object>(ReCAPConstants.SCSB_CIRC_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(ReCAPConstants.SCSB_CIRC_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    /**This method will call scsb-solr-client microservice to add multiple new items in the scsb database and scsb solr.
+    /**
+     * This method will call scsb-solr-client microservice to add multiple new items in the scsb database and scsb solr.
+     *
      * @param accessionRequestList the accession request list
      * @return the response entity
      */
@@ -172,11 +179,12 @@ public class SharedCollectionRestController {
 
     /**
      * This method will call scsb-solr-client microservice to add a new item in the scsb database and scsb solr.
+     *
      * @param accessionRequestList the accession request list
      * @return the response entity
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/accession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @RequestMapping(value = "/accession", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "accession",
             notes = "The Accession API (also known as Ongoing Accession) is used to add item records to SCSB whenever there is a new item added to the ReCAP facility. GFA LAS calls this API as part of the accession workflow with the customer code and item barcode.", nickname = "accession")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
@@ -188,68 +196,68 @@ public class SharedCollectionRestController {
             ResponseEntity<List<?>> responseEntity;
             List<LinkedHashMap> linkedHashMapList = getRestTemplate().postForObject(getScsbSolrClientUrl() + "sharedCollection/accession", accessionRequestList, List.class);
             if (null != linkedHashMapList && linkedHashMapList.get(0).get("message").toString().contains(ReCAPConstants.ONGOING_ACCESSION_LIMIT_EXCEED_MESSAGE)) {
-                responseEntity = new ResponseEntity<List<?>>(linkedHashMapList, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+                responseEntity = new ResponseEntity<>(linkedHashMapList, getHttpHeaders(), HttpStatus.BAD_REQUEST);
             } else {
-                responseEntity = new ResponseEntity<List<?>>(linkedHashMapList, getHttpHeaders(), HttpStatus.OK);
+                responseEntity = new ResponseEntity<>(linkedHashMapList, getHttpHeaders(), HttpStatus.OK);
             }
             stopWatch.stop();
-            logger.info("Total time taken for accession-->{}sec",stopWatch.getTotalTimeSeconds());
+            logger.info("Total time taken for accession-->{}sec", stopWatch.getTotalTimeSeconds());
             return responseEntity;
-        } catch (ResourceAccessException resourceAccessException){
-            logger.error(ReCAPConstants.LOG_ERROR, resourceAccessException);
-            List<AccessionResponse> accessionResponseList=new ArrayList<>();
-            AccessionResponse accessionResponse=new AccessionResponse();
-            accessionResponse.setMessage(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE);
-            accessionResponseList.add(accessionResponse);
-            return new ResponseEntity<List<?>>(accessionResponseList, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (ResourceAccessException resourceAccessException) {
+            return getListResponseEntity(resourceAccessException, ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE);
         } catch (Exception exception) {
-            logger.error(ReCAPConstants.LOG_ERROR, exception);
-            List<AccessionResponse> accessionResponseList = new ArrayList<>();
-            AccessionResponse accessionResponse=new AccessionResponse();
-            accessionResponse.setMessage(ReCAPConstants.ACCESSION_INTERNAL_ERROR);
-            accessionResponseList.add(accessionResponse);
-            return new ResponseEntity<List<?>>(accessionResponseList, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return getListResponseEntity(exception, ReCAPConstants.ACCESSION_INTERNAL_ERROR);
         }
+    }
+
+    private ResponseEntity<List<?>> getListResponseEntity(Exception exception, String accessionInternalError) {
+        logger.error(ReCAPConstants.LOG_ERROR, exception);
+        List<AccessionResponse> accessionResponseList = new ArrayList<>();
+        AccessionResponse accessionResponse = AccessionResponse.builder().message(accessionInternalError).build();
+        accessionResponseList.add(accessionResponse);
+        return new ResponseEntity<>(accessionResponseList, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     /**
      * This method will call scsb-circ microservice to update the items which is already present in the scsb database and scsb solr.
+     *
      * @param inputRecords the input records
      * @return the response entity
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/submitCollection", method = RequestMethod.POST)
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @RequestMapping(value = "/submitCollection", method = RequestMethod.POST)
     @ApiOperation(value = "submitCollection",
             notes = "Submit collection API is a REST service where users can provide MARC content in either SCSB XML or MARC XML formats and update the underlying record in SCSB. After the successful completion of the API, a report is sent.", nickname = "submitCollection")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity<Object> submitCollection(@ApiParam(value = "Provide marc xml or scsb xml format to update the records", required = true, name = "inputRecords") @RequestBody String inputRecords,
-                                           @ApiParam(value = "Provide institution code", required = true, name = "institution") @RequestParam String institution,
-    @ApiParam(value = "Provide boolean value is cgd protected (true or false)", required = true, name = "isCGDProtected") @RequestParam Boolean isCGDProtected) {
+                                                   @ApiParam(value = "Provide institution code", required = true, name = "institution") @RequestParam String institution,
+                                                   @ApiParam(value = "Provide boolean value is cgd protected (true or false)", required = true, name = "isCGDProtected") @RequestParam Boolean isCGDProtected) {
         ResponseEntity<Object> responseEntity;
         try {
-            MultiValueMap<String,Object> requestParameter = getLinkedMultiValueMap();
-            requestParameter.add(ReCAPConstants.INPUT_RECORDS,inputRecords);
-            requestParameter.add(ReCAPConstants.INSTITUTION,institution);
-            requestParameter.add(ReCAPConstants.IS_CGD_PROTECTED,isCGDProtected);
-            List<LinkedHashMap> linkedHashMapList =getRestTemplate().postForObject(getScsbCircUrl() + "sharedCollection/submitCollection",requestParameter, List.class);
-            String message = linkedHashMapList != null ? linkedHashMapList.get(0).get("message").toString():ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR;
+            MultiValueMap<String, Object> requestParameter = getLinkedMultiValueMap();
+            requestParameter.add(ReCAPConstants.INPUT_RECORDS, inputRecords);
+            requestParameter.add(ReCAPConstants.INSTITUTION, institution);
+            requestParameter.add(ReCAPConstants.IS_CGD_PROTECTED, isCGDProtected);
+            List<LinkedHashMap> linkedHashMapList = getRestTemplate().postForObject(getScsbCircUrl() + "sharedCollection/submitCollection", requestParameter, List.class);
+            String message = linkedHashMapList != null ? linkedHashMapList.get(0).get("message").toString() : ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR;
             if (message.equalsIgnoreCase(ReCAPConstants.INVALID_MARC_XML_FORMAT_MESSAGE) || message.equalsIgnoreCase(ReCAPConstants.INVALID_SCSB_XML_FORMAT_MESSAGE)
                     || message.equalsIgnoreCase(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR)) {
-                responseEntity = new ResponseEntity<Object>(linkedHashMapList, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+                responseEntity = new ResponseEntity<>(linkedHashMapList, getHttpHeaders(), HttpStatus.BAD_REQUEST);
             } else {
-                responseEntity = new ResponseEntity<Object>(linkedHashMapList, getHttpHeaders(), HttpStatus.OK);
+                responseEntity = new ResponseEntity<>(linkedHashMapList, getHttpHeaders(), HttpStatus.OK);
             }
             return responseEntity;
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
-            responseEntity = new ResponseEntity<Object>(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            responseEntity = new ResponseEntity<>(ReCAPConstants.SUBMIT_COLLECTION_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
             return responseEntity;
         }
     }
 
     /**
      * This method will call scsb-solr-client microservice to transfer the holdings/items which is already present in the scsb database and scsb solr.
+     *
      * @param transferRequest the input records
      * @return the response entity
      */
@@ -260,15 +268,15 @@ public class SharedCollectionRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
     @ResponseBody
     public ResponseEntity<Object> transferHoldingsAndItems(
-            @ApiParam(value = "Source and destination of holdings and items in JSON format", required = true, name = "")
+            @ApiParam(value = "Source and destination of holdings and items in JSON format", required = true)
             @RequestBody TransferRequest transferRequest) {
         ResponseEntity<Object> responseEntity;
         try {
             TransferResponse transferResponse = getRestTemplate().postForObject(getScsbSolrClientUrl() + "transfer/processTransfer", transferRequest, TransferResponse.class);
-            responseEntity = new ResponseEntity<Object>(transferResponse, getHttpHeaders(), HttpStatus.OK);
+            responseEntity = new ResponseEntity<>(transferResponse, getHttpHeaders(), HttpStatus.OK);
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
-            responseEntity = new ResponseEntity<Object>(ReCAPConstants.TRANSFER_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            responseEntity = new ResponseEntity<>(ReCAPConstants.TRANSFER_INTERNAL_ERROR, getHttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
         return responseEntity;
     }

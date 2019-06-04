@@ -9,6 +9,7 @@ import org.recap.ReCAPConstants;
 import org.recap.service.RestHeaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,14 +35,8 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
     @Mock
     private UriComponentsBuilder builder;
 
-    @Autowired
+    @MockBean
     RestHeaderService restHeaderService;
-
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     public String getScsbSolrClientUrl() {
         return scsbSolrClient;
@@ -60,7 +55,6 @@ public class UpdateCgdRestControllerUT extends BaseControllerUT {
         String cgdChangeNotes = "Notes";
         String username = "guest";
         ResponseEntity<String> responseEntity = new ResponseEntity<String>(ReCAPConstants.SUCCESS,HttpStatus.OK);
-        updateCgdRestController.setScsbSolrClientUrl(getScsbSolrClientUrl());
         HttpEntity<Object> requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClient + ReCAPConstants.URL_UPDATE_CGD)
                 .queryParam(ReCAPConstants.CGD_UPDATE_ITEM_BARCODE, itemBarcode)

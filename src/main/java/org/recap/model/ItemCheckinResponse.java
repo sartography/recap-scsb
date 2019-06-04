@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 public class ItemCheckinResponse extends AbstractResponseItem {
     private boolean alert;
     private boolean magneticMedia;

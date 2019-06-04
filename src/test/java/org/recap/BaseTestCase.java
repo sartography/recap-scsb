@@ -1,20 +1,16 @@
 package org.recap;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.context.WebApplicationContext;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Rollback(false)
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = Main.class)
 @ActiveProfiles("test")
-public class BaseTestCase {
-
-	@Test
-	public void contextLoads() {
-	}
-
+@WebAppConfiguration
+public abstract class BaseTestCase {
 }

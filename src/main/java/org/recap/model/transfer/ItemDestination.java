@@ -1,16 +1,12 @@
 package org.recap.model.transfer;
 
-/**
- * Created by sheiks on 13/07/17.
- */
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 public class ItemDestination extends Destination {
     private String owningInstitutionItemId;
-
-    public String getOwningInstitutionItemId() {
-        return owningInstitutionItemId;
-    }
-
-    public void setOwningInstitutionItemId(String owningInstitutionItemId) {
-        this.owningInstitutionItemId = owningInstitutionItemId;
-    }
 }

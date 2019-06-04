@@ -1,6 +1,6 @@
 package org.recap.util;
 
-import org.recap.spring.ApplicationContextProvider;
+import org.recap.common.spring.ApplicationContextProvider;
 import org.springframework.context.ApplicationContext;
 
 /**

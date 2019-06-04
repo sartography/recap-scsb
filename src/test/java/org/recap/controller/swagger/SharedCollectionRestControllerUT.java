@@ -36,10 +36,10 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
 	@Mock
 	private RestTemplate mockRestTemplate;
 
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-	}
+//	@Before
+//	public void setUp() throws Exception {
+//		MockitoAnnotations.initMocks(this);
+//	}
 
 	public String getScsbCircUrl() {
 		return scsbCircUrl;

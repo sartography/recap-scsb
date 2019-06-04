@@ -1,7 +1,8 @@
 package org.recap.service;
 
 import org.recap.ReCAPConstants;
-import org.recap.spring.SwaggerAPIProvider;
+
+import org.recap.common.spring.SwaggerAPIProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RestHeaderService {
-
     public HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

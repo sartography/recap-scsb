@@ -12,6 +12,7 @@ import org.recap.model.ReportsRequest;
 import org.recap.model.ReportsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
@@ -20,9 +21,7 @@ import java.util.Date;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * Created by rajeshbabuk on 13/1/17.
- */
+
 public class ReportsRestControllerUT extends BaseControllerUT {
 
     @Value("${scsb.solr.client.url}")
@@ -34,13 +33,8 @@ public class ReportsRestControllerUT extends BaseControllerUT {
     @Mock
     private ReportsRestController reportsRestController;
 
-    @Autowired
+    @MockBean
     private RestHeaderService restHeaderService;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     public String getScsbSolrClientUrl() {
         return scsbSolrClientUrl;

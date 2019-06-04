@@ -1,5 +1,6 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ReCAPConstants;
 import org.recap.service.RestHeaderService;
 import org.recap.model.ScheduleJobRequest;
@@ -18,49 +19,10 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Created by rajeshbabuk on 5/4/17.
  */
+@Slf4j
 @RestController
 @RequestMapping("/scheduleService")
-public class ScheduleJobsController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
-
-    @Value("${scsb.batch.schedule.url}")
-    private String scsbScheduleUrl;
-
-
-    @Autowired
-    RestHeaderService restHeaderService;
-
-    public RestHeaderService getRestHeaderService(){
-        return restHeaderService;
-    }
-
-    /**
-     * Gets scsb schedule url.
-     *
-     * @return the scsb schedule url
-     */
-    public String getScsbScheduleUrl() {
-        return scsbScheduleUrl;
-    }
-
-    /**
-     * Sets scsb schedule url.
-     *
-     * @param scsbScheduleUrl the scsb schedule url
-     */
-    public void setScsbScheduleUrl(String scsbScheduleUrl) {
-        this.scsbScheduleUrl = scsbScheduleUrl;
-    }
-
-    /**
-     * Gets rest template.
-     *
-     * @return the rest template
-     */
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
+public class ScheduleJobsController extends ReCAPController {
 
     /**
      *  This method is exposed as scheduler service for other microservices to schedule or reschedule or unschedule a job.
@@ -77,7 +39,7 @@ public class ScheduleJobsController {
             ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(getScsbScheduleUrl() + ReCAPConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
             scheduleJobResponse = responseEntity.getBody();
         } catch (Exception e) {
-            logger.error(ReCAPConstants.LOG_ERROR,e);
+            log.error(ReCAPConstants.LOG_ERROR,e);
             ScheduleJobResponse.builder().message(e.getMessage()).build();
         }
         return scheduleJobResponse;

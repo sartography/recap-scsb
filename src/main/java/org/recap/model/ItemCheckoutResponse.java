@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 public class ItemCheckoutResponse extends AbstractResponseItem {
     private boolean renewal;
     private boolean magneticMedia;

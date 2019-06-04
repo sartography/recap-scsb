@@ -1,5 +1,6 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ReCAPConstants;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import java.util.Map;
 /**
  * Created by akulak on 27/2/18 .
  */
+@Slf4j
 @RestController
 @RequestMapping("/deAccessionService")
 public class DeAccessionRestController extends ReCAPController {
@@ -36,7 +38,7 @@ public class DeAccessionRestController extends ReCAPController {
         						Map.class
     						);
         } catch (Exception ex) {
-            getLogger().error(ReCAPConstants.LOG_ERROR,ex);
+            log.error(ReCAPConstants.LOG_ERROR,ex);
         }
         return resultMap;
     }

@@ -6,8 +6,15 @@ plugins {
   id 'jacoco'
   id 'org.springframework.boot' version '2.1.4.RELEASE'
   id 'org.sonarqube' version '2.7.1'
-  id 'io.freefair.lombok' version '3.5.1'
-  id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+}
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+  imports {
+    mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+  }
 }
 
 repositories {
@@ -17,34 +24,44 @@ repositories {
   maven { url "http://repo1.maven.org/maven2/" }
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-version = '1.2.1'
+dependencies {
+  // Versions managed by io.spring.dependency-management
+  compile('javax.jms:javax.jms-api')
+  compile('org.apache.activemq:activemq-camel')
+  compile('org.apache.camel:camel-spring')
+  compile('org.apache.commons:commons-lang3')
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compileOnly('org.projectlombok:lombok')
+  annotationProcessor('org.projectlombok:lombok')
+  testCompile('junit:junit')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile('org.springframework.security:spring-security-test')
 
+  // Versions must be specified explicitly
+  implementation('org.recap:scsb-common') {
+    version {
+      branch = 'master'
+    }
+  }
+  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+  compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+  compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: '2.24.0'
+  compile group: 'org.codehaus.jettison', name: 'jettison', version: '1.4.0'
+}
 
-//added to accept systemproperties while executing gradlew test cmd
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 test {
   systemProperties = System.properties
   systemProperties['user.dir'] = workingDir
-  useJUnitPlatform()
 }
 
 jar {
   archiveBaseName = 'scsb'
   archiveVersion = '0.0.1-SNAPSHOT'
-}
-
-dependencies {
-  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-  compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-  compile group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'  
-  compile group: 'org.apache.activemq', name: 'activemq-camel', version: '5.15.9'
-  compile group: 'org.apache.camel', name: 'camel-spring', version: '2.24.0'
-  compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: '2.24.0'
-  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
-  compile group: 'org.codehaus.jettison', name: 'jettison', version: '1.4.0'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.4.RELEASE'
-  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.4.RELEASE'
 }
 
 task scsbJavadocs(type: Javadoc) {
