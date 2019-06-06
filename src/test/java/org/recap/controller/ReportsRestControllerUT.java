@@ -18,6 +18,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.Date;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.*;
+
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -46,12 +51,12 @@ public class ReportsRestControllerUT extends BaseControllerUT {
 
     @Test
     public void givenReportsRequest_whenGetReportsRequest_thenReturnReportsResponse() throws Exception {
-        ReportsRequest reportsRequest = new ReportsRequest();
+        ReportsRequest reportsRequest = ReportsRequest.builder().deaccessionOwningInstitution("CUL").build();
         reportsRequest.setDeaccessionOwningInstitution("CUL");
-        ReportsResponse reportsResponse = new ReportsResponse();
-        given(reportsRestController.accessionDeaccessionCounts()).willReturn(reportsResponse);
+        ReportsResponse reportsResponse = ReportsResponse.builder().build();
+        Mockito.when(reportsRestController._getResponse(reportsRequest, ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS)).thenReturn(reportsResponse);
 
-        mvc.perform(get(ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS)
+        mvc.perform(get("/" + ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
