@@ -5,6 +5,7 @@ import io.swagger.annotations.*;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ReCAPConstants;
+import org.recap.common.model.CancelRequestResponse;
 import org.recap.service.RestHeaderService;
 import org.recap.model.*;
 import org.slf4j.Logger;

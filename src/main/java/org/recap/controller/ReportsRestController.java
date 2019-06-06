@@ -60,7 +60,7 @@ public class ReportsRestController extends ReCAPController {
         return this._getResponse(reportsRequest, ReCAPConstants.URL_REPORTS_INCOMPLETE_RESULTS);
     }
     
-    private ReportsResponse _getResponse(ReportsRequest reportsRequest, String field) {
+    protected ReportsResponse _getResponse(ReportsRequest reportsRequest, String field) {
         ReportsResponse reportsResponse = null;
         try {
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, getRestHeaderService().getHttpHeaders());

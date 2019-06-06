@@ -3,13 +3,13 @@ package org.recap.controller.swagger;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ReCAPConstants;
+import org.recap.common.model.BibItemAvailabilityStatusRequest;
 import org.recap.model.AccessionRequest;
-import org.recap.model.BibItemAvailabityStatusRequest;
 import org.recap.model.DeAccessionRequest;
 import org.recap.model.ItemAvailabityStatusRequest;
 import org.recap.model.acession.AccessionResponse;
-import org.recap.model.transfer.TransferRequest;
-import org.recap.model.transfer.TransferResponse;
+import org.recap.common.model.transfer.TransferRequest;
+import org.recap.common.model.transfer.TransferResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +43,7 @@ public class SharedCollectionRestController {
 
     @Value("${scsb.circ.url}")
     private String scsbCircUrl;
-    private BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest;
+    private BibItemAvailabilityStatusRequest bibItemAvailabilityStatusRequest;
 
     /**
      * Gets scsb circ url.
@@ -109,7 +109,7 @@ public class SharedCollectionRestController {
     /**
      * This method will call scsb-solr-client microservice to get the bib availability status in scsb.
      *
-     * @param bibItemAvailabityStatusRequest the bib item availabity status request
+     * @param bibItemAvailabilityStatusRequest the bib item availability status request
      * @return the response entity
      */
     @RequestMapping(value = "/bibAvailabilityStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -117,11 +117,11 @@ public class SharedCollectionRestController {
             notes = "Bib availability status API returns the availability statuses of items associated with the bibliographic record. Since it returns availability statuses of all items associated with a bib, it is likely to be used in partner ILS' Discovery systems to retrieve and display multiple items and their statuses in case of serials and multi volume monographs.", nickname = "bibAvailabilityStatus")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 503, message = "Service Not Available")})
     @ResponseBody
-    public ResponseEntity<?> bibAvailabilityStatus(@ApiParam(value = "Owning Inst BibID, or SCSB BibId", required = true) @RequestBody BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest) {
-        this.bibItemAvailabityStatusRequest = bibItemAvailabityStatusRequest;
+    public ResponseEntity<?> bibAvailabilityStatus(@ApiParam(value = "Owning Inst BibID, or SCSB BibId", required = true) @RequestBody BibItemAvailabilityStatusRequest bibItemAvailabilityStatusRequest) {
+        this.bibItemAvailabilityStatusRequest = bibItemAvailabilityStatusRequest;
         String response;
         try {
-            response = getRestTemplate().postForObject(getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus", bibItemAvailabityStatusRequest, String.class);
+            response = getRestTemplate().postForObject(getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus", bibItemAvailabilityStatusRequest, String.class);
         } catch (Exception exception) {
             logger.error(ReCAPConstants.LOG_ERROR, exception);
             return new ResponseEntity<Object>(ReCAPConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, getHttpHeaders(), HttpStatus.OK);

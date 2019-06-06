@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.ReCAPConstants;
+import org.recap.common.model.CancelRequestResponse;
 import org.recap.controller.BaseControllerUT;
 import org.recap.model.*;
 import org.recap.service.RestHeaderService;

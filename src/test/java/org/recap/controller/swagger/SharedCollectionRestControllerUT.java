@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.ReCAPConstants;
+import org.recap.common.model.BibItemAvailabilityStatusRequest;
 import org.recap.controller.BaseControllerUT;
 import org.recap.model.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -136,7 +137,7 @@ public class SharedCollectionRestControllerUT extends BaseControllerUT {
 
 	@Test
 	public void testBibAvailableStatus() {
-		BibItemAvailabityStatusRequest bibItemAvailabityStatusRequest = BibItemAvailabityStatusRequest.builder()
+		BibItemAvailabilityStatusRequest bibItemAvailabityStatusRequest = BibItemAvailabilityStatusRequest.builder()
 				.bibliographicId("12365").institutionId("1").build();
 		Mockito.when(mockRestTemplate.postForObject(getScsbSolrClientUrl() + "/sharedCollection/bibAvailabilityStatus",
 				bibItemAvailabityStatusRequest, String.class)).thenReturn("Available");
