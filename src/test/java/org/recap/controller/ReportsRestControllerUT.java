@@ -45,6 +45,20 @@ public class ReportsRestControllerUT extends BaseControllerUT {
     }
 
     @Test
+    public void givenReportsRequest_whenGetReportsRequest_thenReturnReportsResponse() throws Exception {
+        ReportsRequest reportsRequest = new ReportsRequest();
+        reportsRequest.setDeaccessionOwningInstitution("CUL");
+        ReportsResponse reportsResponse = new ReportsResponse();
+        given(reportsRestController.accessionDeaccessionCounts()).willReturn(reportsResponse);
+
+        mvc.perform(get(ReCAPConstants.URL_REPORTS_ACCESSION_DEACCESSION_COUNTS)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].deaccessionOwningInstitution", is(reportsRequest.getDeaccessionOwningInstitution())));
+    }
+
+    @Test
     public void accessionDeaccessionCounts() throws Exception {
         ReportsRequest reportsRequest = ReportsRequest
     		.builder()
