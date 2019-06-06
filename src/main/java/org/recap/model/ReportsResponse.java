@@ -1,10 +1,10 @@
 package org.recap.model;
 
-import java.util.List;
-
+import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
-import lombok.Builder;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -36,15 +36,23 @@ public class ReportsResponse {
     private long privatePulCgdCount;
     private long privateCulCgdCount;
     private long privateNyplCgdCount;
-    
-    @Builder.Default private String totalRecordsCount = "0";
-    @Builder.Default private Integer totalPageCount = 0;
-    private String message;
-    @Singular private List<DeaccessionItemResultsRow> deaccessionItemResultsRows;
 
-    @Builder.Default private String incompleteTotalRecordsCount = "0";
-    @Builder.Default private Integer incompleteTotalPageCount = 0;
-    @Builder.Default private Integer incompletePageNumber = 0;
-    @Builder.Default private Integer incompletePageSize = 10;
-    @Singular private List<IncompleteReportResultsRow> incompleteReportResultsRows;
+    @Builder.Default
+    private String totalRecordsCount = "0";
+    @Builder.Default
+    private Integer totalPageCount = 0;
+    private String message;
+    @Singular
+    private List<DeaccessionItemResultsRow> deaccessionItemResultsRows;
+
+    @Builder.Default
+    private String incompleteTotalRecordsCount = "0";
+    @Builder.Default
+    private Integer incompleteTotalPageCount = 0;
+    @Builder.Default
+    private Integer incompletePageNumber = 0;
+    @Builder.Default
+    private Integer incompletePageSize = 10;
+    @Singular
+    private List<IncompleteReportResultsRow> incompleteReportResultsRows;
 }

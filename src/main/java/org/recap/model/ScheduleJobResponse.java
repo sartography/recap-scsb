@@ -1,9 +1,9 @@
 package org.recap.model;
 
-import java.util.Date;
-
-import lombok.Data;
 import lombok.Builder;
+import lombok.Data;
+
+import java.util.Date;
 
 @Data
 @Builder

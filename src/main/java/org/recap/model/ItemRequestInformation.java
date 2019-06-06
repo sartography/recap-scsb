@@ -1,15 +1,17 @@
 package org.recap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
-import lombok.Builder;
+
 import java.util.List;
 
 @Data
 @Builder
 public class ItemRequestInformation {
-    @Singular private List<String> itemBarcodes;
+    @Singular
+    private List<String> itemBarcodes;
     private String titleIdentifier;
     private String itemOwningInstitution; // PUL, CUL, NYPL
     private String patronBarcode;
@@ -41,11 +43,7 @@ public class ItemRequestInformation {
     @JsonIgnore
     public boolean isOwningInstitutionItem() {
         boolean bSuccess;
-        if (itemOwningInstitution.equalsIgnoreCase(requestingInstitution)) {
-            bSuccess = true;
-        } else {
-            bSuccess = false;
-        }
+        bSuccess = itemOwningInstitution.equalsIgnoreCase(requestingInstitution);
         return bSuccess;
     }
 }

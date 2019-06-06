@@ -1,14 +1,15 @@
 package org.recap.model;
 
-import java.util.List;
-
+import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
-import lombok.Builder;
+
+import java.util.List;
 
 @Data
 @Builder
 public class DeAccessionRequest {
-    @Singular private List<DeAccessionItem> deAccessionItems;
+    @Singular
+    private List<DeAccessionItem> deAccessionItems;
     private String username;
 }

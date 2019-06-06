@@ -1,8 +1,6 @@
 package org.recap.model;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 @Data
 public abstract class AbstractResponseItem {
